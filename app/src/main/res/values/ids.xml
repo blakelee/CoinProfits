@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <item name="main" type="id"/>
+    <item name="coin" type="id"/>
+    <item name="amount" type="id"/>
+    <item name="coin_icon" type="id" />
+    <item name="coin_text" type="id" />
+    <item name="chip" type="id"/>
+    <item name="search_parent" type="id"/>
+    <item name="dialog_cancel" type="id"/>
+    <item name="dialog_save" type="id"/>
+    <item name="balance" type="id" />
+    <item name="profits" type="id" />
+    <item name="last_price" type="id" />
+    <item name="text" type="id" />
+    <item name="name" type="id" />
+    <item name="buyin" type="id" />
+    <item name="holdings_recycler" type="id"/>
+    <item name="coin_item_expand" type="id" />
+    <item name="refresh_layout" type="id"/>
+</resources>
