@@ -1,23 +1,29 @@
 package net.blakelee.coinprofits.activities
 
 import android.arch.lifecycle.Observer
+import android.arch.lifecycle.ViewModelProviders
+import android.content.Intent
+import android.content.SharedPreferences
+import android.databinding.DataBindingUtil
 import android.os.Bundle
+import android.support.v7.preference.PreferenceManager
 import android.support.v7.widget.LinearLayoutManager
 import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
+import android.widget.TextView
 import android.widget.Toast
 import com.yarolegovich.lovelydialog.LovelyProgressDialog
 import com.yarolegovich.lovelydialog.LovelyProgressObservable
 import kotlinx.android.synthetic.main.activity_main.*
-import kotlinx.android.synthetic.main.content_main.*
 import kotlinx.coroutines.experimental.CommonPool
 import kotlinx.coroutines.experimental.android.UI
 import kotlinx.coroutines.experimental.async
 import net.blakelee.coinprofits.R
 import net.blakelee.coinprofits.adapters.HoldingsAdapter
 import net.blakelee.coinprofits.base.BaseLifecycleActivity
+import net.blakelee.coinprofits.databinding.ActivityMainBinding
 import net.blakelee.coinprofits.dialogs.AdvancedHoldingsDialog
 import net.blakelee.coinprofits.dialogs.HoldingsDialog
 import net.blakelee.coinprofits.models.Holdings
@@ -26,20 +32,25 @@ import net.blakelee.coinprofits.viewmodels.MainViewModel
 class MainActivity : BaseLifecycleActivity<MainViewModel>() {
 
     override val viewModelClass = MainViewModel::class.java
-    private val PREFS_NAME = "CoinPrefs"
     private val adapter = HoldingsAdapter(this::itemLongClick)
+    private val settings: SharedPreferences by lazy { PreferenceManager.getDefaultSharedPreferences(this) }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_main)
+        val binding = DataBindingUtil.setContentView<ActivityMainBinding>(this, R.layout.activity_main)
         setSupportActionBar(toolbar)
 
-        checkPreferences()
-        addListeners()
-        subscribeHoldings()
+        viewModel = ViewModelProviders.of(this).get(viewModelClass)
+        binding.viewmodel = viewModel
+
+        setupObservers()
 
         holdings_recycler.adapter = adapter
-        holdings_recycler.layoutManager = LinearLayoutManager(this)
+    }
+
+    override fun onResume() {
+        super.onResume()
+        viewModel.checkPreferences()
     }
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
@@ -49,26 +60,17 @@ class MainActivity : BaseLifecycleActivity<MainViewModel>() {
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         return when (item.itemId) {
-            R.id.action_settings -> true
+            R.id.action_settings -> {
+                startActivity(Intent(baseContext, SettingsActivity::class.java))
+                true
+            }
+            R.id.action_add -> {
+                val view: View = layoutInflater.inflate(R.layout.dialog_add_coin, null)
+                val dialog = HoldingsDialog(this, view, null, viewModel, this::advancedDialog)
+                dialog.show()
+                true
+            }
             else -> super.onOptionsItemSelected(item)
-        }
-    }
-
-    fun addListeners() {
-        fab.setOnClickListener { _ ->
-            val view: View = layoutInflater.inflate(R.layout.dialog_add_coin, null)
-            val dialog = HoldingsDialog(this, view, null, viewModel, this::advancedDialog)
-            dialog.show()
-        }
-
-        refresh_layout.setOnRefreshListener {
-            subscribeHoldings()
-            viewModel.refreshHoldings({
-                Toast.makeText(this, "Couldn't refresh data. Perhaps website or network connection is down", Toast.LENGTH_SHORT).show()
-                refresh_layout.isRefreshing = false
-            }, {
-                refresh_layout.isRefreshing = false
-            })
         }
     }
 
@@ -82,55 +84,65 @@ class MainActivity : BaseLifecycleActivity<MainViewModel>() {
         dialog.show()
     }
 
-    fun checkPreferences() {
-        val refresh: Boolean
-        val settings = getSharedPreferences(PREFS_NAME, 0)
-        refresh = settings.getBoolean("refresh", true)
+    fun getTickers() {
+        val completed: LovelyProgressObservable = LovelyProgressObservable()
 
-        if (refresh) {
+        val indefinite = LovelyProgressDialog(this)
+                .setTopColorRes(R.color.colorPrimary)
+                .setTitle("Downloading Images")
+                .setIcon(R.drawable.ic_file_download)
+                .create()
 
-            fab.isEnabled = false
-            val completed: LovelyProgressObservable = LovelyProgressObservable()
+        indefinite.show()
 
-            viewModel.refreshTickers({
+        viewModel.getTickers({
 
-                val total = it
+            val total = it
 
-                val dialog = LovelyProgressDialog(this)
-                        .setTopColorRes(R.color.colorPrimary)
-                        .setTitle("Downloading Images")
-                        .setHorizontal(true)
-                        .setMax(total)
-                        .setIcon(R.drawable.ic_file_download)
-                        .setProgressObservable(completed)
-                        .create()
+            val dialog = LovelyProgressDialog(this)
+                    .setTopColorRes(R.color.colorPrimary)
+                    .setTitle("Downloading Images")
+                    .setHorizontal(true)
+                    .setMax(total)
+                    .setIcon(R.drawable.ic_file_download)
+                    .setProgressObservable(completed)
+                    .create()
 
-                val job = async(CommonPool) {
-                    Log.i("PICASSO", "Processing $it images")
-                    while (completed.progress < it) { }
-                    Log.i("PICASSO", "Finished getting images")
-                }
+            val job = async(CommonPool) {
+                Log.i("PICASSO", "Processing $it images")
+                while (completed.progress < it) { }
+                Log.i("PICASSO", "Finished getting images")
+            }
 
-                async(UI) {
-                    dialog.show()
-                    job.await()
-                }
-            }, {
-                completed.progress++
-                Log.i("PICASSO", "Completed ${completed.progress}")
-            },{
-                Toast.makeText(this, "Failed to get tickers: $it", Toast.LENGTH_LONG).show()
-            })
-
-            fab.isEnabled = true
-            settings.edit().putBoolean("refresh", false).apply()
-        }
+            async(UI) {
+                indefinite.dismiss()
+                dialog.show()
+                job.await()
+            }
+        }, {
+            completed.progress++
+            Log.i("PICASSO", "Completed ${completed.progress}")
+        },{
+            Toast.makeText(this, "Failed to get tickers: $it", Toast.LENGTH_LONG).show()
+        })
     }
 
-
-    fun subscribeHoldings() {
+    fun setupObservers() {
         viewModel.holdings.observe(this, Observer<List<Holdings>> {
             it?.let { adapter.dataSource = it }
         })
+
+        viewModel.refresh_tickers.observe(this, Observer {
+            it?.let { if (it) getTickers() }
+        })
+
+        viewModel.first.observe(this, Observer {
+            it?.let { if (it) {
+                    Toast.makeText(this, "Thank you CoinMarketCap", Toast.LENGTH_LONG).show()
+                    getTickers()
+                }
+            }
+        })
+
     }
 }

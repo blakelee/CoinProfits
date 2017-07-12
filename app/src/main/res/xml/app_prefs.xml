@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <PreferenceCategory
+        android:title="Test">
+
+        <SwitchPreference
+            android:key="auto_refresh"
+            android:title="Auto refresh on start-up"
+            android:summary="Polls data for holdings when on the main screen"
+            android:defaultValue="true"/>
+
+        <SwitchPreference
+            android:key="holdings_order"
+            android:title="Order holdings by name"
+            android:summary="Order holdings by name rather than time inserted"
+            android:defaultValue="false" />
+
+    </PreferenceCategory>
+
+</PreferenceScreen>

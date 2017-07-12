@@ -15,9 +15,15 @@ interface CoinDao {
     @Query("SELECT * FROM coin WHERE id = :id LIMIT 1")
     fun getCoinById(id: String): Coin
 
+    @Query("SELECT COUNT(id) FROM coin")
+    fun getCoinCount(): Int
+
     @Update
     fun updateCoin(coin: Coin)
 
     @Delete
     fun deleteCoin(coin: Coin)
+
+    @Query("DELETE FROM coin")
+    fun deleteAllCoins()
 }

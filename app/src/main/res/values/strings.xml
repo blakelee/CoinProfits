@@ -38,4 +38,7 @@
     <string name="buyin_placeholder">$120.00</string>
     <string name="margin_usd_placeholder">$1895.05</string>
     <string name="margin_percent_placeholder">300%</string>
+    <string name="last_updated">Last updated:</string>
+    <string name="time_placeholder">8:15pm</string>
+    <string name="auto_refresh">Auto refresh on start-up</string>
 </resources>

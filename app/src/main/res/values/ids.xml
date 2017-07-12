@@ -18,4 +18,5 @@
     <item name="holdings_recycler" type="id"/>
     <item name="coin_item_expand" type="id" />
     <item name="refresh_layout" type="id"/>
+    <item name="last_updated" type="id"/>
 </resources>

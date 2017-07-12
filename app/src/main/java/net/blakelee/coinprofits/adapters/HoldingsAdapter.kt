@@ -47,7 +47,7 @@ class HoldingsAdapter(val longClick: (Holdings) -> Unit) : BaseAdapter<Holdings,
             //Item
             name.text = item.name
             coin_icon.setImageBitmap(item.image?.toBitmap())
-            last_price.text = item.price.toString()
+            last_price.text = String.format("$%s", format.format(item!!.price))
             balance.text = String.format("${item.amount} ${item.symbol} / $%.2f", cur)
 
             //Balance

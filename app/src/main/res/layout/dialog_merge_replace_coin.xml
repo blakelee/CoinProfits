@@ -23,7 +23,7 @@
             android:id="@+id/image"
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
-            android:layout_weight="1"
+            android:layout_weight="0"
             android:contentDescription="@string/dropdown_arrow"
             app:srcCompat="@drawable/ic_arrow_drop_down_circle" />
 
@@ -36,7 +36,8 @@
         android:paddingBottom="16dp"
         android:paddingLeft="16dp"
         android:paddingRight="16dp"
-        app:el_expanded="false">
+        app:el_expanded="false"
+        app:el_duration="0">
 
 
         <LinearLayout
@@ -287,7 +288,7 @@
                 android:id="@id/image"
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
-                android:layout_weight="1"
+                android:layout_weight="0"
                 android:contentDescription="@string/dropdown_arrow"
                 app:srcCompat="@drawable/ic_arrow_drop_down_circle" />
 
@@ -299,10 +300,12 @@
         android:id="@+id/replace_expand"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:animateLayoutChanges="false"
         android:paddingBottom="16dp"
         android:paddingLeft="16dp"
         android:paddingRight="16dp"
-        app:el_expanded="false">
+        app:el_expanded="false"
+        app:el_duration="0">
 
 
         <LinearLayout

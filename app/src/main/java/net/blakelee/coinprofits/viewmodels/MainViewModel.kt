@@ -2,18 +2,18 @@ package net.blakelee.coinprofits.viewmodels
 
 import android.app.Application
 import android.arch.lifecycle.*
+import android.content.SharedPreferences
+import android.databinding.ObservableField
 import android.graphics.Bitmap
 import android.graphics.drawable.Drawable
+import android.support.v7.preference.PreferenceManager
 import android.util.Log
+import android.widget.Toast
 import com.jakewharton.picasso.OkHttp3Downloader
 import com.squareup.picasso.MemoryPolicy
 import com.squareup.picasso.NetworkPolicy
 import com.squareup.picasso.Picasso
 import com.squareup.picasso.Target
-import kotlinx.coroutines.experimental.CommonPool
-import kotlinx.coroutines.experimental.android.UI
-import kotlinx.coroutines.experimental.async
-import kotlinx.coroutines.experimental.launch
 import net.blakelee.coinprofits.databases.AppDatabase
 import net.blakelee.coinprofits.models.Coin
 import net.blakelee.coinprofits.models.Holdings
@@ -25,19 +25,62 @@ import okhttp3.OkHttpClient
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
+import java.text.SimpleDateFormat
+import java.util.*
 
 class MainViewModel(application: Application): AndroidViewModel(application) {
 
     private val IMAGE_URL = "https://files.coinmarketcap.com/static/img/coins/64x64/"
     private val db = AppDatabase.createPersistentDatabase(application)
+    private val prefs: SharedPreferences = PreferenceManager.getDefaultSharedPreferences(application)
     private var coin: List<Coin>? = null
     private var targets: MutableList<Target> = mutableListOf()
     var holdings: MediatorLiveData<List<Holdings>> = MediatorLiveData()
 
-    init { getHoldings() }
+    //View databinding
+    var is_refreshing = ObservableField<Boolean>(false)
+    var last_updated = ObservableField<String>(prefs.getString("last_updated", getTime()))
+    var holdings_size = ObservableField<Boolean>(true)
+
+    //Preferences
+    var first = MediatorLiveData<Boolean>()
+    var refresh_tickers = MediatorLiveData<Boolean>()
+    var holdings_order: Boolean
+
+    init {
+        holdings_order = prefs.getBoolean("holdings_order", false)
+        getHoldings()
+    }
+
+    fun checkPreferences() {
+        //Get ALL tickers
+        if (prefs.getBoolean("first", true)) {
+            first.postValue(true)
+            deleteAllCoins()
+            prefs.edit().putBoolean("first", false).apply()
+            prefs.edit().putBoolean("refresh_tickers", false).apply()
+            prefs.edit().putString("last_updated", getTime()).apply()
+        }
+
+        //Get new tickers
+        if (prefs.getBoolean("refresh_tickers", false)) {
+            refresh_tickers.postValue(true)
+            prefs.edit().putBoolean("refresh_tickers", false).apply()
+        }
+
+        //Auto refresh holdings on startup if true
+        if (prefs.getBoolean("auto_refresh", false))
+            refreshHoldings()
+
+        //Check holdings order
+        if (prefs.getBoolean("holdings_order", false) != holdings_order) {
+            holdings_order = holdings_order.xor(true)
+            getHoldings()
+        }
+    }
 
     //Get tickers and store them in the database
-    fun refreshTickers(setTotal: (Int) -> Unit, setCompleted: () -> Unit, onFailure: (String) -> Unit) {
+    fun getTickers(setTotal: (Int) -> Unit, setCompleted: () -> Unit, onFailure: (String) -> Unit) {
         val api: CoinApi = RestClient().getService()
         val tickers: Call<MutableList<ticker>> = api.getTicker()
 
@@ -49,7 +92,7 @@ class MainViewModel(application: Application): AndroidViewModel(application) {
 
                 response.body()?.sortBy { it.id }
 
-                val total = response.body()!!.size
+                val total = response.body()!!.size - getCoinCount()
 
                 setTotal(total)
 
@@ -131,6 +174,10 @@ class MainViewModel(application: Application): AndroidViewModel(application) {
         })
     }
 
+    fun deleteAllCoins() = db.coinModel().deleteAllCoins()
+
+    private fun getCoinCount() = db.coinModel().getCoinCount()
+
     fun getSearchItems(): List<Coin> {
         if (coin == null || coin!!.isEmpty())
             coin = db.coinModel().getCoins()
@@ -149,10 +196,19 @@ class MainViewModel(application: Application): AndroidViewModel(application) {
     }
 
     fun getHoldings() {
-        val holdings: LiveData<List<Holdings>> = db.holdingsModel().getHoldings()
+        val holdings: LiveData<List<Holdings>>
+        if (holdings_order)
+            holdings = db.holdingsModel().getHoldingsOrderId()
+        else
+            holdings = db.holdingsModel().getHoldings()
+
         this.holdings.addSource(holdings, {
                 this.holdings.removeSource(holdings)
                 this.holdings.value = it
+                if (it == null || it.isEmpty())
+                    holdings_size.set(false)
+                else
+                    holdings_size.set(true)
         })
     }
 
@@ -163,17 +219,18 @@ class MainViewModel(application: Application): AndroidViewModel(application) {
         getHoldings()
     }
 
-    fun refreshHoldings(onFailure: () -> Unit, onSuccess: () -> Unit) {
+    fun refreshHoldings() {
+        is_refreshing.set(true)
         val api: CoinApi = RestClient().getService()
 
         db.beginTransaction()
         try {
-            holdings.value!!.forEach {
+            holdings.value?.forEach {
                 val _ticker: Call<List<ticker>> = api.getCoin(it.id)
 
                 _ticker.enqueue(object : Callback<List<ticker>> {
                     override fun onFailure(call: Call<List<ticker>>?, t: Throwable?) {
-                        onFailure()
+                        Toast.makeText(getApplication(), "Couldn't refresh data. Perhaps website or network connection is down", Toast.LENGTH_SHORT).show()
                     }
 
                     override fun onResponse(call: Call<List<ticker>>?, response: Response<List<ticker>>?) {
@@ -200,7 +257,13 @@ class MainViewModel(application: Application): AndroidViewModel(application) {
         }
         finally {
             db.endTransaction()
-            onSuccess()
         }
+
+        val time = getTime()
+        prefs.edit().putString("last_updated", time).apply()
+        last_updated.set(time)
+        is_refreshing.set(false)
     }
+
+    fun getTime(): String = SimpleDateFormat("h:mma", Locale.getDefault()).format(Date())
 }

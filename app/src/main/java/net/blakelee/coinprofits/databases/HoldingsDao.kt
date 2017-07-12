@@ -10,6 +10,9 @@ interface HoldingsDao {
     fun insertHoldings(holdings: Holdings): Long
 
     @Query("SELECT * FROM holdings INNER JOIN coin ON coin.id = holdings.id ORDER BY coin.id")
+    fun getHoldingsOrderId(): LiveData<List<Holdings>>
+
+    @Query("SELECT * FROM holdings INNER JOIN coin ON coin.id = holdings.id")
     fun getHoldings(): LiveData<List<Holdings>>
 
     @Query("SELECT * FROM holdings WHERE id = :id LIMIT 1")
