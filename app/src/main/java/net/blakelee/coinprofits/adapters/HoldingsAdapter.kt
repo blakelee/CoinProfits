@@ -39,26 +39,25 @@ class HoldingsAdapter(val longClick: (Holdings) -> Unit) : BaseAdapter<Holdings,
             val cur = (item.amount * item.price!!)
             val buycur = ((cur / buyin) * 100) - 100
             val curbuy = cur - buyin
-
-            val format = NumberFormat.getInstance()
-            format.minimumFractionDigits = 2
-            format.maximumFractionDigits = 7
+            val price: Double = item.price!!
 
             //Item
             name.text = item.name
             coin_icon.setImageBitmap(item.image?.toBitmap())
-            last_price.text = String.format("$%s", format.format(item!!.price))
-            balance.text = String.format("${item.amount} ${item.symbol} / $%.2f", cur)
+
+
+            last_price.text = String.format("$%s", format(price))
+            balance.text = String.format("$%s", format(cur))
 
             //Balance
-            balance_symbol.text = String.format("${item.amount} ${item.symbol}")
-            balance_currency.text = String.format("$%.2f ${item.currency}", cur)
-            balance_btc.text = String.format("฿%.7f BTC", item.price_btc!! * item.amount)
+            balance_symbol.text = String.format("%s %s", format(item.amount), item.symbol)
+            balance_currency.text = String.format("$%s %s", format(cur), item.currency)
+            balance_btc.text = String.format("฿%s BTC", format(item.price_btc!! * item.amount))
             balance_eth.text = String.format("Ξ0.0 ETH")
 
             //Buyin Price
 
-            buyin_price.text = format.format(item.buyin)
+            buyin_price.text = format(item.buyin)
 
             //Margins
 
@@ -76,5 +75,34 @@ class HoldingsAdapter(val longClick: (Holdings) -> Unit) : BaseAdapter<Holdings,
                 true
             }
         }
+
+        private fun format(number: Double): String {
+            val format = NumberFormat.getInstance()
+            val splitter = "%f".format(number).split("\\.")
+
+            format.minimumFractionDigits = 2
+
+            if (number > 1)
+                format.maximumFractionDigits = 2
+            else {
+                var places = 0
+
+                if (splitter[0].length > 2)
+                    for(char in splitter[0]) {
+                        if (char != '0' && places >= 2) {
+                            break
+                        }
+                        places++
+                    }
+                else {
+                    places = 2
+                }
+
+                format.maximumFractionDigits = places
+            }
+
+            return format.format(number)
+        }
+
     }
 }

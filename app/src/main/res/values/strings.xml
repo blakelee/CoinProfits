@@ -25,7 +25,7 @@
     <string name="dropdown_arrow">Dropdown arrow</string>
     <string name="coin_icon">Coin Icon</string>
     <string name="placeholder_name">Basic Attention Token</string>
-    <string name="last">Last</string>
+    <string name="last">Last:</string>
     <string name="last_placeholder">$2.80</string>
     <string name="balance">Balance</string>
     <string name="balance_placeholder">44.23452 BAT / $212,000</string>

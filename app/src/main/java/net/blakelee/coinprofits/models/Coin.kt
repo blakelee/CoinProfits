@@ -13,6 +13,7 @@ open class Coin {
     var currency: String = "USD"          //Currency set from settings
     var price: Double? = 0.0              //Last updated price
     var price_btc: Double? = 0.0
+    var price_eth: Double? = 0.0
     var volume_24h: Double? = 0.0
     var market_cap: Double? = 0.0
     var total_supply: Double? = 0.0

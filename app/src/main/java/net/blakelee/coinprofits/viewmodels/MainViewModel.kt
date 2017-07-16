@@ -33,6 +33,7 @@ class MainViewModel(application: Application): AndroidViewModel(application) {
     private val IMAGE_URL = "https://files.coinmarketcap.com/static/img/coins/64x64/"
     private val db = AppDatabase.createPersistentDatabase(application)
     private val prefs: SharedPreferences = PreferenceManager.getDefaultSharedPreferences(application)
+    val api: CoinApi = RestClient().getService()
     private var coin: List<Coin>? = null
     private var targets: MutableList<Target> = mutableListOf()
     var holdings: MediatorLiveData<List<Holdings>> = MediatorLiveData()
@@ -53,24 +54,27 @@ class MainViewModel(application: Application): AndroidViewModel(application) {
     }
 
     fun checkPreferences() {
+        //Auto refresh holdings on startup if true
+        if (prefs.getBoolean("auto_refresh", false) &&
+                !prefs.getBoolean("first", true))
+            refreshHoldings()
+
         //Get ALL tickers
         if (prefs.getBoolean("first", true)) {
-            first.postValue(true)
             deleteAllCoins()
+            first.postValue(true)
             prefs.edit().putBoolean("first", false).apply()
             prefs.edit().putBoolean("refresh_tickers", false).apply()
             prefs.edit().putString("last_updated", getTime()).apply()
+            getHoldings()
         }
 
         //Get new tickers
-        if (prefs.getBoolean("refresh_tickers", false)) {
+        if (prefs.getBoolean("refresh_tickers", false) &&
+                !prefs.getBoolean("first", true)) {
             refresh_tickers.postValue(true)
             prefs.edit().putBoolean("refresh_tickers", false).apply()
         }
-
-        //Auto refresh holdings on startup if true
-        if (prefs.getBoolean("auto_refresh", false))
-            refreshHoldings()
 
         //Check holdings order
         if (prefs.getBoolean("holdings_order", false) != holdings_order) {
@@ -81,7 +85,6 @@ class MainViewModel(application: Application): AndroidViewModel(application) {
 
     //Get tickers and store them in the database
     fun getTickers(setTotal: (Int) -> Unit, setCompleted: () -> Unit, onFailure: (String) -> Unit) {
-        val api: CoinApi = RestClient().getService()
         val tickers: Call<MutableList<ticker>> = api.getTicker()
 
         tickers.enqueue(object: Callback<MutableList<ticker>> {
@@ -89,6 +92,12 @@ class MainViewModel(application: Application): AndroidViewModel(application) {
 
                 if (response?.body() == null)
                     return
+
+                //No new coins to get
+                if (response.body()?.size == db.coinModel().getCoinCount()) {
+                    setTotal(0)
+                    return
+                }
 
                 response.body()?.sortBy { it.id }
 
@@ -221,7 +230,6 @@ class MainViewModel(application: Application): AndroidViewModel(application) {
 
     fun refreshHoldings() {
         is_refreshing.set(true)
-        val api: CoinApi = RestClient().getService()
 
         db.beginTransaction()
         try {
@@ -263,6 +271,25 @@ class MainViewModel(application: Application): AndroidViewModel(application) {
         prefs.edit().putString("last_updated", time).apply()
         last_updated.set(time)
         is_refreshing.set(false)
+    }
+
+    fun getEth(): Double {
+        val _ticker: Call<List<ticker>> = api.getCoin("eth")
+        var value = 0.0
+
+        _ticker.enqueue(object : Callback<List<ticker>> {
+            override fun onResponse(call: Call<List<ticker>>?, response: Response<List<ticker>>?) {
+                if (response?.body() == null)
+                    return
+
+                value = response.body()!![0].priceUsd.toDouble()
+            }
+
+            //Don't do anything. Leave eth the same
+            override fun onFailure(call: Call<List<ticker>>?, t: Throwable?) {}
+        })
+
+        return value
     }
 
     fun getTime(): String = SimpleDateFormat("h:mma", Locale.getDefault()).format(Date())

@@ -36,6 +36,7 @@ class HoldingsDialog(val context: Context, val view: View, var holdings: Holding
             val pos = items.binarySearchBy(holdings!!.id) { it.id }
             item = items[pos]
             amount.setText(it.amount.toString())
+            buyin.setText(it.buyin.toString())
             coin.disableText()
             chip = Chip(context, item!!.image?.toBitmap(), item!!.name)
             chip!!.isClosable = false //If we're editing we can't close the chip

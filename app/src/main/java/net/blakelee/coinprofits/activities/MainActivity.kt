@@ -14,6 +14,7 @@ import android.view.MenuItem
 import android.view.View
 import android.widget.TextView
 import android.widget.Toast
+import com.yarolegovich.lovelydialog.LovelyChoiceDialog
 import com.yarolegovich.lovelydialog.LovelyProgressDialog
 import com.yarolegovich.lovelydialog.LovelyProgressObservable
 import kotlinx.android.synthetic.main.activity_main.*
@@ -33,18 +34,15 @@ class MainActivity : BaseLifecycleActivity<MainViewModel>() {
 
     override val viewModelClass = MainViewModel::class.java
     private val adapter = HoldingsAdapter(this::itemLongClick)
-    private val settings: SharedPreferences by lazy { PreferenceManager.getDefaultSharedPreferences(this) }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
         val binding = DataBindingUtil.setContentView<ActivityMainBinding>(this, R.layout.activity_main)
         setSupportActionBar(toolbar)
-
         viewModel = ViewModelProviders.of(this).get(viewModelClass)
         binding.viewmodel = viewModel
-
         setupObservers()
-
         holdings_recycler.adapter = adapter
     }
 
@@ -66,8 +64,7 @@ class MainActivity : BaseLifecycleActivity<MainViewModel>() {
             }
             R.id.action_add -> {
                 val view: View = layoutInflater.inflate(R.layout.dialog_add_coin, null)
-                val dialog = HoldingsDialog(this, view, null, viewModel, this::advancedDialog)
-                dialog.show()
+                HoldingsDialog(this, view, null, viewModel, this::advancedDialog).show()
                 true
             }
             else -> super.onOptionsItemSelected(item)
@@ -75,7 +72,20 @@ class MainActivity : BaseLifecycleActivity<MainViewModel>() {
     }
 
     fun itemLongClick(holdings: Holdings) {
-        viewModel.deleteHoldings(holdings)
+        LovelyChoiceDialog(this)
+                .setTitle("Selection action for ${holdings.name}")
+                .setTopColorRes(R.color.colorPrimary)
+                .setIcon(R.drawable.ic_info)
+                .setItems(arrayOf("Edit", "Delete"), { position, item ->
+                    when(position) {
+                        0 -> {
+                            val view: View = layoutInflater.inflate(R.layout.dialog_add_coin, null)
+                            HoldingsDialog(this, view, holdings, viewModel, this::advancedDialog).show()
+                        }
+                        1 -> viewModel.deleteHoldings(holdings)
+                    }
+                })
+                .show()
     }
 
     fun advancedDialog(old: Holdings, new: Holdings) {
@@ -99,25 +109,30 @@ class MainActivity : BaseLifecycleActivity<MainViewModel>() {
 
             val total = it
 
-            val dialog = LovelyProgressDialog(this)
-                    .setTopColorRes(R.color.colorPrimary)
-                    .setTitle("Downloading Images")
-                    .setHorizontal(true)
-                    .setMax(total)
-                    .setIcon(R.drawable.ic_file_download)
-                    .setProgressObservable(completed)
-                    .create()
+            if (total > 0) {
 
-            val job = async(CommonPool) {
-                Log.i("PICASSO", "Processing $it images")
-                while (completed.progress < it) { }
-                Log.i("PICASSO", "Finished getting images")
-            }
+                val dialog = LovelyProgressDialog(this)
+                        .setTopColorRes(R.color.colorPrimary)
+                        .setTitle("Downloading Images")
+                        .setHorizontal(true)
+                        .setMax(total)
+                        .setIcon(R.drawable.ic_file_download)
+                        .setProgressObservable(completed)
+                        .create()
 
-            async(UI) {
+                val job = async(CommonPool) {
+                    Log.i("PICASSO", "Processing $it images")
+                    while (completed.progress < it) { }
+                    Log.i("PICASSO", "Finished getting images")
+                }
+
+                async(UI) {
+                    indefinite.dismiss()
+                    dialog.show()
+                    job.await()
+                }
+            } else {
                 indefinite.dismiss()
-                dialog.show()
-                job.await()
             }
         }, {
             completed.progress++
