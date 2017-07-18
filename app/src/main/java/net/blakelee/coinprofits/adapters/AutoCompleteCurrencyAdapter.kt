@@ -8,12 +8,21 @@ import android.widget.ArrayAdapter
 import android.widget.Filter
 import android.widget.ImageView
 import android.widget.TextView
+import com.squareup.picasso.Picasso
+import net.blakelee.coinprofits.App
 import net.blakelee.coinprofits.R
+import net.blakelee.coinprofits.di.modules.ImageModule
 import net.blakelee.coinprofits.models.Coin
 import net.blakelee.coinprofits.tools.toBitmap
+import javax.inject.Inject
 
 class AutoCompleteCurrencyAdapter(context: Context, private val currency: List<Coin>) : ArrayAdapter<Coin>(context, 0, currency) {
     val filteredCurrency: ArrayList<Coin> = ArrayList()
+    @Inject lateinit var picasso: Picasso
+
+    init {
+        App.component.inject(this)
+    }
 
     override fun getCount() = filteredCurrency.size
     override fun getFilter(): Filter = CoinFilter(this, currency)
@@ -32,8 +41,7 @@ class AutoCompleteCurrencyAdapter(context: Context, private val currency: List<C
         val icon = view.findViewById(R.id.coin_icon) as ImageView
         text.text = String.format("%s - %s", coin.symbol, coin.name)
 
-        if (coin.image != null)
-            icon.setImageBitmap(coin.image!!.toBitmap())
+        picasso.load(ImageModule.IMAGE_URL + coin.id + ".png").into(icon)
 
         return view
     }

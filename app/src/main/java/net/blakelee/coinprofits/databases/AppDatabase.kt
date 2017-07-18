@@ -18,31 +18,6 @@ abstract class AppDatabase : RoomDatabase() {
     abstract fun holdingsModel(): HoldingsDao
 
     companion object {
-        private const val NAME = "app.db"
-        private var instance: AppDatabase? = null
-
-        fun createInMemoryDatabase(context: Context) : AppDatabase {
-            if (instance == null)
-                instance = Room.inMemoryDatabaseBuilder(context.applicationContext, AppDatabase::class.java)
-                        .addMigrations(MIGRATION_1_2)
-                        .allowMainThreadQueries()
-                        .build()
-
-            return instance!!
-        }
-
-        fun createPersistentDatabase(context: Context) : AppDatabase {
-            if (instance == null)
-                instance = Room.databaseBuilder(context.applicationContext, AppDatabase::class.java, NAME)
-                        .addMigrations(MIGRATION_1_2)
-                        .allowMainThreadQueries()
-                        .build()
-
-            return instance!!
-        }
-
-        fun destroyInstance() { instance = null }
-
         //TODO: Remove this before going live. This is just to test how to add migrations
         val MIGRATION_1_2: Migration = object : Migration(1, 2) {
             override fun migrate(database: SupportSQLiteDatabase) {

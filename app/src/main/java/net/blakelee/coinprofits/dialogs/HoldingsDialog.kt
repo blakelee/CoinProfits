@@ -1,19 +1,26 @@
 package net.blakelee.coinprofits.dialogs
 
 import android.content.Context
+import android.graphics.Bitmap
+import android.graphics.drawable.BitmapDrawable
+import android.graphics.drawable.Drawable
 import android.view.View
+import android.widget.RelativeLayout
 import com.robertlevonyan.views.chip.Chip
+import com.squareup.picasso.Picasso
+import com.squareup.picasso.Target
 import com.yarolegovich.lovelydialog.LovelyCustomDialog
 import kotlinx.android.synthetic.main.dialog_add_coin.view.*
+import net.blakelee.coinprofits.App
 import net.blakelee.coinprofits.R
 import net.blakelee.coinprofits.adapters.AutoCompleteCurrencyAdapter
+import net.blakelee.coinprofits.di.modules.ImageModule
 import net.blakelee.coinprofits.models.Coin
 import net.blakelee.coinprofits.models.Holdings
-import net.blakelee.coinprofits.tools.Chip
 import net.blakelee.coinprofits.tools.disableText
 import net.blakelee.coinprofits.tools.enableText
-import net.blakelee.coinprofits.tools.toBitmap
 import net.blakelee.coinprofits.viewmodels.MainViewModel
+import javax.inject.Inject
 
 class HoldingsDialog(val context: Context, val view: View, var holdings: Holdings?, val vm: MainViewModel, val mr_cb: (Holdings, Holdings) -> Unit ) {
 
@@ -28,8 +35,32 @@ class HoldingsDialog(val context: Context, val view: View, var holdings: Holding
     val buyin = view.buyin
     var chip: Chip? = null
     var item: Coin? = null
+    @Inject lateinit var picasso: Picasso
 
     init {
+        App.component.inject(this)
+
+        fun Chip(): Chip {
+            val params = RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.WRAP_CONTENT, RelativeLayout.LayoutParams.WRAP_CONTENT)
+            params.leftMargin = 12
+            params.topMargin = 4
+            val chip = Chip(context)
+            val image = picasso.load(ImageModule.IMAGE_URL + item!!.id + ".png").into(object : Target {
+                override fun onBitmapFailed(errorDrawable: Drawable?) {}
+                override fun onBitmapLoaded(bitmap: Bitmap?, from: Picasso.LoadedFrom?) {
+                    chip.chipIcon = BitmapDrawable(bitmap)
+                }
+                override fun onPrepareLoad(placeHolderDrawable: Drawable?) {}
+            })
+
+            chip.chipText = item!!.name
+            chip.isHasIcon = true
+            chip.isClickable = true
+            chip.isClosable = true
+            chip.id = R.id.chip
+            chip.layoutParams = params
+            return chip
+        }
 
         //Editing
         holdings?.let {
@@ -38,7 +69,7 @@ class HoldingsDialog(val context: Context, val view: View, var holdings: Holding
             amount.setText(it.amount.toString())
             buyin.setText(it.buyin.toString())
             coin.disableText()
-            chip = Chip(context, item!!.image?.toBitmap(), item!!.name)
+            chip = Chip()
             chip!!.isClosable = false //If we're editing we can't close the chip
             search_parent.addView(chip)
         }
@@ -50,7 +81,7 @@ class HoldingsDialog(val context: Context, val view: View, var holdings: Holding
 
             item = adapter.filteredCurrency[position]
 
-            chip = Chip(context, item!!.image?.toBitmap(), item!!.name)
+            chip = Chip()
             chip!!.setOnCloseClickListener {
                 coin.enableText(context.resources.getString(R.string.coin))
                 search_parent.removeView(chip)

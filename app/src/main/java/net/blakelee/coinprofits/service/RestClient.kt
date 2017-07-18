@@ -1,6 +1,6 @@
-package net.blakelee.coinprofits.rest
+package net.blakelee.coinprofits.service
 
-import net.blakelee.coinprofits.rest.service.CoinApi
+import net.blakelee.coinprofits.service.repository.CoinMarketCapApi
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 
@@ -13,7 +13,7 @@ class RestClient {
             .addConverterFactory(GsonConverterFactory.create())
             .build()
 
-    private val currency_app = retrofit.create(CoinApi::class.java)
+    private val currency_app = retrofit.create(CoinMarketCapApi::class.java)
 
-    fun getService(): CoinApi = currency_app
+    fun getService(): CoinMarketCapApi = currency_app
 }

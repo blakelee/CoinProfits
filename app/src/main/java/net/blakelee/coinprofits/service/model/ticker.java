@@ -1,4 +1,4 @@
-package net.blakelee.coinprofits.rest.model;
+package net.blakelee.coinprofits.service.model;
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;

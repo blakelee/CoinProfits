@@ -1,13 +1,17 @@
-package net.blakelee.coinprofits.rest.service
+package net.blakelee.coinprofits.service.repository
 
-import net.blakelee.coinprofits.rest.model.ticker
+import net.blakelee.coinprofits.service.model.ticker
 import retrofit2.Call
 import retrofit2.http.GET
 import retrofit2.http.Path
 import retrofit2.http.Query
 
 
-interface CoinApi {
+interface CoinMarketCapApi {
+
+    companion object {
+        val HTTPS_API_COINMARKETCAP_URL: String = "https://api.coinmarketcap.com/v1/"
+    }
 
     @GET("ticker/")
     fun getTicker(

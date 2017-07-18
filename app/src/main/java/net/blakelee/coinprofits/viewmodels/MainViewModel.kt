@@ -4,43 +4,41 @@ import android.app.Application
 import android.arch.lifecycle.*
 import android.content.SharedPreferences
 import android.databinding.ObservableField
-import android.graphics.Bitmap
-import android.graphics.drawable.Drawable
-import android.support.v7.preference.PreferenceManager
 import android.util.Log
 import android.widget.Toast
-import com.jakewharton.picasso.OkHttp3Downloader
-import com.squareup.picasso.MemoryPolicy
-import com.squareup.picasso.NetworkPolicy
 import com.squareup.picasso.Picasso
-import com.squareup.picasso.Target
+import com.yarolegovich.lovelydialog.LovelyProgressObservable
+import kotlinx.coroutines.experimental.CommonPool
+import kotlinx.coroutines.experimental.android.UI
+import kotlinx.coroutines.experimental.async
+import net.blakelee.coinprofits.App
 import net.blakelee.coinprofits.databases.AppDatabase
 import net.blakelee.coinprofits.models.Coin
 import net.blakelee.coinprofits.models.Holdings
-import net.blakelee.coinprofits.rest.RestClient
-import net.blakelee.coinprofits.rest.model.ticker
-import net.blakelee.coinprofits.rest.service.CoinApi
-import net.blakelee.coinprofits.tools.toByteArray
-import okhttp3.OkHttpClient
+import net.blakelee.coinprofits.service.model.ticker
+import net.blakelee.coinprofits.service.repository.CoinMarketCapApi
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 import java.text.SimpleDateFormat
 import java.util.*
+import javax.inject.Inject
 
 class MainViewModel(application: Application): AndroidViewModel(application) {
 
     private val IMAGE_URL = "https://files.coinmarketcap.com/static/img/coins/64x64/"
-    private val db = AppDatabase.createPersistentDatabase(application)
-    private val prefs: SharedPreferences = PreferenceManager.getDefaultSharedPreferences(application)
-    val api: CoinApi = RestClient().getService()
+
+    @Inject lateinit var db: AppDatabase
+    @Inject lateinit var prefs: SharedPreferences
+    @Inject lateinit var api: CoinMarketCapApi
+    @Inject lateinit var picasso: Picasso
+
     private var coin: List<Coin>? = null
-    private var targets: MutableList<Target> = mutableListOf()
     var holdings: MediatorLiveData<List<Holdings>> = MediatorLiveData()
 
     //View databinding
     var is_refreshing = ObservableField<Boolean>(false)
-    var last_updated = ObservableField<String>(prefs.getString("last_updated", getTime()))
+    val last_updated by lazy { ObservableField<String>(prefs.getString("last_updated", getTime())) }
     var holdings_size = ObservableField<Boolean>(true)
 
     //Preferences
@@ -49,6 +47,7 @@ class MainViewModel(application: Application): AndroidViewModel(application) {
     var holdings_order: Boolean
 
     init {
+        App.component.inject(this)
         holdings_order = prefs.getBoolean("holdings_order", false)
         getHoldings()
     }
@@ -66,7 +65,6 @@ class MainViewModel(application: Application): AndroidViewModel(application) {
             prefs.edit().putBoolean("first", false).apply()
             prefs.edit().putBoolean("refresh_tickers", false).apply()
             prefs.edit().putString("last_updated", getTime()).apply()
-            getHoldings()
         }
 
         //Get new tickers
@@ -84,7 +82,7 @@ class MainViewModel(application: Application): AndroidViewModel(application) {
     }
 
     //Get tickers and store them in the database
-    fun getTickers(setTotal: (Int) -> Unit, setCompleted: () -> Unit, onFailure: (String) -> Unit) {
+    fun getTickers(setTotal: (Int) -> Unit, onFailure: (String) -> Unit, lovelyProgressObservable: LovelyProgressObservable) {
         val tickers: Call<MutableList<ticker>> = api.getTicker()
 
         tickers.enqueue(object: Callback<MutableList<ticker>> {
@@ -108,74 +106,42 @@ class MainViewModel(application: Application): AndroidViewModel(application) {
                 if (coin == null)
                     coin = db.coinModel().getCoins()
 
-                val context = getApplication<Application>().applicationContext
-                val client = OkHttpClient()
-                val picasso = Picasso.Builder(context)
-                        .downloader(OkHttp3Downloader(client))
-                        .build()
+                val job = async(CommonPool) {
+                    //Go through each ticker and make sure it's in the db
+                    response.body()?.forEachIndexed { index, ticker ->
+                        val index: Int = coin!!.binarySearchBy(ticker.id) { it.id }
 
-                //Go through each ticker and make sure it's in the db
-                response.body()?.forEach {
-                    val item = it
-                    val index: Int = coin!!.binarySearchBy(item.id) { it.id }
+                        //Insert coin into db and picture into local storage
+                        if (index < 0) {
 
-                    //Insert coin into db and picture into local storage
-                    if (index < 0) {
-                        val url = IMAGE_URL + it.id + ".png"
+                            val mCoin = Coin()
+                            mCoin.id = ticker.id
+                            mCoin.name = ticker.name
+                            mCoin.symbol = ticker.symbol
+                            mCoin.price = ticker.priceUsd?.toDouble()
+                            mCoin.price_btc = ticker.priceBtc?.toDouble()
+                            mCoin.percent_change_24h = ticker.get24hVolumeUsd()?.toDouble()
+                            mCoin.market_cap = ticker.marketCapUsd?.toDouble()
+                            mCoin.total_supply = ticker.totalSupply?.toDouble()
+                            mCoin.percent_change_1h = ticker.percentChange1h?.toDouble()
+                            mCoin.percent_change_24h = ticker.percentChange24h?.toDouble()
+                            mCoin.percent_change_7d = ticker.percentChange7d?.toDouble()
 
-                        val mCoin = Coin()
-                        mCoin.id = it.id
-                        mCoin.name = it.name
-                        mCoin.symbol = it.symbol
-                        mCoin.price = it.priceUsd?.toDouble()
-                        mCoin.price_btc = it.priceBtc?.toDouble()
-                        mCoin.percent_change_24h = it.get24hVolumeUsd()?.toDouble()
-                        mCoin.market_cap = it.marketCapUsd?.toDouble()
-                        mCoin.total_supply = it.totalSupply?.toDouble()
-                        mCoin.percent_change_1h = it.percentChange1h?.toDouble()
-                        mCoin.percent_change_24h = it.percentChange24h?.toDouble()
-                        mCoin.percent_change_7d = it.percentChange7d?.toDouble()
-
-                        val target = object : Target {
-                            override fun onPrepareLoad(placeHolderDrawable: Drawable?) {
-                                Log.i("PICASSO", "Preparing to get image")
-                            }
-
-                            override fun onBitmapFailed(errorDrawable: Drawable?) {
-                                Log.i("PICASSO", "Failed to get image")
-                                db.coinModel().insertCoin(mCoin)
-                                setCompleted()
-                            }
-
-                            override fun onBitmapLoaded(bitmap: Bitmap, from: Picasso.LoadedFrom?) {
-                                Log.i("PICASSO", "Successfully got image")
-                                mCoin.image = bitmap.toByteArray()
-                                db.coinModel().insertCoin(mCoin)
-                                setCompleted()
-                            }
+                            db.coinModel().insertCoin(mCoin)
                         }
 
-                        targets.add(target)
-                        val size = targets.size
-                        picasso.load(url)
-                                .memoryPolicy(MemoryPolicy.NO_CACHE)
-                                .networkPolicy(NetworkPolicy.NO_CACHE)
-                                .into(targets[size - 1])
+                        async(UI) {
+                            lovelyProgressObservable.progress += 1
+                        }
                     }
                 }
 
-                //Remove items that are in the db but not the ticker
-                coin!!.forEach {
-                    val item = it
-                    val index: Int? = response.body()?.binarySearchBy(item.id) { it.id }
-
-                    index?.let {
-                        if (index < 0)
-                            picasso.invalidate(item.id)
-                    }
+                async(UI) {
+                    job.await()
+                    getHoldings()
                 }
-
             }
+
             override fun onFailure(call: Call<MutableList<ticker>>?, t: Throwable?) {
                 Log.i("RETROFIT", "Failed to get tickers")
                 onFailure(t?.cause.toString())

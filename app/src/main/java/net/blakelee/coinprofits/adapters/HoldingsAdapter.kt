@@ -4,14 +4,17 @@ import android.view.View
 import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.TextView
+import com.squareup.picasso.Picasso
 import kotlinx.android.synthetic.main.coin_item_main.view.*
+import net.blakelee.coinprofits.App
 import net.blakelee.coinprofits.R
 import net.blakelee.coinprofits.base.BaseAdapter
 import net.blakelee.coinprofits.base.BaseViewHolder
+import net.blakelee.coinprofits.di.modules.ImageModule
 import net.blakelee.coinprofits.models.Holdings
-import net.blakelee.coinprofits.tools.toBitmap
 import net.cachapa.expandablelayout.ExpandableLayout
 import java.text.NumberFormat
+import javax.inject.Inject
 
 class HoldingsAdapter(val longClick: (Holdings) -> Unit) : BaseAdapter<Holdings, HoldingsAdapter.HoldingsViewHolder>() {
 
@@ -33,8 +36,10 @@ class HoldingsAdapter(val longClick: (Holdings) -> Unit) : BaseAdapter<Holdings,
         val buyin_price: TextView = view!!.buyin
         val margin_value: TextView = view!!.margin_value
         val margin_percent: TextView = view!!.margin_percent
+        @Inject lateinit var picasso: Picasso
 
         override fun onBind(item: Holdings) {
+            App.component.inject(this)
             val buyin = (item.amount * item.buyin)
             val cur = (item.amount * item.price!!)
             val buycur = ((cur / buyin) * 100) - 100
@@ -43,8 +48,8 @@ class HoldingsAdapter(val longClick: (Holdings) -> Unit) : BaseAdapter<Holdings,
 
             //Item
             name.text = item.name
-            coin_icon.setImageBitmap(item.image?.toBitmap())
 
+            picasso.load(ImageModule.IMAGE_URL + item.id + ".png").into(coin_icon)
 
             last_price.text = String.format("$%s", format(price))
             balance.text = String.format("$%s", format(cur))

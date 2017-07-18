@@ -122,7 +122,7 @@ class MainActivity : BaseLifecycleActivity<MainViewModel>() {
 
                 val job = async(CommonPool) {
                     Log.i("PICASSO", "Processing $it images")
-                    while (completed.progress < it) { }
+                    while (completed.progress < total) { }
                     Log.i("PICASSO", "Finished getting images")
                 }
 
@@ -134,15 +134,13 @@ class MainActivity : BaseLifecycleActivity<MainViewModel>() {
             } else {
                 indefinite.dismiss()
             }
-        }, {
-            completed.progress++
-            Log.i("PICASSO", "Completed ${completed.progress}")
         },{
             Toast.makeText(this, "Failed to get tickers: $it", Toast.LENGTH_LONG).show()
-        })
+        }, completed)
+
     }
 
-    fun setupObservers() {
+    private fun setupObservers() {
         viewModel.holdings.observe(this, Observer<List<Holdings>> {
             it?.let { adapter.dataSource = it }
         })
