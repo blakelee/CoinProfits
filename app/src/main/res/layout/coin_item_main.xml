@@ -116,7 +116,8 @@
                 android:layout_marginLeft="16dp"
                 android:layout_marginRight="16dp"
                 android:layout_marginTop="72dp"
-                app:el_expanded="false">
+                app:el_expanded="false"
+                app:el_parallax="0">
 
                 <LinearLayout
                     android:layout_width="match_parent"

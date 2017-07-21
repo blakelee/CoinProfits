@@ -63,7 +63,7 @@ class AdvancedHoldingsDialog(val context: Context, val view: View, var old: Hold
         replace_buyin_prev.text = number_format.format(old.buyin)
         replace_buyin_new.text = number_format.format(new.buyin)
 
-                merge_item.setOnClickListener {
+        merge_item.setOnClickListener {
             view.merge_expand.toggle()
             view.replace_expand.collapse()
         }

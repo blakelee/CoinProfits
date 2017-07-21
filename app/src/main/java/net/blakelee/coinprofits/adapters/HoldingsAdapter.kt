@@ -1,45 +1,55 @@
 package net.blakelee.coinprofits.adapters
 
+import android.support.v7.widget.RecyclerView
 import android.view.View
 import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.TextView
 import com.squareup.picasso.Picasso
 import kotlinx.android.synthetic.main.coin_item_main.view.*
-import net.blakelee.coinprofits.App
 import net.blakelee.coinprofits.R
 import net.blakelee.coinprofits.base.BaseAdapter
 import net.blakelee.coinprofits.base.BaseViewHolder
-import net.blakelee.coinprofits.di.modules.ImageModule
+import net.blakelee.coinprofits.di.AppModule
 import net.blakelee.coinprofits.models.Holdings
 import net.cachapa.expandablelayout.ExpandableLayout
 import java.text.NumberFormat
-import javax.inject.Inject
 
-class HoldingsAdapter(val longClick: (Holdings) -> Unit) : BaseAdapter<Holdings, HoldingsAdapter.HoldingsViewHolder>() {
+class HoldingsAdapter(val recyclerView: RecyclerView, val picasso: Picasso, val longClick: (Holdings) -> Unit) : BaseAdapter<Holdings, HoldingsAdapter.HoldingsViewHolder>() {
+
+    private val UNSELECTED = -1
+    private var selectedItem: Int = UNSELECTED
 
     override fun getItemViewId(): Int = R.layout.coin_item_main
 
-    override fun instantiateViewHolder(view: View?): HoldingsViewHolder = HoldingsViewHolder(view, longClick)
+    override fun instantiateViewHolder(view: View?): HoldingsViewHolder {
+        return HoldingsViewHolder(view)
+    }
 
-    class HoldingsViewHolder(view: View?, val longClick: (Holdings) -> Unit) : BaseViewHolder<Holdings>(view) {
-        val item_top: LinearLayout = view!!.item_top
-        val coin_icon: ImageView = view!!.coin_icon
-        val name: TextView = view!!.name
-        val last_price: TextView = view!!.last_price
-        val coin_item_expand: ExpandableLayout = view!!.coin_item_expand
-        val balance: TextView = view!!.balance
-        val balance_symbol: TextView = view!!.balance_symbol
-        val balance_currency: TextView = view!!.balance_currency
-        val balance_btc: TextView = view!!.balance_btc
-        val balance_eth: TextView = view!!.balance_eth
-        val buyin_price: TextView = view!!.buyin
-        val margin_value: TextView = view!!.margin_value
-        val margin_percent: TextView = view!!.margin_percent
-        @Inject lateinit var picasso: Picasso
+    inner class HoldingsViewHolder(view: View?) : BaseViewHolder<Holdings>(view), ExpandableLayout.OnExpansionUpdateListener, View.OnClickListener {
+        private val expandButton: LinearLayout = view!!.item_top
+        private val expandableLayout: ExpandableLayout = view!!.coin_item_expand
+        private val coin_icon: ImageView = view!!.coin_icon
+        private val name: TextView = view!!.name
+        private val last_price: TextView = view!!.last_price
+        private val balance: TextView = view!!.balance
+        private val balance_symbol: TextView = view!!.balance_symbol
+        private val balance_currency: TextView = view!!.balance_currency
+        private val balance_btc: TextView = view!!.balance_btc
+        private val balance_eth: TextView = view!!.balance_eth
+        private val buyin_price: TextView = view!!.buyin
+        private val margin_value: TextView = view!!.margin_value
+        private val margin_percent: TextView = view!!.margin_percent
+
+        init {
+            expandableLayout.setOnExpansionUpdateListener(this)
+            expandButton.setOnClickListener(this)
+        }
 
         override fun onBind(item: Holdings) {
-            App.component.inject(this)
+            expandButton.isSelected = false
+            expandableLayout.collapse(false)
+
             val buyin = (item.amount * item.buyin)
             val cur = (item.amount * item.price!!)
             val buycur = ((cur / buyin) * 100) - 100
@@ -48,9 +58,7 @@ class HoldingsAdapter(val longClick: (Holdings) -> Unit) : BaseAdapter<Holdings,
 
             //Item
             name.text = item.name
-
-            picasso.load(ImageModule.IMAGE_URL + item.id + ".png").into(coin_icon)
-
+            picasso.load(AppModule.IMAGE_URL + item.id + ".png").into(coin_icon)
             last_price.text = String.format("$%s", format(price))
             balance.text = String.format("$%s", format(cur))
 
@@ -61,23 +69,36 @@ class HoldingsAdapter(val longClick: (Holdings) -> Unit) : BaseAdapter<Holdings,
             balance_eth.text = String.format("Ξ0.0 ETH")
 
             //Buyin Price
-
             buyin_price.text = format(item.buyin)
 
             //Margins
-
             margin_value.text = if (curbuy > 0) String.format("$%.2f", curbuy)
                 else String.format("-$%.2f", -curbuy)
             margin_percent.text = String.format("%.2f%%", buycur)
 
-            //Click listener for when you click the item but not the expandable part
-            item_top.setOnClickListener {
-                coin_item_expand.toggle()
-            }
-
-            item_top.setOnLongClickListener {
+            expandButton.setOnLongClickListener {
                 longClick(item)
                 true
+            }
+        }
+
+        override fun onExpansionUpdate(expansionFraction: Float, state: Int) {
+            recyclerView.smoothScrollToPosition(adapterPosition)
+        }
+
+        override fun onClick(view: View) {
+            val holder = recyclerView.findViewHolderForAdapterPosition(selectedItem) as HoldingsViewHolder?
+            holder?.let {
+                holder.expandButton.isSelected = false
+                holder.expandableLayout.collapse()
+            }
+
+            if (adapterPosition == selectedItem) {
+                selectedItem = UNSELECTED
+            } else {
+                expandButton.isSelected = true
+                expandableLayout.expand()
+                selectedItem = adapterPosition
             }
         }
 
@@ -108,6 +129,5 @@ class HoldingsAdapter(val longClick: (Holdings) -> Unit) : BaseAdapter<Holdings,
 
             return format.format(number)
         }
-
     }
 }

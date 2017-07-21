@@ -1,11 +1,11 @@
 package net.blakelee.coinprofits.service.repository
 
-import net.blakelee.coinprofits.service.model.ticker
-import retrofit2.Call
+import com.google.gson.JsonArray
+import io.reactivex.Maybe
+import io.reactivex.Observable
 import retrofit2.http.GET
 import retrofit2.http.Path
 import retrofit2.http.Query
-
 
 interface CoinMarketCapApi {
 
@@ -14,14 +14,14 @@ interface CoinMarketCapApi {
     }
 
     @GET("ticker/")
-    fun getTicker(
+    fun getCoins(
             @Query("limit") limit: Int? = null,
             @Query("convert") convert: String? = null
-    ): Call<MutableList<ticker>>
+    ): Observable<JsonArray>
 
-    @GET("ticker/{id}/")
-    fun getCoin(
+    @GET("ticker/{id}")
+    fun getCoinById(
             @Path("id") id: String,
             @Query("convert") convert: String? = null
-    ): Call<List<ticker>>
+    ): Maybe<JsonArray>
 }

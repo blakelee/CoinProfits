@@ -1,82 +1,34 @@
 <?xml version="1.0" encoding="utf-8"?>
-<layout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools">
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
 
-    <data>
-        <import type="android.view.View" />
-        <variable
-            name="viewmodel"
-            type="net.blakelee.coinprofits.viewmodels.MainViewModel" />
-    </data>
-
-    <android.support.design.widget.CoordinatorLayout
+    <android.support.design.widget.AppBarLayout
+        android:id="@+id/appbar"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        tools:context="net.blakelee.coinprofits.activities.MainActivity">
+        android:layout_height="wrap_content">
 
-        <android.support.design.widget.AppBarLayout
+        <android.support.v7.widget.Toolbar
+            android:id="@+id/toolbar"
+            android:layout_width="match_parent"
+            android:layout_height="?attr/actionBarSize"
+            android:layout_weight="1"/>
+
+    </android.support.design.widget.AppBarLayout>
+
+    <android.support.v4.view.ViewPager xmlns:android="http://schemas.android.com/apk/res/android"
+        android:id="@+id/pager"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <android.support.v4.view.PagerTitleStrip
+            android:id="@+id/pager_title_strip"
+            style="@style/viewPagerTitleStrip"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:theme="@style/AppTheme.AppBarOverlay">
+            android:layout_gravity="top" />
 
-            <android.support.v7.widget.Toolbar
-                android:id="@+id/toolbar"
-                android:layout_width="match_parent"
-                android:layout_height="?attr/actionBarSize"
-                android:background="?attr/colorPrimary"
-                app:popupTheme="@style/AppTheme.PopupOverlay" />
+    </android.support.v4.view.ViewPager>
 
-        </android.support.design.widget.AppBarLayout>
-
-        <android.support.constraint.ConstraintLayout
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            app:layout_behavior="@string/appbar_scrolling_view_behavior">
-
-            <LinearLayout
-                android:id="@+id/last_updated_container"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:gravity="center"
-                android:visibility="@{viewmodel.holdings_size ? View.VISIBLE : View.GONE}">
-
-                <TextView
-                    android:id="@+id/last_text"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:hint="@string/last_updated" />
-
-                <TextView
-                    android:id="@+id/last_updated_value"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="4dp"
-                    android:hint="@{viewmodel.last_updated}" />
-
-            </LinearLayout>
-
-            <android.support.v4.widget.SwipeRefreshLayout
-                android:id="@+id/refresh_layout"
-                android:layout_width="match_parent"
-                android:layout_height="0dp"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/last_updated_container"
-                app:refreshing="@{viewmodel.is_refreshing}"
-                app:onRefreshListener="@{() -> viewmodel.refreshHoldings()}">
-
-                <android.support.v7.widget.RecyclerView
-                    android:id="@+id/holdings_recycler"
-                    style="@android:style/ThemeOverlay.Material.Dark"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    app:layoutManager="android.support.v7.widget.LinearLayoutManager" />
-
-            </android.support.v4.widget.SwipeRefreshLayout>
-
-        </android.support.constraint.ConstraintLayout>
-
-    </android.support.design.widget.CoordinatorLayout>
-
-</layout>
+</LinearLayout>

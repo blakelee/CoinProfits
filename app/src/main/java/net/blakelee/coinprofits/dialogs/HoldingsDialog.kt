@@ -11,22 +11,20 @@ import com.squareup.picasso.Picasso
 import com.squareup.picasso.Target
 import com.yarolegovich.lovelydialog.LovelyCustomDialog
 import kotlinx.android.synthetic.main.dialog_add_coin.view.*
-import net.blakelee.coinprofits.App
 import net.blakelee.coinprofits.R
 import net.blakelee.coinprofits.adapters.AutoCompleteCurrencyAdapter
-import net.blakelee.coinprofits.di.modules.ImageModule
+import net.blakelee.coinprofits.di.AppModule
 import net.blakelee.coinprofits.models.Coin
 import net.blakelee.coinprofits.models.Holdings
 import net.blakelee.coinprofits.tools.disableText
 import net.blakelee.coinprofits.tools.enableText
 import net.blakelee.coinprofits.viewmodels.MainViewModel
-import javax.inject.Inject
 
-class HoldingsDialog(val context: Context, val view: View, var holdings: Holdings?, val vm: MainViewModel, val mr_cb: (Holdings, Holdings) -> Unit ) {
+class HoldingsDialog(val context: Context, val view: View, var holdings: Holdings?, val vm: MainViewModel, val picasso: Picasso, val mr_cb: (Holdings, Holdings) -> Unit ) {
 
     val items: List<Coin> = vm.getSearchItems()
     var dialog = LovelyCustomDialog(context)
-    val adapter = AutoCompleteCurrencyAdapter(context, items)
+    val adapter = AutoCompleteCurrencyAdapter(context, items, picasso)
     val coin = view.coin
     val search_parent = view.search_parent
     val save = view.dialog_save
@@ -35,20 +33,18 @@ class HoldingsDialog(val context: Context, val view: View, var holdings: Holding
     val buyin = view.buyin
     var chip: Chip? = null
     var item: Coin? = null
-    @Inject lateinit var picasso: Picasso
 
     init {
-        App.component.inject(this)
 
         fun Chip(): Chip {
             val params = RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.WRAP_CONTENT, RelativeLayout.LayoutParams.WRAP_CONTENT)
             params.leftMargin = 12
             params.topMargin = 4
             val chip = Chip(context)
-            val image = picasso.load(ImageModule.IMAGE_URL + item!!.id + ".png").into(object : Target {
+            picasso.load(AppModule.IMAGE_URL + item!!.id + ".png").into(object : Target {
                 override fun onBitmapFailed(errorDrawable: Drawable?) {}
                 override fun onBitmapLoaded(bitmap: Bitmap?, from: Picasso.LoadedFrom?) {
-                    chip.chipIcon = BitmapDrawable(bitmap)
+                    chip.chipIcon = BitmapDrawable(context.resources, bitmap)
                 }
                 override fun onPrepareLoad(placeHolderDrawable: Drawable?) {}
             })

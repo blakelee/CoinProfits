@@ -1,37 +1,26 @@
 package net.blakelee.coinprofits.viewmodels
 
-import android.app.Application
 import android.arch.lifecycle.*
 import android.content.SharedPreferences
 import android.databinding.ObservableField
-import android.util.Log
-import android.widget.Toast
-import com.squareup.picasso.Picasso
-import com.yarolegovich.lovelydialog.LovelyProgressObservable
-import kotlinx.coroutines.experimental.CommonPool
-import kotlinx.coroutines.experimental.android.UI
-import kotlinx.coroutines.experimental.async
-import net.blakelee.coinprofits.App
+import io.reactivex.android.schedulers.AndroidSchedulers
+import io.reactivex.schedulers.Schedulers
 import net.blakelee.coinprofits.databases.AppDatabase
 import net.blakelee.coinprofits.models.Coin
 import net.blakelee.coinprofits.models.Holdings
-import net.blakelee.coinprofits.service.model.ticker
 import net.blakelee.coinprofits.service.repository.CoinMarketCapApi
-import retrofit2.Call
-import retrofit2.Callback
-import retrofit2.Response
+import net.blakelee.coinprofits.tools.makeCoins
+import net.blakelee.coinprofits.tools.toCoin
 import java.text.SimpleDateFormat
 import java.util.*
 import javax.inject.Inject
 
-class MainViewModel(application: Application): AndroidViewModel(application) {
-
-    private val IMAGE_URL = "https://files.coinmarketcap.com/static/img/coins/64x64/"
-
-    @Inject lateinit var db: AppDatabase
-    @Inject lateinit var prefs: SharedPreferences
-    @Inject lateinit var api: CoinMarketCapApi
-    @Inject lateinit var picasso: Picasso
+class MainViewModel
+@Inject constructor (
+        private val db: AppDatabase,
+        private val prefs: SharedPreferences,
+        private val api: CoinMarketCapApi
+) : ViewModel() {
 
     private var coin: List<Coin>? = null
     var holdings: MediatorLiveData<List<Holdings>> = MediatorLiveData()
@@ -47,7 +36,6 @@ class MainViewModel(application: Application): AndroidViewModel(application) {
     var holdings_order: Boolean
 
     init {
-        App.component.inject(this)
         holdings_order = prefs.getBoolean("holdings_order", false)
         getHoldings()
     }
@@ -82,76 +70,24 @@ class MainViewModel(application: Application): AndroidViewModel(application) {
     }
 
     //Get tickers and store them in the database
-    fun getTickers(setTotal: (Int) -> Unit, onFailure: (String) -> Unit, lovelyProgressObservable: LovelyProgressObservable) {
-        val tickers: Call<MutableList<ticker>> = api.getTicker()
+    fun insertCoins(onFinished: (String?) -> Unit) {
 
-        tickers.enqueue(object: Callback<MutableList<ticker>> {
-            override fun onResponse(call: Call<MutableList<ticker>>?, response: Response<MutableList<ticker>>?) {
+        val convert = prefs.getString("currency", "usd")
 
-                if (response?.body() == null)
-                    return
-
-                //No new coins to get
-                if (response.body()?.size == db.coinModel().getCoinCount()) {
-                    setTotal(0)
-                    return
-                }
-
-                response.body()?.sortBy { it.id }
-
-                val total = response.body()!!.size - getCoinCount()
-
-                setTotal(total)
-
-                if (coin == null)
-                    coin = db.coinModel().getCoins()
-
-                val job = async(CommonPool) {
-                    //Go through each ticker and make sure it's in the db
-                    response.body()?.forEachIndexed { index, ticker ->
-                        val index: Int = coin!!.binarySearchBy(ticker.id) { it.id }
-
-                        //Insert coin into db and picture into local storage
-                        if (index < 0) {
-
-                            val mCoin = Coin()
-                            mCoin.id = ticker.id
-                            mCoin.name = ticker.name
-                            mCoin.symbol = ticker.symbol
-                            mCoin.price = ticker.priceUsd?.toDouble()
-                            mCoin.price_btc = ticker.priceBtc?.toDouble()
-                            mCoin.percent_change_24h = ticker.get24hVolumeUsd()?.toDouble()
-                            mCoin.market_cap = ticker.marketCapUsd?.toDouble()
-                            mCoin.total_supply = ticker.totalSupply?.toDouble()
-                            mCoin.percent_change_1h = ticker.percentChange1h?.toDouble()
-                            mCoin.percent_change_24h = ticker.percentChange24h?.toDouble()
-                            mCoin.percent_change_7d = ticker.percentChange7d?.toDouble()
-
-                            db.coinModel().insertCoin(mCoin)
-                        }
-
-                        async(UI) {
-                            lovelyProgressObservable.progress += 1
-                        }
-                    }
-                }
-
-                async(UI) {
-                    job.await()
-                    getHoldings()
-                }
-            }
-
-            override fun onFailure(call: Call<MutableList<ticker>>?, t: Throwable?) {
-                Log.i("RETROFIT", "Failed to get tickers")
-                onFailure(t?.cause.toString())
-            }
-        })
+        api.getCoins(null, convert)
+                .map{ makeCoins(it, convert) }
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe ({
+                    it.forEach { db.coinModel().insertCoin(it) }
+                }, {
+                    onFinished("Failed to get tickers: ${it.message.orEmpty()}")
+                }, {
+                    onFinished(null)
+                })
     }
 
     fun deleteAllCoins() = db.coinModel().deleteAllCoins()
-
-    private fun getCoinCount() = db.coinModel().getCoinCount()
 
     fun getSearchItems(): List<Coin> {
         if (coin == null || coin!!.isEmpty())
@@ -195,43 +131,17 @@ class MainViewModel(application: Application): AndroidViewModel(application) {
     }
 
     fun refreshHoldings() {
+
         is_refreshing.set(true)
+        val convert = prefs.getString("currency", "usd")
 
         db.beginTransaction()
-        try {
-            holdings.value?.forEach {
-                val _ticker: Call<List<ticker>> = api.getCoin(it.id)
-
-                _ticker.enqueue(object : Callback<List<ticker>> {
-                    override fun onFailure(call: Call<List<ticker>>?, t: Throwable?) {
-                        Toast.makeText(getApplication(), "Couldn't refresh data. Perhaps website or network connection is down", Toast.LENGTH_SHORT).show()
-                    }
-
-                    override fun onResponse(call: Call<List<ticker>>?, response: Response<List<ticker>>?) {
-                        if (response?.body() == null)
-                            return
-
-                        val result = response.body()!![0]
-                        val coin = db.coinModel().getCoinById(it.id)
-
-                        coin.price_btc = result.priceBtc?.toDouble()
-                        coin.price = result.priceUsd?.toDouble()
-                        coin.volume_24h = result.get24hVolumeUsd()?.toDouble()
-                        coin.market_cap = result.marketCapUsd?.toDouble()
-                        coin.total_supply = result.totalSupply?.toDouble()
-                        coin.percent_change_1h = result.percentChange1h?.toDouble()
-                        coin.percent_change_24h = result.percentChange24h?.toDouble()
-                        coin.percent_change_7d = result.percentChange7d?.toDouble()
-
-                        db.coinModel().updateCoin(coin)
-                        updateHoldings(it)
-                    }
-                })
-            }
+        holdings.value?.forEach {
+            insertCoinById(it.id, convert)
         }
-        finally {
-            db.endTransaction()
-        }
+        db.endTransaction()
+
+        getHoldings()
 
         val time = getTime()
         prefs.edit().putString("last_updated", time).apply()
@@ -239,23 +149,14 @@ class MainViewModel(application: Application): AndroidViewModel(application) {
         is_refreshing.set(false)
     }
 
-    fun getEth(): Double {
-        val _ticker: Call<List<ticker>> = api.getCoin("eth")
-        var value = 0.0
-
-        _ticker.enqueue(object : Callback<List<ticker>> {
-            override fun onResponse(call: Call<List<ticker>>?, response: Response<List<ticker>>?) {
-                if (response?.body() == null)
-                    return
-
-                value = response.body()!![0].priceUsd.toDouble()
-            }
-
-            //Don't do anything. Leave eth the same
-            override fun onFailure(call: Call<List<ticker>>?, t: Throwable?) {}
-        })
-
-        return value
+    fun insertCoinById(id: String, convert: String?) {
+        api.getCoinById(id, convert)
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribeOn(Schedulers.io())
+                .subscribe {
+                    val coin = it[0].asJsonObject.toCoin(convert)
+                    coin?.let { db.coinModel().updateCoin(it) }
+                }
     }
 
     fun getTime(): String = SimpleDateFormat("h:mma", Locale.getDefault()).format(Date())

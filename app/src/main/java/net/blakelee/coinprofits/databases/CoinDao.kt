@@ -6,7 +6,7 @@ import net.blakelee.coinprofits.models.Coin
 @Dao
 interface CoinDao {
 
-    @Insert
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
     fun insertCoin(coin: Coin): Long
 
     @Query("SELECT * FROM coin ORDER BY id")

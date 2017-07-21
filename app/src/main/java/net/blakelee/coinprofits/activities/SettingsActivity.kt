@@ -1,17 +1,25 @@
 package net.blakelee.coinprofits.activities
 
+import android.app.Fragment
 import android.content.Context
 import android.content.SharedPreferences
 import android.os.Bundle
 import android.preference.PreferenceFragment
 import android.support.v7.app.AppCompatActivity
-import android.support.v7.preference.PreferenceManager
 import android.support.v7.widget.Toolbar
+import dagger.android.AndroidInjection
+import dagger.android.AndroidInjector
+import dagger.android.DispatchingAndroidInjector
+import dagger.android.HasFragmentInjector
 import net.blakelee.coinprofits.R
+import javax.inject.Inject
 
-class SettingsActivity : AppCompatActivity() {
+class SettingsActivity : AppCompatActivity(), HasFragmentInjector {
+
+    @Inject lateinit var fragmentAndroidInjector: DispatchingAndroidInjector<Fragment>
 
     override fun onCreate(savedInstanceState: Bundle?) {
+        AndroidInjection.inject(this)
         super.onCreate(savedInstanceState)
 
         setContentView(R.layout.activity_settings)
@@ -23,11 +31,14 @@ class SettingsActivity : AppCompatActivity() {
         fragmentManager.beginTransaction().replace(R.id.fragment_container, SettingsFragment()).commit()
     }
 
+    override fun fragmentInjector(): AndroidInjector<Fragment> = fragmentAndroidInjector
+
     class SettingsFragment : PreferenceFragment() {
-        private val prefs: SharedPreferences by lazy { PreferenceManager.getDefaultSharedPreferences(this.activity) }
+        @Inject lateinit var prefs: SharedPreferences
 
         override fun onCreate(savedInstanceState: Bundle?) {
             super.onCreate(savedInstanceState)
+
             addPreferencesFromResource(R.xml.app_prefs)
 
             val first = findPreference("first")
@@ -49,8 +60,8 @@ class SettingsActivity : AppCompatActivity() {
         }
 
         override fun onAttach(context: Context?) {
+            AndroidInjection.inject(this)
             super.onAttach(context)
         }
-
     }
 }

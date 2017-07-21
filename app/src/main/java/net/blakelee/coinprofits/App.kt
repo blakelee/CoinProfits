@@ -1,27 +1,21 @@
 package net.blakelee.coinprofits
 
+import android.app.Activity
 import android.app.Application
 import com.facebook.stetho.Stetho
 import com.squareup.leakcanary.LeakCanary
-import net.blakelee.coinprofits.di.component.AppComponent
-import net.blakelee.coinprofits.di.component.DaggerAppComponent
-import net.blakelee.coinprofits.di.modules.*
+import dagger.android.AndroidInjector
+import dagger.android.DispatchingAndroidInjector
+import dagger.android.HasActivityInjector
+import net.blakelee.coinprofits.di.DaggerAppComponent
+import javax.inject.Inject
 
-class App : Application() {
+class App : Application(), HasActivityInjector {
 
-    companion object {
-        lateinit var app: App
-        val component: AppComponent by lazy {
-            DaggerAppComponent
-                    .builder()
-                    .appModule(AppModule(app))
-                    .databaseModule(DatabaseModule())
-                    .networkModule(NetworkModule())
-                    .imageModule(ImageModule())
-                    .sharedPreferencesModule(SharedPreferencesModule())
-                    .build()
-        }
-    }
+    @Inject lateinit var activityDispatchingInjector: DispatchingAndroidInjector<Activity>
+
+    override fun activityInjector(): AndroidInjector<Activity>
+            = activityDispatchingInjector
 
     override fun onCreate() {
         super.onCreate()
@@ -32,6 +26,9 @@ class App : Application() {
             return
 
         LeakCanary.install(this)
-        app = this
+        DaggerAppComponent.builder()
+                .application(this)
+                .build()
+                .inject(this)
     }
 }
