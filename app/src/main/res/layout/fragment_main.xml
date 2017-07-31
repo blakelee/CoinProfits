@@ -10,21 +10,28 @@
             type="net.blakelee.coinprofits.viewmodels.MainViewModel" />
     </data>
 
-    <android.support.design.widget.CoordinatorLayout
+    <com.scwang.smartrefresh.layout.SmartRefreshLayout
+        android:id="@+id/refresh_layout"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        tools:context="net.blakelee.coinprofits.activities.MainActivity">
+        app:layout_behavior="@string/appbar_scrolling_view_behavior"
+        app:srlDisableContentWhenRefresh="true"
+        app:srlEnableLoadmore="false">
 
-        <android.support.constraint.ConstraintLayout
+        <com.scwang.smartrefresh.header.MaterialHeader
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
+
+        <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            app:layout_behavior="@string/appbar_scrolling_view_behavior">
+            tools:context="net.blakelee.coinprofits.activities.MainActivity">
 
-            <LinearLayout
-                android:id="@+id/last_updated_container"
-                android:layout_width="match_parent"
+            <RelativeLayout
+                android:id="@+id/relativeLayout"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:gravity="center"
+                android:layout_centerHorizontal="true"
                 android:visibility="@{safeUnbox(viewmodel.holdings_size) ? View.VISIBLE : View.GONE}">
 
                 <TextView
@@ -37,32 +44,21 @@
                     android:id="@+id/last_updated_value"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginStart="4dp"
+                    android:layout_alignParentTop="true"
+                    android:layout_toEndOf="@+id/last_text"
                     android:hint="@{viewmodel.last_updated}" />
 
-            </LinearLayout>
+            </RelativeLayout>
 
-            <android.support.v4.widget.SwipeRefreshLayout
-                android:id="@+id/refresh_layout"
+            <android.support.v7.widget.RecyclerView
+                android:id="@+id/holdings_recycler"
                 android:layout_width="match_parent"
-                android:layout_height="0dp"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/last_updated_container"
-                app:refreshing="@{safeUnbox(viewmodel.is_refreshing)}"
-                app:onRefreshListener="@{() -> viewmodel.refreshHoldings()}">
+                android:layout_height="match_parent"
+                android:layout_below="@+id/relativeLayout"
+                app:layoutManager="android.support.v7.widget.LinearLayoutManager" />
 
-                <android.support.v7.widget.RecyclerView
-                    android:id="@+id/holdings_recycler"
-                    style="@android:style/ThemeOverlay.Material.Dark"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    app:layoutManager="android.support.v7.widget.LinearLayoutManager" />
+        </RelativeLayout>
 
-            </android.support.v4.widget.SwipeRefreshLayout>
-
-        </android.support.constraint.ConstraintLayout>
-
-    </android.support.design.widget.CoordinatorLayout>
+    </com.scwang.smartrefresh.layout.SmartRefreshLayout>
 
 </layout>

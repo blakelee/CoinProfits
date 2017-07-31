@@ -9,7 +9,8 @@ import com.squareup.picasso.Picasso
 import dagger.Module
 import dagger.Provides
 import net.blakelee.coinprofits.databases.AppDatabase
-import net.blakelee.coinprofits.service.repository.CoinMarketCapApi
+import net.blakelee.coinprofits.service.repository.ChartApi
+import net.blakelee.coinprofits.service.repository.CoinApi
 import okhttp3.Cache
 import okhttp3.OkHttpClient
 import retrofit2.Retrofit
@@ -68,13 +69,23 @@ class AppModule{
     /** NETWORK COMPONENTS */
     @Provides
     @Singleton
-    fun provideCoinMarketCapApi(): CoinMarketCapApi =
+    fun provideCoinMarketCapApi(): CoinApi =
          Retrofit.Builder()
-                .baseUrl(CoinMarketCapApi.HTTPS_API_COINMARKETCAP_URL)
+                .baseUrl(CoinApi.HTTPS_API_COINMARKETCAP_URL)
                 .addConverterFactory(GsonConverterFactory.create())
                 .addCallAdapterFactory(RxJava2CallAdapterFactory.create())
                 .build()
-                .create(CoinMarketCapApi::class.java)
+                .create(CoinApi::class.java)
+
+    @Provides
+    @Singleton
+    fun provideChartApi(): ChartApi =
+            Retrofit.Builder()
+                    .baseUrl(ChartApi.HTTPS_API_CHART_URL)
+                    .addConverterFactory(GsonConverterFactory.create())
+                    .addCallAdapterFactory(RxJava2CallAdapterFactory.create())
+                    .build()
+                    .create(ChartApi::class.java)
 
 
     /** SHARED PREFERENCES COMPONENTS */

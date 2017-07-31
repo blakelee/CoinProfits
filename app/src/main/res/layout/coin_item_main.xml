@@ -1,327 +1,233 @@
 <?xml version="1.0" encoding="utf-8"?>
 <layout xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:android="http://schemas.android.com/apk/res/android">
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:card_view="http://schemas.android.com/tools">
 
-    <LinearLayout xmlns:card_view="http://schemas.android.com/apk/res-auto"
+    <android.support.v7.widget.CardView
+        style="@style/CardView.Dark"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="vertical">
+        android:layout_marginBottom="2dp"
+        android:layout_marginLeft="4dp"
+        android:layout_marginRight="4dp"
+        android:layout_marginTop="2dp"
+        card_view:cardCornerRadius="4dp">
 
-        <android.support.v7.widget.CardView
-            style="@style/CardView.Dark"
+        <RelativeLayout
+            android:id="@+id/item_top"
+            android:layout_width="match_parent"
+            android:layout_height="88dp"
+            android:padding="16dp">
+
+            <TextView
+                android:id="@+id/name"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentTop="true"
+                android:layout_marginStart="16dp"
+                android:layout_toEndOf="@+id/coin_icon"
+                android:maxLines="1"
+                android:text="@string/placeholder_name"
+                android:textSize="18sp" />
+
+            <TextView
+                android:id="@+id/last_text"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignBaseline="@+id/name"
+                android:layout_toStartOf="@+id/last_price"
+                android:gravity="center_vertical"
+                android:maxLines="1"
+                android:text="@string/last" />
+
+            <TextView
+                android:id="@+id/last_price"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignBaseline="@+id/name"
+                android:layout_alignParentEnd="true"
+                android:gravity="center_vertical"
+                android:text="@string/last_placeholder" />
+
+            <TextView
+                android:id="@+id/balance_text"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:gravity="center_vertical"
+                android:text="@string/balance_colon"
+                android:textSize="14sp"
+                android:layout_alignParentBottom="true"
+                android:layout_toStartOf="@+id/balance"
+                android:layout_below="@+id/last_text" />
+
+            <TextView
+                android:id="@+id/balance"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:gravity="center_vertical"
+                android:text="$212,000.00"
+                android:textSize="14sp"
+                android:layout_alignParentEnd="true"
+                android:layout_alignParentBottom="true"
+                android:layout_below="@+id/last_text" />
+
+            <ImageView
+                android:id="@+id/coin_icon"
+                android:layout_width="56dp"
+                android:layout_height="56dp"
+                android:contentDescription="@string/coin_icon"
+                card_view:srcCompat="@mipmap/ic_launcher" />
+
+        </RelativeLayout>
+
+        <net.cachapa.expandablelayout.ExpandableLayout
+            android:id="@+id/coin_item_expand"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="2dp"
-            android:layout_marginLeft="4dp"
-            android:layout_marginRight="4dp"
-            android:layout_marginTop="2dp"
-            card_view:cardCornerRadius="4dp">
+            android:layout_marginBottom="16dp"
+            android:layout_marginLeft="16dp"
+            android:layout_marginRight="16dp"
+            android:layout_marginTop="72dp"
+            app:el_expanded="false"
+            app:el_parallax="0">
 
-            <LinearLayout
-                android:id="@+id/item_top"
+            <RelativeLayout
                 android:layout_width="match_parent"
-                android:layout_height="56dp"
-                android:layout_margin="16dp"
-                android:orientation="horizontal">
+                android:layout_height="match_parent"
+                android:layout_marginTop="16dp">
+
+                <TextView
+                    android:id="@+id/balance_text_2"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:gravity="start"
+                    android:text="@string/balance" />
 
                 <ImageView
-                    android:id="@+id/coin_icon"
-                    android:layout_width="56dp"
-                    android:layout_height="56dp"
-                    android:layout_gravity="start"
-                    android:layout_marginEnd="16dp"
-                    android:contentDescription="@string/coin_icon"
-                    card_view:srcCompat="@mipmap/ic_launcher" />
+                    android:id="@+id/balance_info"
+                    android:layout_width="18dp"
+                    android:layout_height="18dp"
+                    android:layout_alignParentTop="true"
+                    android:layout_marginStart="4dp"
+                    android:layout_toEndOf="@+id/balance_text_2"
+                    android:contentDescription="@string/ic_info"
+                    app:srcCompat="@android:drawable/ic_dialog_info" />
 
-                <LinearLayout
-                    android:layout_width="match_parent"
+                <TextView
+                    android:id="@+id/balance_symbol"
+                    android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_gravity="center"
-                    android:orientation="vertical">
+                    android:layout_alignParentEnd="true"
+                    android:layout_alignParentTop="true"
+                    android:gravity="end"
+                    android:text="@string/balance_id_placeholder" />
 
-                    <LinearLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        android:orientation="horizontal">
+                <TextView
+                    android:id="@+id/balance_currency"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignEnd="@+id/balance_btc"
+                    android:layout_below="@+id/balance_info"
+                    android:layout_weight="1"
+                    android:gravity="end"
+                    android:text="@string/balance_usd_placeholder" />
 
-                        <TextView
-                            android:id="@+id/name"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:layout_weight="1"
-                            android:maxLines="1"
-                            android:text="@string/placeholder_name"
-                            android:textSize="18sp" />
+                <TextView
+                    android:id="@+id/balance_btc"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentEnd="true"
+                    android:layout_below="@+id/balance_currency"
+                    android:layout_weight="1"
+                    android:gravity="end"
+                    android:text="@string/balance_btc_placeholder" />
 
-                        <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="match_parent"
-                            android:layout_marginEnd="4dp"
-                            android:layout_weight="0"
-                            android:gravity="end|center_vertical"
-                            android:maxLines="1"
-                            android:text="@string/last" />
+                <TextView
+                    android:id="@+id/balance_eth"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentEnd="true"
+                    android:layout_below="@+id/balance_btc"
+                    android:layout_weight="1"
+                    android:gravity="end"
+                    android:text="@string/balance_eth_placeholder" />
 
-                        <TextView
-                            android:id="@+id/last_price"
-                            android:layout_width="wrap_content"
-                            android:layout_height="match_parent"
-                            android:layout_weight="0"
-                            android:gravity="end|center_vertical"
-                            android:text="@string/last_placeholder"
-                            android:textSize="14sp" />
+                <ImageView
+                    android:id="@+id/buyin_info"
+                    android:layout_width="18dp"
+                    android:layout_height="18dp"
+                    android:layout_alignBottom="@+id/buyin_price_text"
+                    android:layout_gravity="top"
+                    android:layout_marginLeft="4dp"
+                    android:layout_toEndOf="@+id/buyin_price_text"
+                    android:layout_weight="0"
+                    android:contentDescription="@string/ic_info"
+                    app:srcCompat="@android:drawable/ic_dialog_info" />
 
-                    </LinearLayout>
+                <TextView
+                    android:id="@+id/buyin_price_text"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@+id/balance_eth"
+                    android:layout_marginTop="8dp"
+                    android:layout_weight="0"
+                    android:gravity="start"
+                    android:text="@string/buyin_price" />
 
-                    <LinearLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        android:gravity="end"
-                        android:orientation="horizontal">
+                <TextView
+                    android:id="@+id/buyin"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentEnd="true"
+                    android:layout_alignTop="@+id/buyin_info"
+                    android:layout_weight="1"
+                    android:gravity="end"
+                    android:text="@string/buyin_placeholder" />
 
-                        <TextView
-                            android:id="@+id/text"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_weight="0"
-                            android:text="@string/balance"
-                            android:textSize="14sp" />
+                <TextView
+                    android:id="@+id/margin_text"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentStart="true"
+                    android:layout_below="@+id/buyin"
+                    android:layout_gravity="top"
+                    android:layout_marginTop="8dp"
+                    android:layout_weight="0."
+                    android:text="@string/margins" />
 
-                        <TextView
-                            android:id="@+id/textView2"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_marginEnd="4dp"
-                            android:layout_weight="0"
-                            android:text=":" />
+                <ImageView
+                    android:id="@+id/margin_info"
+                    android:layout_width="18dp"
+                    android:layout_height="18dp"
+                    android:layout_alignTop="@+id/margin_text"
+                    android:layout_gravity="top"
+                    android:layout_marginStart="4dp"
+                    android:layout_toEndOf="@+id/margin_text"
+                    android:layout_weight="0"
+                    android:contentDescription="@string/ic_info"
+                    app:srcCompat="@android:drawable/ic_dialog_info" />
 
-                        <TextView
-                            android:id="@+id/balance"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_weight="0"
-                            android:text="$212,000.00"
-                            android:textSize="14sp" />
+                <TextView
+                    android:id="@+id/margin_value"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentEnd="true"
+                    android:layout_alignTop="@+id/margin_text"
+                    android:gravity="end"
+                    android:text="@string/margin_usd_placeholder" />
 
-                    </LinearLayout>
-                </LinearLayout>
+                <TextView
+                    android:id="@+id/margin_percent"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentEnd="true"
+                    android:layout_below="@+id/margin_value"
+                    android:gravity="end"
+                    android:text="@string/margin_percent_placeholder" />
+            </RelativeLayout>
 
-            </LinearLayout>
+        </net.cachapa.expandablelayout.ExpandableLayout>
 
-            <net.cachapa.expandablelayout.ExpandableLayout
-                android:id="@+id/coin_item_expand"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="16dp"
-                android:layout_marginLeft="16dp"
-                android:layout_marginRight="16dp"
-                android:layout_marginTop="72dp"
-                app:el_expanded="false"
-                app:el_parallax="0">
+    </android.support.v7.widget.CardView>
 
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:orientation="vertical">
-
-                    <LinearLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        android:gravity="center"
-                        android:orientation="vertical"
-                        android:paddingTop="8dp">
-
-                        <LinearLayout
-                            android:layout_width="match_parent"
-                            android:layout_height="match_parent"
-                            android:layout_weight="1"
-                            android:gravity="center"
-                            android:orientation="horizontal"
-                            android:paddingTop="8dp">
-
-                            <TextView
-                                android:id="@id/text"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:gravity="start"
-                                android:text="@string/balance" />
-
-                            <ImageView
-                                android:id="@+id/balance_info"
-                                android:layout_width="18dp"
-                                android:layout_height="18dp"
-                                android:layout_gravity="top"
-                                android:layout_marginStart="4dp"
-                                android:contentDescription="@string/ic_info"
-                                app:srcCompat="@android:drawable/ic_dialog_info" />
-
-                            <TextView
-                                android:id="@+id/balance_symbol"
-                                android:layout_width="match_parent"
-                                android:layout_height="match_parent"
-                                android:gravity="end"
-                                android:text="@string/balance_id_placeholder" />
-                        </LinearLayout>
-
-                        <TextView
-                            android:id="@+id/balance_currency"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:layout_weight="1"
-                            android:gravity="end"
-                            android:text="@string/balance_usd_placeholder" />
-
-                        <TextView
-                            android:id="@+id/balance_btc"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:layout_weight="1"
-                            android:gravity="end"
-                            android:text="@string/balance_btc_placeholder" />
-
-                        <TextView
-                            android:id="@+id/balance_eth"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:layout_weight="1"
-                            android:gravity="end"
-                            android:text="@string/balance_eth_placeholder" />
-                    </LinearLayout>
-
-                    <LinearLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        android:gravity="center"
-                        android:orientation="horizontal"
-                        android:paddingTop="8dp">
-
-                        <TextView
-                            android:id="@id/text"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_weight="0"
-                            android:gravity="start"
-                            android:text="@string/buyin_price" />
-
-                        <ImageView
-                            android:id="@+id/buyin_info"
-                            android:layout_width="18dp"
-                            android:layout_height="18dp"
-                            android:layout_gravity="top"
-                            android:layout_marginStart="4dp"
-                            android:layout_weight="0"
-                            android:contentDescription="@string/ic_info"
-                            app:srcCompat="@android:drawable/ic_dialog_info" />
-
-                        <TextView
-                            android:id="@+id/buyin"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_weight="1"
-                            android:gravity="end"
-                            android:text="@string/buyin_placeholder" />
-                    </LinearLayout>
-
-                    <LinearLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        android:gravity="center"
-                        android:orientation="horizontal"
-                        android:paddingTop="8dp">
-
-                        <TextView
-                            android:id="@id/text"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_gravity="top"
-                            android:layout_weight="0."
-                            android:text="@string/margins" />
-
-                        <ImageView
-                            android:id="@+id/margin_info"
-                            android:layout_width="18dp"
-                            android:layout_height="18dp"
-                            android:layout_gravity="top"
-                            android:layout_marginStart="4dp"
-                            android:layout_weight="0"
-                            android:contentDescription="@string/ic_info"
-                            app:srcCompat="@android:drawable/ic_dialog_info" />
-
-                        <LinearLayout
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_weight="1"
-                            android:orientation="vertical">
-
-                            <TextView
-                                android:id="@+id/margin_value"
-                                android:layout_width="match_parent"
-                                android:layout_height="wrap_content"
-                                android:gravity="end"
-                                android:text="@string/margin_usd_placeholder" />
-
-                            <TextView
-                                android:id="@+id/margin_percent"
-                                android:layout_width="match_parent"
-                                android:layout_height="wrap_content"
-                                android:gravity="end"
-                                android:text="@string/margin_percent_placeholder" />
-                        </LinearLayout>
-
-                    </LinearLayout>
-
-                    <LinearLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        android:gravity="center"
-                        android:orientation="horizontal"
-                        android:paddingTop="8dp">
-
-                        <TextView
-                            android:id="@id/text"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_weight="1"
-                            android:gravity="start"
-                            android:text="Useless fud" />
-
-                        <TextView
-                            android:id="@id/text"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_weight="1"
-                            android:gravity="end"
-                            android:text="Useless fud" />
-                    </LinearLayout>
-
-                    <LinearLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        android:gravity="center"
-                        android:orientation="horizontal"
-                        android:paddingTop="8dp">
-
-                        <TextView
-                            android:id="@id/text"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_weight="1"
-                            android:gravity="start"
-                            android:text="Useless fud" />
-
-                        <TextView
-                            android:id="@id/text"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_weight="1"
-                            android:gravity="end"
-                            android:text="Useless fud" />
-                    </LinearLayout>
-                </LinearLayout>
-
-            </net.cachapa.expandablelayout.ExpandableLayout>
-
-        </android.support.v7.widget.CardView>
-
-    </LinearLayout>
 </layout>

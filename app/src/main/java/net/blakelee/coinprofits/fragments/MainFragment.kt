@@ -129,6 +129,12 @@ class MainFragment : Fragment(), LifecycleRegistryOwner {
     }
 
     private fun setupObservers() {
+        refresh_layout.setOnRefreshListener { viewModel.refreshHoldings() }
+
+        viewModel.is_refreshing.observe(this, Observer {
+            it?.let { if (!it) refresh_layout.finishRefresh() }
+        })
+
         viewModel.holdings.observe(this, Observer<List<Holdings>> {
             it?.let { adapter.dataSource = it }
         })

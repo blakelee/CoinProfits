@@ -7,4 +7,8 @@ import android.arch.persistence.room.PrimaryKey
 class Holdings : Coin() {
     var amount: Double = 0.0
     var buyin: Double = 0.0
+
+    override fun toString(): String {
+        return name
+    }
 }

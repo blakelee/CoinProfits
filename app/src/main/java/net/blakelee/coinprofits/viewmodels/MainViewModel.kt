@@ -8,7 +8,7 @@ import io.reactivex.schedulers.Schedulers
 import net.blakelee.coinprofits.databases.AppDatabase
 import net.blakelee.coinprofits.models.Coin
 import net.blakelee.coinprofits.models.Holdings
-import net.blakelee.coinprofits.service.repository.CoinMarketCapApi
+import net.blakelee.coinprofits.service.repository.CoinApi
 import net.blakelee.coinprofits.tools.makeCoins
 import net.blakelee.coinprofits.tools.toCoin
 import java.text.SimpleDateFormat
@@ -19,14 +19,14 @@ class MainViewModel
 @Inject constructor (
         private val db: AppDatabase,
         private val prefs: SharedPreferences,
-        private val api: CoinMarketCapApi
+        private val api: CoinApi
 ) : ViewModel() {
 
     private var coin: List<Coin>? = null
     var holdings: MediatorLiveData<List<Holdings>> = MediatorLiveData()
 
     //View databinding
-    var is_refreshing = ObservableField<Boolean>(false)
+    //var is_refreshing = ObservableField<Boolean>(false)
     val last_updated by lazy { ObservableField<String>(prefs.getString("last_updated", getTime())) }
     var holdings_size = ObservableField<Boolean>(true)
 
@@ -34,6 +34,7 @@ class MainViewModel
     var first = MediatorLiveData<Boolean>()
     var refresh_tickers = MediatorLiveData<Boolean>()
     var holdings_order: Boolean
+    var is_refreshing = MediatorLiveData<Boolean>()
 
     init {
         holdings_order = prefs.getBoolean("holdings_order", false)
@@ -80,10 +81,9 @@ class MainViewModel
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe ({
                     it.forEach { db.coinModel().insertCoin(it) }
+                    onFinished(null)
                 }, {
                     onFinished("Failed to get tickers: ${it.message.orEmpty()}")
-                }, {
-                    onFinished(null)
                 })
     }
 
@@ -132,7 +132,8 @@ class MainViewModel
 
     fun refreshHoldings() {
 
-        is_refreshing.set(true)
+        is_refreshing.postValue(true)
+
         val convert = prefs.getString("currency", "usd")
 
         db.beginTransaction()
@@ -146,7 +147,7 @@ class MainViewModel
         val time = getTime()
         prefs.edit().putString("last_updated", time).apply()
         last_updated.set(time)
-        is_refreshing.set(false)
+        is_refreshing.postValue(false)
     }
 
     fun insertCoinById(id: String, convert: String?) {

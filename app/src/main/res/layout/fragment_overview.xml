@@ -1,0 +1,187 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical" android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_centerVertical="true"
+        android:layout_marginTop="8dp">
+
+        <LinearLayout
+            android:id="@+id/time_holder"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:orientation="horizontal">
+
+            <TextView
+                android:id="@+id/hour"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="1dp"
+                android:layout_marginStart="1dp"
+                android:layout_weight="1"
+                android:paddingBottom="1dp"
+                android:paddingEnd="4dp"
+                android:paddingStart="4dp"
+                android:paddingTop="1dp"
+                android:text="Hour" />
+
+            <TextView
+                android:id="@+id/day"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="1dp"
+                android:layout_marginStart="1dp"
+                android:layout_weight="1"
+                android:paddingBottom="1dp"
+                android:paddingEnd="4dp"
+                android:paddingStart="4dp"
+                android:paddingTop="1dp"
+                android:text="Day" />
+
+            <TextView
+                android:id="@+id/week"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="1dp"
+                android:layout_marginStart="1dp"
+                android:layout_weight="1"
+                android:paddingBottom="1dp"
+                android:paddingEnd="4dp"
+                android:paddingStart="4dp"
+                android:paddingTop="1dp"
+                android:text="Week" />
+
+            <TextView
+                android:id="@+id/month"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="1dp"
+                android:layout_marginStart="1dp"
+                android:layout_weight="1"
+                android:paddingBottom="1dp"
+                android:paddingEnd="4dp"
+                android:paddingStart="4dp"
+                android:paddingTop="1dp"
+                android:text="Month" />
+
+            <TextView
+                android:id="@+id/year"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="1dp"
+                android:layout_marginStart="1dp"
+                android:layout_weight="1"
+                android:paddingBottom="1dp"
+                android:paddingEnd="4dp"
+                android:paddingStart="4dp"
+                android:paddingTop="1dp"
+                android:text="Year" />
+
+            <TextView
+                android:id="@+id/all"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="1dp"
+                android:layout_marginStart="1dp"
+                android:layout_weight="1"
+                android:paddingBottom="1dp"
+                android:paddingEnd="4dp"
+                android:paddingStart="4dp"
+                android:paddingTop="1dp"
+                android:text="All" />
+        </LinearLayout>
+
+        <View
+            android:id="@id/line_left"
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:layout_centerVertical="true"
+            android:layout_marginEnd="2dp"
+            android:layout_marginStart="4dp"
+            android:layout_toStartOf="@id/time_holder"
+            android:background="@color/colorLine" />
+
+        <View
+            android:id="@+id/line_right"
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:layout_centerVertical="true"
+            android:layout_marginEnd="4dp"
+            android:layout_marginStart="2dp"
+            android:layout_toEndOf="@+id/time_holder"
+            android:background="@color/colorLine" />
+
+    </RelativeLayout>
+
+    <TextView
+        android:id="@+id/chart_price"
+        android:layout_width="match_parent"
+        android:layout_height="28dp"
+        android:gravity="bottom|center_horizontal" />
+
+    <TextView
+        android:id="@+id/chart_date"
+        android:layout_width="match_parent"
+        android:layout_height="28dp"
+        android:gravity="center_horizontal" />
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <View
+            android:id="@+id/line_left"
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:layout_centerInParent="true"
+            android:layout_margin="4dp"
+            android:layout_toLeftOf="@+id/spinner_holder"
+            android:background="@color/colorLine" />
+
+        <View
+            android:id="@id/line_right"
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:layout_centerInParent="true"
+            android:layout_margin="4dp"
+            android:layout_toRightOf="@+id/spinner_holder"
+            android:background="@color/colorLine" />
+
+        <RelativeLayout
+            android:id="@+id/spinner_holder"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginBottom="4dp"
+            android:layout_marginTop="4dp"
+            android:background="@drawable/round_button">
+
+            <Spinner
+                android:id="@+id/chart_items"
+                style="@style/Widget.AppCompat.DropDownItem.Spinner"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:overlapAnchor="false"
+                android:paddingRight="20dp" />
+
+        </RelativeLayout>
+    </RelativeLayout>
+
+
+    <com.github.mikephil.charting.charts.LineChart
+        android:id="@+id/stacked_area_chart"
+        android:layout_width="match_parent"
+        android:layout_height="300dp" />
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:layout_marginTop="2dp"
+        android:background="@color/colorLine" />
+
+</LinearLayout>

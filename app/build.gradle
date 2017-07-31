@@ -16,6 +16,7 @@ android {
         versionCode 1
         versionName "1.0"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
+        multiDexEnabled true
     }
     buildTypes {
         release {
@@ -49,7 +50,9 @@ dependencies {
     implementation "com.android.support:percent:$android_support_version"
     implementation "com.android.support:preference-v7:$android_support_version"
     implementation "com.android.support.constraint:constraint-layout:1.0.2"
+    implementation 'com.android.support:multidex:1.0.2'
     implementation "android.arch.persistence.room:runtime:$architecture_version"
+    implementation "android.arch.persistence.room:rxjava2:$architecture_version"
     implementation "android.arch.lifecycle:runtime:$architecture_version"
     implementation "android.arch.lifecycle:extensions:$architecture_version"
     kapt "android.arch.persistence.room:compiler:$architecture_version"
@@ -72,6 +75,9 @@ dependencies {
     implementation 'com.github.blakelee:LovelyDialog:master-SNAPSHOT'
     implementation 'com.robertlevonyan.view:MaterialChipView:1.0.1'
     implementation 'net.cachapa.expandablelayout:expandablelayout:2.9.1'
+    implementation 'com.github.PhilJay:MPAndroidChart:v3.0.2'
+    implementation 'com.scwang.smartrefresh:SmartRefreshLayout:1.0.2' //This guy is a genius
+    implementation 'com.scwang.smartrefresh:SmartRefreshHeader:1.0.2'
 
     implementation "io.reactivex.rxjava2:rxjava:2.1.0"
     implementation 'io.reactivex.rxjava2:rxkotlin:2.1.0'

@@ -41,4 +41,5 @@
     <string name="last_updated">Last updated:</string>
     <string name="time_placeholder">8:15pm</string>
     <string name="auto_refresh">Auto refresh on start-up</string>
+    <string name="balance_colon">Balance:</string>
 </resources>

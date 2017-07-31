@@ -7,7 +7,7 @@ import retrofit2.http.GET
 import retrofit2.http.Path
 import retrofit2.http.Query
 
-interface CoinMarketCapApi {
+interface CoinApi {
 
     companion object {
         val HTTPS_API_COINMARKETCAP_URL: String = "https://api.coinmarketcap.com/v1/"

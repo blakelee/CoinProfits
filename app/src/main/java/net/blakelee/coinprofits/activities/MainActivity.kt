@@ -13,6 +13,7 @@ import kotlinx.android.synthetic.main.activity_main.*
 import net.blakelee.coinprofits.R
 import net.blakelee.coinprofits.adapters.MainPagerAdapter
 import dagger.android.support.HasSupportFragmentInjector
+import net.blakelee.coinprofits.base.SwipeViewPager
 import javax.inject.Inject
 
 class MainActivity : AppCompatActivity(), LifecycleRegistryOwner, HasSupportFragmentInjector {
@@ -29,7 +30,7 @@ class MainActivity : AppCompatActivity(), LifecycleRegistryOwner, HasSupportFrag
         setContentView(R.layout.activity_main)
         setSupportActionBar(toolbar)
 
-        val pager: ViewPager = pager
+        val pager: SwipeViewPager = pager
         val pagerAdapter: MainPagerAdapter = MainPagerAdapter(supportFragmentManager)
         pager.adapter = pagerAdapter
         pager.currentItem = 1

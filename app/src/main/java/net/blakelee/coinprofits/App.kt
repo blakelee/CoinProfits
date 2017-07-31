@@ -1,7 +1,7 @@
 package net.blakelee.coinprofits
 
 import android.app.Activity
-import android.app.Application
+import android.support.multidex.MultiDexApplication
 import com.facebook.stetho.Stetho
 import com.squareup.leakcanary.LeakCanary
 import dagger.android.AndroidInjector
@@ -10,7 +10,7 @@ import dagger.android.HasActivityInjector
 import net.blakelee.coinprofits.di.DaggerAppComponent
 import javax.inject.Inject
 
-class App : Application(), HasActivityInjector {
+class App : MultiDexApplication(), HasActivityInjector {
 
     @Inject lateinit var activityDispatchingInjector: DispatchingAndroidInjector<Activity>
 
