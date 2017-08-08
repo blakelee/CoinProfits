@@ -22,9 +22,7 @@ class HoldingsAdapter(val recyclerView: RecyclerView, val picasso: Picasso, val 
 
     override fun getItemViewId(): Int = R.layout.coin_item_main
 
-    override fun instantiateViewHolder(view: View?): HoldingsViewHolder {
-        return HoldingsViewHolder(view)
-    }
+    override fun instantiateViewHolder(view: View?): HoldingsViewHolder = HoldingsViewHolder(view)
 
     inner class HoldingsViewHolder(view: View?) : BaseViewHolder<Holdings>(view) {
         private val expandButton: RelativeLayout = itemView.item_top

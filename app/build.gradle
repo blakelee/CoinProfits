@@ -7,12 +7,12 @@ apply plugin: 'kotlin-android-extensions'
 apply plugin: 'kotlin-kapt'
 
 android {
-    compileSdkVersion 25
+    compileSdkVersion 26
     buildToolsVersion "25.0.3"
     defaultConfig {
         applicationId "net.blakelee.coinprofits"
         minSdkVersion 21
-        targetSdkVersion 25
+        targetSdkVersion 26
         versionCode 1
         versionName "1.0"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
@@ -78,6 +78,8 @@ dependencies {
     implementation 'com.github.PhilJay:MPAndroidChart:v3.0.2'
     implementation 'com.scwang.smartrefresh:SmartRefreshLayout:1.0.2' //This guy is a genius
     implementation 'com.scwang.smartrefresh:SmartRefreshHeader:1.0.2'
+    implementation 'com.f2prateek.rx.preferences2:rx-preferences:2.0.0-RC2'
+    implementation 'com.jakewharton.rxbinding2:rxbinding:2.0.0'
 
     implementation "io.reactivex.rxjava2:rxjava:2.1.0"
     implementation 'io.reactivex.rxjava2:rxkotlin:2.1.0'

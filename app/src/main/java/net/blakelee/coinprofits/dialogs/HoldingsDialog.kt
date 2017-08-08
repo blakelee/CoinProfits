@@ -22,9 +22,9 @@ import net.blakelee.coinprofits.viewmodels.MainViewModel
 
 class HoldingsDialog(val context: Context, val view: View, var holdings: Holdings?, val vm: MainViewModel, val picasso: Picasso, val mr_cb: (Holdings, Holdings) -> Unit ) {
 
-    val items: List<Coin> = vm.getSearchItems()
+    var items: List<Coin> = listOf()
     var dialog = LovelyCustomDialog(context)
-    val adapter = AutoCompleteCurrencyAdapter(context, items, picasso)
+    val adapter by lazy { AutoCompleteCurrencyAdapter(context, picasso) }
     val coin = view.coin
     val search_parent = view.search_parent
     val save = view.dialog_save
@@ -35,6 +35,11 @@ class HoldingsDialog(val context: Context, val view: View, var holdings: Holding
     var item: Coin? = null
 
     init {
+
+        vm.coins.subscribe {
+            adapter.originalList = it
+            items = it
+        }
 
         fun Chip(): Chip {
             val params = RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.WRAP_CONTENT, RelativeLayout.LayoutParams.WRAP_CONTENT)
@@ -75,7 +80,7 @@ class HoldingsDialog(val context: Context, val view: View, var holdings: Holding
         //Listeners
         coin.setOnItemClickListener { _, _, position, _ ->
 
-            item = adapter.filteredCurrency[position]
+            item = adapter.getItem(position)
 
             chip = Chip()
             chip!!.setOnCloseClickListener {
@@ -166,7 +171,7 @@ class HoldingsDialog(val context: Context, val view: View, var holdings: Holding
         holdings?.let { return Validation.UPDATE }
 
         coin?.let {
-            val dup: Holdings? = vm.getHoldingsById(coin.id)
+            val dup: Holdings? = vm.getHoldingsById(coin.id).blockingGet()
             dup?.let {
                 this.holdings = dup
                 return Validation.ADVANCED

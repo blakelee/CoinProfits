@@ -1,7 +1,7 @@
-package net.blakelee.coinprofits.service.repository
+package net.blakelee.coinprofits.repository.rest
 
 import io.reactivex.Observable
-import net.blakelee.coinprofits.service.model.ChartData
+import net.blakelee.coinprofits.models.ChartData
 import retrofit2.http.GET
 import retrofit2.http.Path
 

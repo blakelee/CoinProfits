@@ -2,7 +2,6 @@ package net.blakelee.coinprofits.fragments
 
 import android.arch.lifecycle.LifecycleRegistry
 import android.arch.lifecycle.LifecycleRegistryOwner
-import android.arch.lifecycle.Observer
 import android.content.Context
 import android.content.Intent
 import android.databinding.DataBindingUtil
@@ -35,6 +34,7 @@ class MainFragment : Fragment(), LifecycleRegistryOwner {
 
     private val registry = LifecycleRegistry(this)
     private lateinit var adapter: HoldingsAdapter
+    private val downloadCoinsDialog by lazy { DownloadCoinsDialog(context) }
 
     /**
      * Setup data binding
@@ -54,7 +54,6 @@ class MainFragment : Fragment(), LifecycleRegistryOwner {
         setHasOptionsMenu(true)
         adapter = HoldingsAdapter(holdings_recycler, picasso, this::itemLongClick)
         holdings_recycler.adapter = adapter
-        setupObservers()
     }
 
     /**
@@ -63,18 +62,30 @@ class MainFragment : Fragment(), LifecycleRegistryOwner {
     override fun onResume() {
         super.onResume()
 
+        refresh_layout.setOnRefreshListener {
+            viewModel.refreshHoldings().subscribe { _ -> refresh_layout.finishRefresh() }
+        }
+
+        //Show refresh dialog
+        viewModel.isRefreshing.subscribe {
+            if (it) {
+                downloadCoinsDialog.show()
+                Toast.makeText(context, "Thank you CoinMarketCap", Toast.LENGTH_SHORT).show()
+            }
+            else
+                downloadCoinsDialog.dismiss()
+        }
+
+        //Show holdings
+        viewModel.holdings.subscribe { adapter.dataSource = it }
+
+        //Get count
+        viewModel.getCount().subscribe { viewModel.setCount(it) }
+
+        //Get last updated
+        viewModel.getLastUpdated().subscribe { viewModel.setLastUpdated(it) }
+
         viewModel.checkPreferences()
-    }
-
-
-    private fun getTickers() {
-        val indefinite = DownloadCoinsDialog(context)
-        indefinite.show()
-
-        viewModel.insertCoins({
-            it?.let { Toast.makeText(context, it, Toast.LENGTH_SHORT).show() }
-            indefinite.dismiss()
-        })
     }
 
     /**
@@ -126,30 +137,6 @@ class MainFragment : Fragment(), LifecycleRegistryOwner {
                     }
                 })
                 .show()
-    }
-
-    private fun setupObservers() {
-        refresh_layout.setOnRefreshListener { viewModel.refreshHoldings() }
-
-        viewModel.is_refreshing.observe(this, Observer {
-            it?.let { if (!it) refresh_layout.finishRefresh() }
-        })
-
-        viewModel.holdings.observe(this, Observer<List<Holdings>> {
-            it?.let { adapter.dataSource = it }
-        })
-
-        viewModel.refresh_tickers.observe(this, Observer {
-            it?.let { if (it) getTickers() }
-        })
-
-        viewModel.first.observe(this, Observer {
-            it?.let { if (it) {
-                Toast.makeText(context, "Thank you CoinMarketCap", Toast.LENGTH_LONG).show()
-                getTickers()
-            }
-            }
-        })
     }
 
     override fun getLifecycle(): LifecycleRegistry = registry

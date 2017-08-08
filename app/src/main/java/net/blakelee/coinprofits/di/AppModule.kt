@@ -8,9 +8,15 @@ import com.jakewharton.picasso.OkHttp3Downloader
 import com.squareup.picasso.Picasso
 import dagger.Module
 import dagger.Provides
-import net.blakelee.coinprofits.databases.AppDatabase
-import net.blakelee.coinprofits.service.repository.ChartApi
-import net.blakelee.coinprofits.service.repository.CoinApi
+import net.blakelee.coinprofits.repository.ChartRepository
+import net.blakelee.coinprofits.repository.CoinRepository
+import net.blakelee.coinprofits.repository.HoldingsRepository
+import net.blakelee.coinprofits.repository.PreferencesRepository
+import net.blakelee.coinprofits.repository.db.AppDatabase
+import net.blakelee.coinprofits.repository.db.CoinDao
+import net.blakelee.coinprofits.repository.db.HoldingsDao
+import net.blakelee.coinprofits.repository.rest.ChartApi
+import net.blakelee.coinprofits.repository.rest.CoinApi
 import okhttp3.Cache
 import okhttp3.OkHttpClient
 import retrofit2.Retrofit
@@ -94,4 +100,21 @@ class AppModule{
     fun provideSharedPreferences(app: Application): SharedPreferences
         = PreferenceManager.getDefaultSharedPreferences(app)
 
+
+    /** REPOSITORIES */
+    @Provides
+    @Singleton
+    fun provideChartRepository(api: ChartApi) = ChartRepository(api)
+
+    @Provides
+    @Singleton
+    fun provideCoinRepository(dao: CoinDao, api: CoinApi) = CoinRepository(dao, api)
+
+    @Provides
+    @Singleton
+    fun provideHoldingsRepository(hdao: HoldingsDao, cdao: CoinDao, api: CoinApi) = HoldingsRepository(hdao, cdao, api)
+
+    @Provides
+    @Singleton
+    fun providePreferencesRepository(prefs: SharedPreferences) = PreferencesRepository(prefs)
 }

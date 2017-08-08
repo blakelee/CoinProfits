@@ -8,28 +8,22 @@
         android:title="General Settings">
 
         <SwitchPreference
-            android:key="auto_refresh"
+            android:key="refresh"
             android:title="Auto refresh on start-up"
             android:summary="Polls data for holdings when on the main screen"
             android:defaultValue="true"/>
 
         <SwitchPreference
-            android:key="holdings_order"
+            android:key="ordered"
             android:title="Order holdings by name"
             android:summary="Order holdings by name rather than time inserted"
             android:defaultValue="false" />
 
         <Preference
-            android:key="first"
-            android:title="Redownload all icons"
-            android:summary="Redownload all icons if some are not what they are supposed to be"
+            android:key="download"
+            android:title="Redownload all currencies"
+            android:summary="Redownload all currencies in-case new ones were added and are not showing up when searching for them"
             android:defaultValue="true" />
-
-        <Preference
-            android:key="refresh_tickers"
-            android:title="Download new icons"
-            android:summary="If there has been a new coin released use this to download it"
-            android:defaultValue="false" />
 
     </PreferenceCategory>
 

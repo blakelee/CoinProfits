@@ -1,7 +1,6 @@
-package net.blakelee.coinprofits.service.repository
+package net.blakelee.coinprofits.repository.rest
 
 import com.google.gson.JsonArray
-import io.reactivex.Maybe
 import io.reactivex.Observable
 import retrofit2.http.GET
 import retrofit2.http.Path
@@ -23,5 +22,5 @@ interface CoinApi {
     fun getCoinById(
             @Path("id") id: String,
             @Query("convert") convert: String? = null
-    ): Maybe<JsonArray>
+    ): Observable<JsonArray>
 }
