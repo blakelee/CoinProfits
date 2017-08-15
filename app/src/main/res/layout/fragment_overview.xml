@@ -1,12 +1,18 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:orientation="vertical" android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    tools:layout_editor_absoluteY="25dp"
+    tools:layout_editor_absoluteX="0dp">
 
     <RelativeLayout
+        android:id="@+id/time_container"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_centerVertical="true"
+        android:layout_alignParentTop="true"
+        android:layout_centerVertical="false"
         android:layout_marginTop="8dp">
 
         <LinearLayout
@@ -17,82 +23,88 @@
             android:orientation="horizontal">
 
             <TextView
-                android:id="@+id/hour"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginEnd="1dp"
-                android:layout_marginStart="1dp"
-                android:layout_weight="1"
-                android:paddingBottom="1dp"
-                android:paddingEnd="4dp"
-                android:paddingStart="4dp"
-                android:paddingTop="1dp"
-                android:text="Hour" />
-
-            <TextView
                 android:id="@+id/day"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginEnd="1dp"
-                android:layout_marginStart="1dp"
                 android:layout_weight="1"
-                android:paddingBottom="1dp"
-                android:paddingEnd="4dp"
-                android:paddingStart="4dp"
-                android:paddingTop="1dp"
-                android:text="Day" />
+                android:paddingBottom="2dp"
+                android:paddingEnd="7dp"
+                android:paddingStart="7dp"
+                android:paddingTop="2dp"
+                android:text="1D"
+                android:textSize="16sp" />
 
             <TextView
                 android:id="@+id/week"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginEnd="1dp"
-                android:layout_marginStart="1dp"
                 android:layout_weight="1"
-                android:paddingBottom="1dp"
-                android:paddingEnd="4dp"
-                android:paddingStart="4dp"
-                android:paddingTop="1dp"
-                android:text="Week" />
+                android:paddingBottom="2dp"
+                android:paddingEnd="7dp"
+                android:paddingStart="7dp"
+                android:paddingTop="2dp"
+                android:text="1W"
+                android:textSize="16sp" />
 
             <TextView
                 android:id="@+id/month"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginEnd="1dp"
-                android:layout_marginStart="1dp"
                 android:layout_weight="1"
-                android:paddingBottom="1dp"
-                android:paddingEnd="4dp"
-                android:paddingStart="4dp"
-                android:paddingTop="1dp"
-                android:text="Month" />
+                android:paddingBottom="2dp"
+                android:paddingEnd="7dp"
+                android:paddingStart="7dp"
+                android:paddingTop="2dp"
+                android:text="1M"
+                android:textSize="16sp" />
+
+            <TextView
+                android:id="@+id/quarter"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:paddingBottom="2dp"
+                android:paddingEnd="7dp"
+                android:paddingStart="7dp"
+                android:paddingTop="2dp"
+                android:text="3M"
+                android:textSize="16sp" />
+
+            <TextView
+                android:id="@+id/semester"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:paddingBottom="2dp"
+                android:paddingEnd="7dp"
+                android:paddingStart="7dp"
+                android:paddingTop="2dp"
+                android:text="6M"
+                android:textSize="16sp" />
 
             <TextView
                 android:id="@+id/year"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginEnd="1dp"
-                android:layout_marginStart="1dp"
                 android:layout_weight="1"
-                android:paddingBottom="1dp"
-                android:paddingEnd="4dp"
-                android:paddingStart="4dp"
-                android:paddingTop="1dp"
-                android:text="Year" />
+                android:paddingBottom="2dp"
+                android:paddingEnd="7dp"
+                android:paddingStart="7dp"
+                android:paddingTop="2dp"
+                android:text="1Y"
+                android:textSize="16sp" />
 
             <TextView
                 android:id="@+id/all"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginEnd="1dp"
-                android:layout_marginStart="1dp"
                 android:layout_weight="1"
-                android:paddingBottom="1dp"
-                android:paddingEnd="4dp"
-                android:paddingStart="4dp"
-                android:paddingTop="1dp"
-                android:text="All" />
+                android:paddingBottom="2dp"
+                android:paddingEnd="7dp"
+                android:paddingStart="7dp"
+                android:paddingTop="2dp"
+                android:text="All"
+                android:textSize="16sp" />
         </LinearLayout>
 
         <View
@@ -117,21 +129,148 @@
 
     </RelativeLayout>
 
-    <TextView
-        android:id="@+id/chart_price"
+    <LinearLayout
+        android:id="@+id/price_details_container"
         android:layout_width="match_parent"
-        android:layout_height="28dp"
-        android:gravity="bottom|center_horizontal" />
+        android:layout_height="60dp"
+        android:layout_below="@+id/time_container"
+        android:orientation="vertical">
 
-    <TextView
-        android:id="@+id/chart_date"
+        <android.support.constraint.ConstraintLayout
+            android:id="@+id/price_details_single_container"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:visibility="visible">
+
+            <TextView
+                android:id="@+id/price"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentStart="true"
+                android:layout_centerVertical="true"
+                android:textColor="@color/textHighlighted"
+                android:textSize="18sp"
+                android:textStyle="bold"
+                app:layout_constraintBottom_toTopOf="@+id/currency"
+                app:layout_constraintEnd_toStartOf="@+id/divider"
+                app:layout_constraintHorizontal_bias="0.5"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <TextView
+                android:id="@+id/currency"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textSize="12sp"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toStartOf="@+id/divider"
+                app:layout_constraintHorizontal_bias="0.5"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/price" />
+
+            <View
+                android:id="@+id/divider"
+                android:layout_width="1dp"
+                android:layout_height="match_parent"
+                android:layout_alignParentTop="true"
+                android:layout_centerHorizontal="true"
+                android:layout_margin="4dp"
+                android:background="@color/colorLine"
+                android:paddingLeft="8dp"
+                android:paddingRight="8dp"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <TextView
+                android:id="@+id/change"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="8dp"
+                android:textColor="@color/textHighlighted"
+                android:textSize="18sp"
+                android:textStyle="bold"
+                app:layout_constraintBottom_toTopOf="@+id/since"
+                app:layout_constraintEnd_toStartOf="@+id/img_change"
+                app:layout_constraintHorizontal_chainStyle="packed"
+                app:layout_constraintStart_toEndOf="@+id/divider"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <TextView
+                android:id="@+id/since"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textSize="12sp"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toEndOf="@+id/divider"
+                app:layout_constraintTop_toBottomOf="@+id/change" />
+
+            <ImageView
+                android:id="@+id/img_change"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:minHeight="10dp"
+                android:minWidth="10dp"
+                app:layout_constraintBottom_toBottomOf="@+id/change"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toEndOf="@+id/change"
+                app:layout_constraintTop_toTopOf="@+id/change" />
+
+        </android.support.constraint.ConstraintLayout>
+
+        <LinearLayout
+            android:id="@+id/prices_details_specific_container"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical"
+            android:padding="8dp">
+
+            <TextView
+                android:id="@+id/chart_price"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_alignParentStart="true"
+                android:layout_below="@+id/time_container"
+                android:gravity="bottom|center_horizontal"
+                android:textColor="@color/textHighlighted"
+                android:textSize="18sp"
+                android:textStyle="bold"
+                tools:layout_editor_absoluteX="0dp"
+                tools:layout_editor_absoluteY="21dp" />
+
+            <TextView
+                android:id="@+id/chart_date"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_alignParentStart="true"
+                android:layout_below="@+id/chart_price"
+                android:gravity="center_horizontal"
+                tools:layout_editor_absoluteX="0dp"
+                tools:layout_editor_absoluteY="49dp" />
+
+        </LinearLayout>
+
+    </LinearLayout>
+
+    <net.blakelee.cryptochart.CryptoChart
+        android:id="@+id/cryptoChart"
         android:layout_width="match_parent"
-        android:layout_height="28dp"
-        android:gravity="center_horizontal" />
+        android:layout_height="300dp"
+        android:layout_alignParentStart="true"
+        android:layout_below="@+id/spinner_container"
+        android:layout_marginTop="-16dp"
+        android:minHeight="300dp" />
 
     <RelativeLayout
+        android:id="@+id/spinner_container"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="32dp"
+        android:layout_alignParentStart="true"
+        android:layout_below="@+id/price_details_container"
+        tools:layout_editor_absoluteX="8dp"
+        tools:layout_editor_absoluteY="101dp">
 
         <View
             android:id="@+id/line_left"
@@ -154,34 +293,22 @@
         <RelativeLayout
             android:id="@+id/spinner_holder"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_height="match_parent"
             android:layout_centerInParent="true"
             android:layout_gravity="center_horizontal"
-            android:layout_marginBottom="4dp"
-            android:layout_marginTop="4dp"
             android:background="@drawable/round_button">
 
             <Spinner
                 android:id="@+id/chart_items"
                 style="@style/Widget.AppCompat.DropDownItem.Spinner"
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                android:layout_height="match_parent"
                 android:overlapAnchor="false"
-                android:paddingRight="20dp" />
+                android:padding="0dp" />
 
         </RelativeLayout>
+
     </RelativeLayout>
 
 
-    <com.github.mikephil.charting.charts.LineChart
-        android:id="@+id/stacked_area_chart"
-        android:layout_width="match_parent"
-        android:layout_height="300dp" />
-
-    <View
-        android:layout_width="match_parent"
-        android:layout_height="1dp"
-        android:layout_marginTop="2dp"
-        android:background="@color/colorLine" />
-
-</LinearLayout>
+</RelativeLayout>

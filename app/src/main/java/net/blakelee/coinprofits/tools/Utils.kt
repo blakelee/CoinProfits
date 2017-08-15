@@ -4,6 +4,7 @@ import android.content.Context
 import android.content.res.Resources
 import android.graphics.Paint
 import android.graphics.Rect
+import android.graphics.Typeface
 import java.text.NumberFormat
 
 val Int.dp: Float
@@ -12,10 +13,11 @@ val Int.dp: Float
 val Int.px: Float
         get() = (this * Resources.getSystem().displayMetrics.density + 0.5f) //Round to ceil
 
-fun textDim(text: String, context: Context): Int {
+fun textDim(text: String, context: Context, textSize: Float = 16f): Int {
     val bounds = Rect()
     val textPaint = Paint()
-    textPaint.textSize = 16f
+    textPaint.typeface = Typeface.DEFAULT
+    textPaint.textSize = textSize
     textPaint.getTextBounds(text, 0, text.length, bounds)
     return bounds.width() * context.resources.displayMetrics.density.toInt()
 }

@@ -28,7 +28,10 @@
             style="@style/viewPagerTitleStrip"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_gravity="top" />
+            android:paddingTop="2dp"
+            android:paddingBottom="2dp"
+            android:layout_gravity="top"
+            android:textSize="16sp"/>
 
     </net.blakelee.coinprofits.base.SwipeViewPager>
 

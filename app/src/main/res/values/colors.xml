@@ -7,4 +7,12 @@
     <color name="cardColor">#424242</color>
     <color name="background">#303030</color>
     <color name="colorLine">#C1C1C1</color>
+    <color name="chartLow">#96fd0014</color>
+    <color name="chartHigh">#00fd0014</color>
+    <color name="pricesStart">#af303030</color>
+    <color name="pricesEnd">#00ffffff</color>
+    <color name="selectedBackground">#212121</color>
+
+    <color name="textPrimary">#BDBDBD</color>
+    <color name="textHighlighted">#ffffff</color>
 </resources>

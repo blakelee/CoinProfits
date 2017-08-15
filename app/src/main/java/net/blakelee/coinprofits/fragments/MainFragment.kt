@@ -1,5 +1,6 @@
 package net.blakelee.coinprofits.fragments
 
+import android.arch.lifecycle.Lifecycle
 import android.arch.lifecycle.LifecycleRegistry
 import android.arch.lifecycle.LifecycleRegistryOwner
 import android.content.Context
@@ -10,8 +11,11 @@ import android.support.v4.app.Fragment
 import android.view.*
 import android.widget.Toast
 import com.squareup.picasso.Picasso
+import com.trello.rxlifecycle2.android.lifecycle.kotlin.bindToLifecycle
+import com.trello.rxlifecycle2.android.lifecycle.kotlin.bindUntilEvent
 import com.yarolegovich.lovelydialog.LovelyChoiceDialog
 import dagger.android.support.AndroidSupportInjection
+import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.fragment_main.*
 import net.blakelee.coinprofits.R
 import net.blakelee.coinprofits.activities.SettingsActivity
@@ -60,30 +64,41 @@ class MainFragment : Fragment(), LifecycleRegistryOwner {
      * Check whether we need to redownload coins or update holdings
      */
     override fun onResume() {
+
         super.onResume()
 
         refresh_layout.setOnRefreshListener {
-            viewModel.refreshHoldings().subscribe { _ -> refresh_layout.finishRefresh() }
+            viewModel.refreshHoldings()
+                    .bindUntilEvent(this, Lifecycle.Event.ON_PAUSE)
+                    .subscribe { _ -> refresh_layout.finishRefresh() }
         }
 
         //Show refresh dialog
-        viewModel.isRefreshing.subscribe {
-            if (it) {
-                downloadCoinsDialog.show()
-                Toast.makeText(context, "Thank you CoinMarketCap", Toast.LENGTH_SHORT).show()
-            }
-            else
-                downloadCoinsDialog.dismiss()
+        viewModel.isRefreshing
+            .bindUntilEvent(this, Lifecycle.Event.ON_PAUSE)
+            .subscribe {
+                if (it) {
+                    downloadCoinsDialog.show()
+                    Toast.makeText(context, "Thank you CoinMarketCap", Toast.LENGTH_SHORT).show()
+                }
+                else
+                    downloadCoinsDialog.dismiss()
         }
 
         //Show holdings
-        viewModel.holdings.subscribe { adapter.dataSource = it }
+        viewModel.holdings
+                .bindUntilEvent(this, Lifecycle.Event.ON_PAUSE)
+                .subscribe { adapter.dataSource = it }
 
         //Get count
-        viewModel.getCount().subscribe { viewModel.setCount(it) }
+        viewModel.getCount()
+                .bindUntilEvent(this, Lifecycle.Event.ON_PAUSE)
+                .subscribe { viewModel.setCount(it) }
 
         //Get last updated
-        viewModel.getLastUpdated().subscribe { viewModel.setLastUpdated(it) }
+        viewModel.getLastUpdated()
+                .bindUntilEvent(this, Lifecycle.Event.ON_PAUSE)
+                .subscribe { viewModel.setLastUpdated(it) }
 
         viewModel.checkPreferences()
     }
