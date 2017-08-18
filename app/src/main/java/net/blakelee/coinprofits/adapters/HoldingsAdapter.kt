@@ -90,7 +90,7 @@ class HoldingsAdapter(val recyclerView: RecyclerView, val picasso: Picasso, val 
                 }
             }
 
-            expandableLayout.setOnExpansionUpdateListener { expansionFraction, state ->
+            expandableLayout.setOnExpansionUpdateListener { _, _ ->
                 recyclerView.smoothScrollToPosition(adapterPosition)
             }
         }

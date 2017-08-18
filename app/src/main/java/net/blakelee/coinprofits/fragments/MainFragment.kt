@@ -1,5 +1,6 @@
 package net.blakelee.coinprofits.fragments
 
+import android.annotation.SuppressLint
 import android.arch.lifecycle.Lifecycle
 import android.arch.lifecycle.LifecycleRegistry
 import android.arch.lifecycle.LifecycleRegistryOwner
@@ -11,13 +12,12 @@ import android.support.v4.app.Fragment
 import android.view.*
 import android.widget.Toast
 import com.squareup.picasso.Picasso
-import com.trello.rxlifecycle2.android.lifecycle.kotlin.bindToLifecycle
 import com.trello.rxlifecycle2.android.lifecycle.kotlin.bindUntilEvent
 import com.yarolegovich.lovelydialog.LovelyChoiceDialog
 import dagger.android.support.AndroidSupportInjection
-import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.fragment_main.*
 import net.blakelee.coinprofits.R
+import net.blakelee.coinprofits.activities.AddHoldingsActivity
 import net.blakelee.coinprofits.activities.SettingsActivity
 import net.blakelee.coinprofits.adapters.HoldingsAdapter
 import net.blakelee.coinprofits.databinding.FragmentMainBinding
@@ -115,6 +115,7 @@ class MainFragment : Fragment(), LifecycleRegistryOwner {
     /**
      * Open new activity or dialog
      */
+    @SuppressLint("InflateParams")
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         return when (item.itemId) {
             R.id.action_settings -> {
@@ -123,20 +124,25 @@ class MainFragment : Fragment(), LifecycleRegistryOwner {
             }
             R.id.action_add -> {
                 //TODO: Fix this
-                val view: View = layoutInflater.inflate(R.layout.dialog_add_coin, null)
-                HoldingsDialog(context, view, null, viewModel, picasso, this::advancedDialog).show()
+                val intent = Intent(context, AddHoldingsActivity::class.java)
+                intent.putExtra("id", "eth")
+                startActivity(intent)
+                //val view: View = layoutInflater.inflate(R.layout.dialog_add_coin, null)
+                //HoldingsDialog(context, view, null, viewModel, picasso, this::advancedDialog).show()
                 true
             }
             else -> super.onOptionsItemSelected(item)
         }
     }
 
+    @SuppressLint("InflateParams")
     private fun advancedDialog(old: Holdings, new: Holdings) {
         val view: View = layoutInflater.inflate(R.layout.dialog_merge_replace_coin, null)
         val dialog = AdvancedHoldingsDialog(context, view, old, new, viewModel)
         dialog.show()
     }
 
+    @SuppressLint("InflateParams")
     fun itemLongClick(holdings: Holdings) {
         LovelyChoiceDialog(context)
                 .setTitle("Selection action for ${holdings.name}")

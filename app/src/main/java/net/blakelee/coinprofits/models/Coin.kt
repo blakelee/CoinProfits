@@ -21,7 +21,5 @@ open class Coin {
     var percent_change_24h: Double? = 0.0
     var percent_change_7d: Double? = 0.0
 
-    override fun toString(): String {
-        return id + " - " + name
-    }
+    override fun toString() = symbol + " - " + name
 }

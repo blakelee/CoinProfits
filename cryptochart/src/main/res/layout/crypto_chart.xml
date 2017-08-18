@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content">
 
@@ -8,6 +9,7 @@
         android:id="@+id/stacked_area_chart"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:layout_alignParentStart="false"
         android:layout_alignParentLeft="false"
         android:layout_marginBottom="3dp" />
 
@@ -28,6 +30,7 @@
             android:layout_height="match_parent"
             android:layout_alignParentTop="true"
             android:layout_toRightOf="@+id/prices_left"
+            android:layout_toEndOf="@+id/prices_left"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
@@ -37,8 +40,10 @@
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
             android:paddingBottom="10dp"
+            android:paddingStart="8dp"
             android:paddingLeft="8dp"
             android:paddingRight="6dp"
+            android:paddingEnd="6dp"
             android:paddingTop="9dp">
 
             <TextView
@@ -78,6 +83,8 @@
         android:layout_height="2px"
         android:layout_alignParentBottom="true"
         android:layout_alignParentLeft="true"
-        android:background="@color/colorLine" />
+        android:layout_alignParentStart="true"
+        android:background="@color/colorLine"
+        tools:ignore="PxUsage" />
 
 </RelativeLayout>

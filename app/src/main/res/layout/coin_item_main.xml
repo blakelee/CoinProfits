@@ -28,6 +28,7 @@
                 android:layout_toEndOf="@+id/coin_icon"
                 android:maxLines="1"
                 android:text="@string/placeholder_name"
+                android:ellipsize="end"
                 android:textSize="18sp" />
 
             <TextView
@@ -38,7 +39,8 @@
                 android:layout_toStartOf="@+id/last_price"
                 android:gravity="center_vertical"
                 android:maxLines="1"
-                android:text="@string/last" />
+                android:text="@string/last"
+                card_view:ignore="RelativeOverlap" />
 
             <TextView
                 android:id="@+id/last_price"
@@ -65,7 +67,6 @@
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
                 android:gravity="center_vertical"
-                android:text="$212,000.00"
                 android:textSize="14sp"
                 android:layout_alignParentEnd="true"
                 android:layout_alignParentBottom="true"
@@ -120,7 +121,8 @@
                     android:layout_alignParentEnd="true"
                     android:layout_alignParentTop="true"
                     android:gravity="end"
-                    android:text="@string/balance_id_placeholder" />
+                    android:text="@string/balance_id_placeholder"
+                    card_view:ignore="RelativeOverlap" />
 
                 <TextView
                     android:id="@+id/balance_currency"
@@ -128,7 +130,6 @@
                     android:layout_height="wrap_content"
                     android:layout_alignEnd="@+id/balance_btc"
                     android:layout_below="@+id/balance_info"
-                    android:layout_weight="1"
                     android:gravity="end"
                     android:text="@string/balance_usd_placeholder" />
 
@@ -138,7 +139,6 @@
                     android:layout_height="wrap_content"
                     android:layout_alignParentEnd="true"
                     android:layout_below="@+id/balance_currency"
-                    android:layout_weight="1"
                     android:gravity="end"
                     android:text="@string/balance_btc_placeholder" />
 
@@ -148,7 +148,6 @@
                     android:layout_height="wrap_content"
                     android:layout_alignParentEnd="true"
                     android:layout_below="@+id/balance_btc"
-                    android:layout_weight="1"
                     android:gravity="end"
                     android:text="@string/balance_eth_placeholder" />
 
@@ -158,9 +157,8 @@
                     android:layout_height="18dp"
                     android:layout_alignBottom="@+id/buyin_price_text"
                     android:layout_gravity="top"
-                    android:layout_marginLeft="4dp"
+                    android:layout_marginStart="4dp"
                     android:layout_toEndOf="@+id/buyin_price_text"
-                    android:layout_weight="0"
                     android:contentDescription="@string/ic_info"
                     app:srcCompat="@android:drawable/ic_dialog_info" />
 
@@ -170,7 +168,6 @@
                     android:layout_height="wrap_content"
                     android:layout_below="@+id/balance_eth"
                     android:layout_marginTop="8dp"
-                    android:layout_weight="0"
                     android:gravity="start"
                     android:text="@string/buyin_price" />
 
@@ -180,7 +177,6 @@
                     android:layout_height="wrap_content"
                     android:layout_alignParentEnd="true"
                     android:layout_alignTop="@+id/buyin_info"
-                    android:layout_weight="1"
                     android:gravity="end"
                     android:text="@string/buyin_placeholder" />
 
@@ -192,7 +188,6 @@
                     android:layout_below="@+id/buyin"
                     android:layout_gravity="top"
                     android:layout_marginTop="8dp"
-                    android:layout_weight="0."
                     android:text="@string/margins" />
 
                 <ImageView
@@ -203,7 +198,6 @@
                     android:layout_gravity="top"
                     android:layout_marginStart="4dp"
                     android:layout_toEndOf="@+id/margin_text"
-                    android:layout_weight="0"
                     android:contentDescription="@string/ic_info"
                     app:srcCompat="@android:drawable/ic_dialog_info" />
 

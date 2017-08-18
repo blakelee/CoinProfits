@@ -83,7 +83,7 @@
             android:padding="0dp"
             android:paddingLeft="8dp"
             android:paddingRight="8dp"
-            android:text="@string/dialog_ok"
+            android:text="@android:string/ok"
             android:textStyle="normal" />
     </LinearLayout>
 

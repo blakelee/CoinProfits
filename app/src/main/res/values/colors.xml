@@ -13,6 +13,6 @@
     <color name="pricesEnd">#00ffffff</color>
     <color name="selectedBackground">#212121</color>
 
-    <color name="textPrimary">#BDBDBD</color>
+    <color name="textPrimary">#bdbdbd</color>
     <color name="textHighlighted">#ffffff</color>
 </resources>

@@ -11,6 +11,7 @@
         android:layout_height="match_parent"
         android:layout_margin="4dp"
         android:layout_weight="0"
+        android:contentDescription="@string/currency_icon"
         android:scaleType="fitCenter"
         app:srcCompat="@mipmap/ic_launcher" />
 
@@ -21,6 +22,6 @@
         android:layout_marginStart="8dp"
         android:layout_weight="1"
         android:gravity="center_vertical"
-        android:text="Sample Text"
+        android:textColor="@color/textPrimary"
         android:textSize="18sp" />
 </LinearLayout>

@@ -2,6 +2,7 @@ package net.blakelee.coinprofits.di
 
 import dagger.Module
 import dagger.android.ContributesAndroidInjector
+import net.blakelee.coinprofits.activities.AddHoldingsActivity
 import net.blakelee.coinprofits.activities.MainActivity
 import net.blakelee.coinprofits.activities.SettingsActivity
 
@@ -14,6 +15,10 @@ import net.blakelee.coinprofits.activities.SettingsActivity
 
 @Module
 internal abstract class ActivityBuildersModule {
+
+    @ActivityScope
+    @ContributesAndroidInjector(modules = [AddHoldingsModule::class])
+    internal abstract fun  contributeAddHoldingsActivity(): AddHoldingsActivity
 
     @ActivityScope
     @ContributesAndroidInjector

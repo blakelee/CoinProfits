@@ -26,10 +26,10 @@ import kotlinx.android.synthetic.main.fragment_overview.*
 import net.blakelee.coinprofits.R
 import net.blakelee.coinprofits.base.SwipeViewPager
 import net.blakelee.coinprofits.models.Holdings
-import net.blakelee.coinprofits.pricechart.*
 import net.blakelee.coinprofits.repository.ChartRepository
 import net.blakelee.coinprofits.repository.HoldingsRepository
 import net.blakelee.coinprofits.repository.PreferencesRepository
+import net.blakelee.coinprofits.tools.*
 import net.blakelee.cryptochart.CryptoChart
 import net.blakelee.cryptochart.decimalFormat
 import java.text.SimpleDateFormat

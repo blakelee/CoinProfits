@@ -31,7 +31,7 @@
                 android:paddingEnd="7dp"
                 android:paddingStart="7dp"
                 android:paddingTop="2dp"
-                android:text="1D"
+                android:text="@string/_1d"
                 android:textSize="16sp" />
 
             <TextView
@@ -43,7 +43,7 @@
                 android:paddingEnd="7dp"
                 android:paddingStart="7dp"
                 android:paddingTop="2dp"
-                android:text="1W"
+                android:text="@string/_1w"
                 android:textSize="16sp" />
 
             <TextView
@@ -55,7 +55,7 @@
                 android:paddingEnd="7dp"
                 android:paddingStart="7dp"
                 android:paddingTop="2dp"
-                android:text="1M"
+                android:text="@string/_1m"
                 android:textSize="16sp" />
 
             <TextView
@@ -67,7 +67,7 @@
                 android:paddingEnd="7dp"
                 android:paddingStart="7dp"
                 android:paddingTop="2dp"
-                android:text="3M"
+                android:text="@string/_3m"
                 android:textSize="16sp" />
 
             <TextView
@@ -79,7 +79,7 @@
                 android:paddingEnd="7dp"
                 android:paddingStart="7dp"
                 android:paddingTop="2dp"
-                android:text="6M"
+                android:text="@string/_6m"
                 android:textSize="16sp" />
 
             <TextView
@@ -91,7 +91,7 @@
                 android:paddingEnd="7dp"
                 android:paddingStart="7dp"
                 android:paddingTop="2dp"
-                android:text="1Y"
+                android:text="@string/_1y"
                 android:textSize="16sp" />
 
             <TextView
@@ -103,7 +103,7 @@
                 android:paddingEnd="7dp"
                 android:paddingStart="7dp"
                 android:paddingTop="2dp"
-                android:text="All"
+                android:text="@string/all"
                 android:textSize="16sp" />
         </LinearLayout>
 
@@ -187,7 +187,7 @@
                 android:id="@+id/change"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginLeft="8dp"
+                android:layout_marginStart="8dp"
                 android:textColor="@color/textHighlighted"
                 android:textSize="18sp"
                 android:textStyle="bold"
@@ -216,7 +216,8 @@
                 app:layout_constraintBottom_toBottomOf="@+id/change"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toEndOf="@+id/change"
-                app:layout_constraintTop_toTopOf="@+id/change" />
+                app:layout_constraintTop_toTopOf="@+id/change"
+                tools:ignore="ContentDescription" />
 
         </android.support.constraint.ConstraintLayout>
 
@@ -231,24 +232,16 @@
                 android:id="@+id/chart_price"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_alignParentStart="true"
-                android:layout_below="@+id/time_container"
                 android:gravity="bottom|center_horizontal"
                 android:textColor="@color/textHighlighted"
                 android:textSize="18sp"
-                android:textStyle="bold"
-                tools:layout_editor_absoluteX="0dp"
-                tools:layout_editor_absoluteY="21dp" />
+                android:textStyle="bold" />
 
             <TextView
                 android:id="@+id/chart_date"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_alignParentStart="true"
-                android:layout_below="@+id/chart_price"
-                android:gravity="center_horizontal"
-                tools:layout_editor_absoluteX="0dp"
-                tools:layout_editor_absoluteY="49dp" />
+                android:gravity="center_horizontal" />
 
         </LinearLayout>
 
@@ -268,9 +261,7 @@
         android:layout_width="match_parent"
         android:layout_height="32dp"
         android:layout_alignParentStart="true"
-        android:layout_below="@+id/price_details_container"
-        tools:layout_editor_absoluteX="8dp"
-        tools:layout_editor_absoluteY="101dp">
+        android:layout_below="@+id/price_details_container">
 
         <View
             android:id="@+id/line_left"
@@ -278,7 +269,7 @@
             android:layout_height="1dp"
             android:layout_centerInParent="true"
             android:layout_margin="4dp"
-            android:layout_toLeftOf="@+id/spinner_holder"
+            android:layout_toStartOf="@+id/spinner_holder"
             android:background="@color/colorLine" />
 
         <View
@@ -287,7 +278,7 @@
             android:layout_height="1dp"
             android:layout_centerInParent="true"
             android:layout_margin="4dp"
-            android:layout_toRightOf="@+id/spinner_holder"
+            android:layout_toEndOf="@+id/spinner_holder"
             android:background="@color/colorLine" />
 
         <RelativeLayout

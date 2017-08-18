@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
@@ -69,10 +70,8 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_weight="0"
-                    android:paddingLeft="3dp"
                     android:paddingStart="3dp"
-                    android:paddingTop="8dp"
-                    android:text="(DOGE)" />
+                    android:paddingTop="8dp" />
             </LinearLayout>
 
             <LinearLayout
@@ -115,7 +114,8 @@
                         android:layout_weight="1"
                         android:text="@string/merged"
                         android:textAlignment="textEnd"
-                        app:layout_widthPercent="34%" />
+                        app:layout_widthPercent="34%"
+                        tools:ignore="RelativeOverlap" />
                 </android.support.percent.PercentRelativeLayout>
 
                 <android.support.percent.PercentRelativeLayout
@@ -128,7 +128,6 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
-                        android:text="80"
                         app:layout_widthPercent="33%" />
 
                     <TextView
@@ -138,7 +137,6 @@
                         android:layout_alignParentTop="true"
                         android:layout_centerHorizontal="true"
                         android:layout_weight="1"
-                        android:text="50"
                         android:textAlignment="center"
                         app:layout_widthPercent="33%" />
 
@@ -149,7 +147,6 @@
                         android:layout_alignParentTop="true"
                         android:layout_toEndOf="@+id/merge_amount_new"
                         android:layout_weight="1"
-                        android:text="130"
                         android:textAlignment="textEnd"
                         app:layout_widthPercent="34%" />
                 </android.support.percent.PercentRelativeLayout>
@@ -173,10 +170,8 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_weight="0"
-                    android:paddingLeft="3dp"
                     android:paddingStart="3dp"
-                    android:paddingTop="8dp"
-                    android:text="(USD)" />
+                    android:paddingTop="8dp" />
             </LinearLayout>
 
             <LinearLayout
@@ -217,7 +212,8 @@
                         android:layout_weight="1"
                         android:text="@string/merged"
                         android:textAlignment="textEnd"
-                        app:layout_widthPercent="34%" />
+                        app:layout_widthPercent="34%"
+                        tools:ignore="RelativeOverlap" />
                 </android.support.percent.PercentRelativeLayout>
 
                 <android.support.percent.PercentRelativeLayout
@@ -230,7 +226,6 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
-                        android:text="0.04"
                         app:layout_widthPercent="33%" />
 
                     <TextView
@@ -240,7 +235,6 @@
                         android:layout_alignParentTop="true"
                         android:layout_toEndOf="@+id/merge_buyin_prev"
                         android:layout_weight="1"
-                        android:text="0.03"
                         android:textAlignment="center"
                         app:layout_widthPercent="33%" />
 
@@ -251,7 +245,6 @@
                         android:layout_alignParentTop="false"
                         android:layout_toEndOf="@+id/merge_buyin_new"
                         android:layout_weight="1"
-                        android:text="0.03615"
                         android:textAlignment="textEnd"
                         app:layout_widthPercent="34%" />
                 </android.support.percent.PercentRelativeLayout>
@@ -342,9 +335,8 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_weight="0"
-                        android:paddingLeft="3dp"
-                        android:paddingTop="8dp"
-                        android:text="(DOGE)" />
+                        android:paddingStart="3dp"
+                        android:paddingTop="8dp" />
                 </LinearLayout>
 
                 <android.support.percent.PercentRelativeLayout
@@ -384,7 +376,6 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
-                        android:text="0.04"
                         android:textAlignment="textStart"
                         app:layout_widthPercent="50%" />
 
@@ -395,9 +386,9 @@
                         android:layout_alignParentEnd="true"
                         android:layout_alignParentTop="true"
                         android:layout_weight="1"
-                        android:text="0.03"
                         android:textAlignment="textStart"
-                        app:layout_widthPercent="50%" />
+                        app:layout_widthPercent="50%"
+                        tools:ignore="RelativeOverlap" />
 
                 </android.support.percent.PercentRelativeLayout>
             </LinearLayout>
@@ -420,9 +411,8 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_weight="0"
-                    android:paddingLeft="3dp"
-                    android:paddingTop="8dp"
-                    android:text="(USD)" />
+                    android:paddingStart="3dp"
+                    android:paddingTop="8dp" />
             </LinearLayout>
 
             <LinearLayout
@@ -455,7 +445,8 @@
                         android:layout_weight="1"
                         android:text="@string/_new"
                         android:textAlignment="textStart"
-                        app:layout_widthPercent="50%" />
+                        app:layout_widthPercent="50%"
+                        tools:ignore="RelativeOverlap" />
 
                 </android.support.percent.PercentRelativeLayout>
 
@@ -469,7 +460,6 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
-                        android:text="80"
                         android:textAlignment="textStart"
                         app:layout_widthPercent="50%" />
 
@@ -480,9 +470,9 @@
                         android:layout_alignParentEnd="true"
                         android:layout_alignParentTop="true"
                         android:layout_weight="1"
-                        android:text="50"
                         android:textAlignment="textStart"
-                        app:layout_widthPercent="50%" />
+                        app:layout_widthPercent="50%"
+                        tools:ignore="RelativeOverlap" />
 
                 </android.support.percent.PercentRelativeLayout>
             </LinearLayout>
@@ -493,7 +483,7 @@
     <LinearLayout
         android:layout_width="wrap_content"
         android:layout_height="52dp"
-        android:layout_gravity="right"
+        android:layout_gravity="end"
         android:orientation="horizontal">
 
         <Button

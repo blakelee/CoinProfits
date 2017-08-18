@@ -8,15 +8,13 @@ import com.jakewharton.picasso.OkHttp3Downloader
 import com.squareup.picasso.Picasso
 import dagger.Module
 import dagger.Provides
-import net.blakelee.coinprofits.repository.ChartRepository
-import net.blakelee.coinprofits.repository.CoinRepository
-import net.blakelee.coinprofits.repository.HoldingsRepository
-import net.blakelee.coinprofits.repository.PreferencesRepository
+import net.blakelee.coinprofits.repository.*
 import net.blakelee.coinprofits.repository.db.AppDatabase
 import net.blakelee.coinprofits.repository.db.CoinDao
 import net.blakelee.coinprofits.repository.db.HoldingsDao
 import net.blakelee.coinprofits.repository.rest.ChartApi
 import net.blakelee.coinprofits.repository.rest.CoinApi
+import net.blakelee.coinprofits.repository.rest.ERC20Api
 import okhttp3.Cache
 import okhttp3.OkHttpClient
 import retrofit2.Retrofit
@@ -93,6 +91,16 @@ class AppModule{
                     .build()
                     .create(ChartApi::class.java)
 
+    @Provides
+    @Singleton
+    fun provideERC20Api(): ERC20Api =
+            Retrofit.Builder()
+                    .baseUrl(ERC20Api.HTTPS_API_ETHPLORER_URL)
+                    .addConverterFactory(GsonConverterFactory.create())
+                    .addCallAdapterFactory(RxJava2CallAdapterFactory.create())
+                    .build()
+                    .create(ERC20Api::class.java)
+
 
     /** SHARED PREFERENCES COMPONENTS */
     @Provides
@@ -117,4 +125,8 @@ class AppModule{
     @Provides
     @Singleton
     fun providePreferencesRepository(prefs: SharedPreferences) = PreferencesRepository(prefs)
+
+    @Provides
+    @Singleton
+    fun provideERC20Repository(api: ERC20Api) = ERC20Repository(api)
 }
