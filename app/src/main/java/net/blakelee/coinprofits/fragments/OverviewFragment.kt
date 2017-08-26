@@ -108,7 +108,7 @@ class OverviewFragment : Fragment(), LifecycleRegistryOwner, AdapterView.OnItemS
 
 
             this.period = period
-            getChartData(((spinner.selectedItem) as Holdings).id)
+            getChartData(((spinner.selectedItem) as Holdings).id!!)
             cryptoChart.setFormatter(DateFormatter(period))
             cryptoChart.setLabelCount(LabelCount(period))
             setPeriodColors(this.period)
@@ -135,7 +135,8 @@ class OverviewFragment : Fragment(), LifecycleRegistryOwner, AdapterView.OnItemS
 
         spinner.layoutParams.width = (width + paddingWidth).toInt()
         spinner.requestLayout()
-        currency?.text = String.format("%s price", item.name)
+        //TODO Get holdings and coin to format this
+        //currency?.text = String.format("%s price", item.name)
         getChartData(item.id)
     }
 

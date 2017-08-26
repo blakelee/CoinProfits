@@ -43,30 +43,35 @@ class HoldingsAdapter(val recyclerView: RecyclerView, val picasso: Picasso, val 
             expandButton.isSelected = false
             expandableLayout.collapse(false)
 
-            val buyin = (item.amount * item.buyin)
-            val cur = (item.amount * item.price!!)
+            val amount = item.getTotalBalance()
+
+            val buyin = item.getAveragePrice()
+            val cur = amount * buyin
             val buycur = ((cur / buyin) * 100) - 100
             val curbuy = cur - buyin
-            val price: Double = item.price!!
+            val price: Double = buyin
 
             //Item
-            name.text = item.name
+            //name.text = item.
             picasso.load(AppModule.IMAGE_URL + item.id + ".png").into(coin_icon)
             last_price.text = String.format("$%s", decimalFormat(price))
             balance.text = String.format("$%s", decimalFormat(cur))
 
             //Balance
-            balance_symbol.text = String.format("%s %s", decimalFormat(item.amount), item.symbol)
-            balance_currency.text = String.format("$%s %s", decimalFormat(cur), item.currency)
-            balance_btc.text = String.format("฿%s BTC", decimalFormat(item.price_btc!! * item.amount))
+            //balance_symbol.text = String.format("%s %s", decimalFormat(amount), item.symbol)
+            //balance_currency.text = String.format("$%s %s", decimalFormat(cur), item.currency)
+            //balance_btc.text = String.format("฿%s BTC", decimalFormat(item.price_btc!! * amount))
             balance_eth.text = String.format("Ξ0.0 ETH")
 
             //Buyin Price
-            buyin_price.text = decimalFormat(item.buyin)
+            buyin_price.text = decimalFormat(buyin)
 
             //Margins
-            margin_value.text = if (curbuy > 0) String.format("$%.2f", curbuy)
-            else String.format("-$%.2f", -curbuy)
+            margin_value.text = if (curbuy > 0)
+                String.format("$%.2f", curbuy)
+            else
+                String.format("-$%.2f", -curbuy)
+
             margin_percent.text = String.format("%.2f%%", buycur)
 
             expandButton.setOnLongClickListener {

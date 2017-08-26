@@ -43,7 +43,7 @@ class HoldingsRepository @Inject constructor(
                 .take(1)
                 .flatMap { items -> Observable.fromIterable(items) }
                 .flatMap { old ->
-                    api.getCoinById(old.id, convert)
+                    api.getCoinById(old.id!!, convert)
                             .observeOn(AndroidSchedulers.mainThread())
                             .subscribeOn(Schedulers.io())
                             .map { t: JsonArray -> t[0].asJsonObject.toCoin(convert) }

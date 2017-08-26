@@ -19,7 +19,7 @@ import net.blakelee.coinprofits.models.Holdings
 import net.blakelee.coinprofits.tools.disableText
 import net.blakelee.coinprofits.tools.enableText
 import net.blakelee.coinprofits.viewmodels.MainViewModel
-
+/*
 class HoldingsDialog(val context: Context, val view: View, var holdings: Holdings?, val vm: MainViewModel, val picasso: Picasso, val mr_cb: (Holdings, Holdings) -> Unit ) {
 
     var items: List<Coin> = listOf()
@@ -189,4 +189,4 @@ class HoldingsDialog(val context: Context, val view: View, var holdings: Holding
         ADVANCED,
         UPDATE
     }
-}
+}*/

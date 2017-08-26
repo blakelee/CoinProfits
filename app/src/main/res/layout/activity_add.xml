@@ -1,7 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/holdings_constraint"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context="net.blakelee.coinprofits.activities.AddHoldingsActivity">
@@ -22,54 +23,77 @@
     </android.support.design.widget.AppBarLayout>
 
     <net.blakelee.coinprofits.base.InstantAutoComplete
-        android:id="@+id/autocomplete_currency"
+        android:id="@+id/holdings_autocomplete"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_alignParentStart="true"
-        android:layout_below="@+id/appBarLayout"
         android:layout_margin="8dp"
         android:background="@drawable/bg_autocomplete"
-        android:drawableStart="@android:drawable/ic_menu_search"
         android:drawablePadding="8dp"
+        android:drawableStart="@android:drawable/ic_menu_search"
         android:hint="@string/pick_currency"
         android:padding="8dp"
-        android:textColorHint="@color/textPrimary" />
+        android:textColorHint="@color/textPrimary"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/appBarLayout" />
+
+    <com.robertlevonyan.views.chip.Chip
+        android:id="@+id/holdings_chip"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:visibility="invisible"
+        app:layout_constraintBottom_toBottomOf="@+id/holdings_autocomplete"
+        app:layout_constraintEnd_toEndOf="@+id/holdings_autocomplete"
+        app:layout_constraintStart_toStartOf="@+id/holdings_autocomplete"
+        app:layout_constraintTop_toTopOf="@+id/holdings_autocomplete" />
 
     <TextView
-        android:id="@+id/textView2"
-        android:layout_width="wrap_content"
+        android:id="@+id/holdings_header_text"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_alignStart="@+id/autocomplete_currency"
-        android:layout_below="@+id/autocomplete_currency"
+        android:layout_margin="8dp"
         android:text="@string/holdings"
-        android:textSize="16sp" />
+        android:textSize="16sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/holdings_autocomplete" />
 
     <View
+        android:id="@+id/holdings_divider"
         android:layout_width="match_parent"
         android:layout_height="1dp"
-        android:layout_alignParentStart="true"
-        android:layout_below="@+id/textView2"
-        android:layout_margin="4dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="8dp"
         android:background="@color/colorLine"
-        android:id="@+id/view" />
-
-    <android.support.v7.widget.RecyclerView
-        android:id="@+id/recyclerView"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_alignParentEnd="true"
-        android:layout_below="@+id/view"
-        android:layout_marginLeft="8dp"
-        android:layout_marginRight="8dp" />
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/holdings_header_text" />
 
     <Button
-        android:id="@+id/add_holdings"
-        android:layout_width="match_parent"
-        android:layout_height="32dp"
-        android:layout_alignParentStart="true"
-        android:layout_below="@+id/recyclerView"
+        android:id="@+id/holdings_add_button"
+        android:layout_width="wrap_content"
+        android:layout_height="28dp"
         android:layout_margin="8dp"
+        android:layout_marginBottom="8dp"
+        android:layout_marginEnd="8dp"
         android:background="@drawable/round_button"
-        android:text="@string/add" />
+        android:text="@string/add"
+        app:layout_constraintBottom_toBottomOf="@+id/holdings_header_text"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/holdings_header_text" />
 
-</RelativeLayout>
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/holdings_recycler"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="8dp"
+        app:layoutManager="android.support.v7.widget.LinearLayoutManager"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/holdings_divider" />
+
+</android.support.constraint.ConstraintLayout>

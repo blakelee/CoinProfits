@@ -13,7 +13,6 @@ import android.view.*
 import android.widget.Toast
 import com.squareup.picasso.Picasso
 import com.trello.rxlifecycle2.android.lifecycle.kotlin.bindUntilEvent
-import com.yarolegovich.lovelydialog.LovelyChoiceDialog
 import dagger.android.support.AndroidSupportInjection
 import kotlinx.android.synthetic.main.fragment_main.*
 import net.blakelee.coinprofits.R
@@ -21,9 +20,7 @@ import net.blakelee.coinprofits.activities.AddHoldingsActivity
 import net.blakelee.coinprofits.activities.SettingsActivity
 import net.blakelee.coinprofits.adapters.HoldingsAdapter
 import net.blakelee.coinprofits.databinding.FragmentMainBinding
-import net.blakelee.coinprofits.dialogs.AdvancedHoldingsDialog
 import net.blakelee.coinprofits.dialogs.DownloadCoinsDialog
-import net.blakelee.coinprofits.dialogs.HoldingsDialog
 import net.blakelee.coinprofits.models.Holdings
 import net.blakelee.coinprofits.viewmodels.MainViewModel
 import javax.inject.Inject
@@ -137,14 +134,14 @@ class MainFragment : Fragment(), LifecycleRegistryOwner {
 
     @SuppressLint("InflateParams")
     private fun advancedDialog(old: Holdings, new: Holdings) {
-        val view: View = layoutInflater.inflate(R.layout.dialog_merge_replace_coin, null)
+        /*val view: View = layoutInflater.inflate(R.layout.dialog_merge_replace_coin, null)
         val dialog = AdvancedHoldingsDialog(context, view, old, new, viewModel)
-        dialog.show()
+        dialog.show()*/
     }
 
     @SuppressLint("InflateParams")
     fun itemLongClick(holdings: Holdings) {
-        LovelyChoiceDialog(context)
+        /*LovelyChoiceDialog(context)
                 .setTitle("Selection action for ${holdings.name}")
                 .setTopColorRes(R.color.colorPrimary)
                 .setIcon(R.drawable.ic_info)
@@ -157,7 +154,7 @@ class MainFragment : Fragment(), LifecycleRegistryOwner {
                         1 -> viewModel.deleteHoldings(holdings)
                     }
                 })
-                .show()
+                .show()*/
     }
 
     override fun getLifecycle(): LifecycleRegistry = registry

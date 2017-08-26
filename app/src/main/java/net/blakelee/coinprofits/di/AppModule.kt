@@ -12,6 +12,7 @@ import net.blakelee.coinprofits.repository.*
 import net.blakelee.coinprofits.repository.db.AppDatabase
 import net.blakelee.coinprofits.repository.db.CoinDao
 import net.blakelee.coinprofits.repository.db.HoldingsDao
+import net.blakelee.coinprofits.repository.db.TransactionDao
 import net.blakelee.coinprofits.repository.rest.ChartApi
 import net.blakelee.coinprofits.repository.rest.CoinApi
 import net.blakelee.coinprofits.repository.rest.ERC20Api
@@ -55,6 +56,10 @@ class AppModule{
     @Provides
     @Singleton
     fun provideHoldingsDao(db: AppDatabase) = db.holdingsModel()
+
+    @Provides
+    @Singleton
+    fun provideTransactionDao(db: AppDatabase) = db.transactionModel()
 
 
     /** IMAGE COMPONENTS*/
@@ -128,5 +133,5 @@ class AppModule{
 
     @Provides
     @Singleton
-    fun provideERC20Repository(api: ERC20Api) = ERC20Repository(api)
+    fun provideTransactionRepository(db: TransactionDao, api: ERC20Api) = TransactionRepository(db, api)
 }

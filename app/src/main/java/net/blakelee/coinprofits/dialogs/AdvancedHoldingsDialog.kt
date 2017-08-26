@@ -9,6 +9,7 @@ import net.blakelee.coinprofits.models.Holdings
 import net.blakelee.coinprofits.viewmodels.MainViewModel
 import java.text.NumberFormat
 
+/*
 class AdvancedHoldingsDialog(val context: Context, val view: View, var old: Holdings, var new: Holdings, val vm: MainViewModel) {
 
     val dialog = LovelyCustomDialog(context)
@@ -110,4 +111,4 @@ class AdvancedHoldingsDialog(val context: Context, val view: View, var old: Hold
     }
 
     fun show() { dialog.show() }
-}
+}*/
