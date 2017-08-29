@@ -28,6 +28,7 @@ import android.widget.Button
 import com.robertlevonyan.views.chip.Chip
 import com.squareup.picasso.Picasso
 import com.squareup.picasso.Target
+import kotlinx.android.synthetic.main.item_add_transaction.view.*
 import net.blakelee.coinprofits.adapters.TransactionAdapter
 import net.blakelee.coinprofits.base.InstantAutoComplete
 import net.blakelee.coinprofits.di.AppModule
@@ -48,6 +49,7 @@ class AddHoldingsActivity : AppCompatActivity(), LifecycleRegistryOwner {
     @Inject lateinit var adapter: AutoCompleteCurrencyAdapter
     @Inject lateinit var viewModel: AddHoldingsViewModel
     private var holdings: Holdings? = null
+    private var chip: Chip? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         AndroidInjection.inject(this)
@@ -95,6 +97,25 @@ class AddHoldingsActivity : AppCompatActivity(), LifecycleRegistryOwner {
                 .subscribe {
                     adapter.originalList = it
                 }
+
+        transactionAdapter.viewClick
+                .bindUntilEvent(this, Lifecycle.Event.ON_PAUSE)
+                .subscribe { view ->
+                    val text = view.publicKey.text.toString()
+                    if (text.isNotEmpty())
+                        viewModel.transactionRepo
+                                .getAddressInfo(text)
+                                .subscribe {
+                                    val item = it[holdings!!.symbol]
+                                    if (item != null) {
+                                        view.transaction_amount.setText(it.toString())
+                                        view.transaction_amount.isEnabled = false
+                                    } else {
+                                        view.transaction_amount.error = "This public key doesn't seem to contain any balance"
+                                        view.transaction_price.setText("0.0")
+                                    }
+                                }
+                }
     }
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
@@ -130,7 +151,9 @@ class AddHoldingsActivity : AppCompatActivity(), LifecycleRegistryOwner {
 
     private fun setupTransactionAdd() {
         transactionAdd.setOnClickListener {
-            transactionAdapter.addItem(Transaction())
+            chip?.let {
+                transactionAdapter.addItem(Transaction())
+            }
         }
     }
 
@@ -149,6 +172,8 @@ class AddHoldingsActivity : AppCompatActivity(), LifecycleRegistryOwner {
                     }, {}, {
                         holdings = Holdings()
                         holdings!!.id = item.id//This means holdings wasn't found in the db
+                        holdings!!.symbol = item.symbol
+                        holdings!!.name = item.name
                         transactionAdapter.dataSource = holdings!!.transaction.toMutableList()
                     })
         }
@@ -176,27 +201,28 @@ class AddHoldingsActivity : AppCompatActivity(), LifecycleRegistryOwner {
     }
 
     private fun makeChip(coin: Coin, closeable: Boolean = true) {
-        val chip = Chip(this)
-        chip.id = R.id.chip
-        chip.chipText = coin.toString()
-        chip.isHasIcon = true
-        chip.isClosable = closeable
-        chip.isClickable = true
+        chip = Chip(this)
+        chip!!.id = R.id.chip
+        chip!!.chipText = coin.toString()
+        chip!!.isHasIcon = true
+        chip!!.isClosable = closeable
+        chip!!.isClickable = true
 
         viewModel.picasso.load(AppModule.IMAGE_URL + coin.id + ".png").into(object : Target {
             override fun onPrepareLoad(placeHolderDrawable: Drawable?) {}
             override fun onBitmapFailed(errorDrawable: Drawable?) {}
             override fun onBitmapLoaded(bitmap: Bitmap?, from: Picasso.LoadedFrom?) {
-                chip.chipIcon = BitmapDrawable(resources, bitmap)
+                chip!!.chipIcon = BitmapDrawable(resources, bitmap)
             }
         })
 
-        chip.setOnCloseClickListener {
+        chip!!.setOnCloseClickListener {
             constaintLayout.removeView(chip)
             autocompleteTV.hint = autoCompleteHint
             autocompleteTV.isEnabled = true
             transactionAdapter.removeAll()
             holdings = null
+            chip = null
         }
 
         constaintLayout.addView(chip)

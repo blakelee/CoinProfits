@@ -4,6 +4,7 @@ import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
 import net.blakelee.coinprofits.repository.db.TransactionDao
 import net.blakelee.coinprofits.repository.rest.ERC20Api
+import java.lang.Math.pow
 import javax.inject.Inject
 
 class TransactionRepository @Inject constructor(
@@ -24,7 +25,8 @@ class TransactionRepository @Inject constructor(
 
                 erc20.tokens?.forEach {
                     if (it.tokenInfo != null && it.balance != null && it.tokenInfo!!.symbol != null)
-                        transactions[it.tokenInfo!!.symbol!!] = it.balance!!
+                        //I have no idea why it's raised to the 18th power
+                        transactions[it.tokenInfo!!.symbol!!] = it.balance!! / pow(10.toDouble(), 18.toDouble())
                 }
 
                 transactions

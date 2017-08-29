@@ -3,7 +3,7 @@ package net.blakelee.coinprofits.models
 import android.arch.persistence.room.Entity
 import android.arch.persistence.room.PrimaryKey
 
-@Entity(tableName = "transaction")
+@Entity(tableName = "transactions")
 class Transaction {
     @PrimaryKey
     var id: String = ""

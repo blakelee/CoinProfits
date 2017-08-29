@@ -9,10 +9,10 @@ interface TransactionDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     fun insertTransactions(transactions: List<Transaction>)
 
-    @Query("SELECT * FROM transaction WHERE id = :id")
+    @Query("SELECT * FROM transactions WHERE id = :id")
     fun getTransactionsById(id: String): Flowable<List<Transaction>>
 
-    @Query("SELECT * FROM transaction WHERE publicKey = :publicKey")
+    @Query("SELECT * FROM transactions WHERE publicKey = :publicKey")
     fun getTransactionsByAddress(publicKey: String): Flowable<List<Transaction>>
 
     @Delete

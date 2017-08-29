@@ -5,14 +5,19 @@ import android.support.v7.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Button
 import android.widget.ImageView
 import android.widget.TextView
+import com.jakewharton.rxbinding2.widget.RxTextView
 import com.yarolegovich.lovelydialog.LovelyStandardDialog
+import io.reactivex.android.schedulers.AndroidSchedulers
+import io.reactivex.subjects.PublishSubject
 import net.blakelee.coinprofits.R
 import net.blakelee.coinprofits.base.BaseViewHolder
 import net.blakelee.coinprofits.databinding.ItemAddTransactionBinding
 import net.blakelee.coinprofits.models.Transaction
 import net.cachapa.expandablelayout.ExpandableLayout
+import java.util.concurrent.TimeUnit
 
 class TransactionAdapter(val context: Context, val recyclerView: RecyclerView) : RecyclerView.Adapter<TransactionAdapter.TransactionViewHolder>() {
 
@@ -21,6 +26,8 @@ class TransactionAdapter(val context: Context, val recyclerView: RecyclerView) :
         field = value
         notifyDataSetChanged()
     }
+
+    var viewClick: PublishSubject<View> = PublishSubject.create()
 
     fun addItem(transaction: Transaction) {
         dataSource.add(transaction)
@@ -73,8 +80,8 @@ class TransactionAdapter(val context: Context, val recyclerView: RecyclerView) :
 
     override fun getItemCount() = dataSource.size
 
-    override fun onCreateViewHolder(parent: ViewGroup?, viewType: Int): TransactionViewHolder {
-        val inflater = LayoutInflater.from(parent?.context)
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): TransactionViewHolder {
+        val inflater = LayoutInflater.from(parent.context)
         val view = inflater.inflate(getItemViewId(), parent, false)
         return instantiateViewHolder(view)
     }
@@ -85,11 +92,12 @@ class TransactionAdapter(val context: Context, val recyclerView: RecyclerView) :
 
     fun getItem(position: Int) = dataSource[position]
 
-    inner class TransactionViewHolder(view: View) : BaseViewHolder<Transaction>(view) {
+    inner class TransactionViewHolder(val view: View) : BaseViewHolder<Transaction>(view) {
         private val binding: ItemAddTransactionBinding = ItemAddTransactionBinding.bind(view)
         private val dropdown: ImageView = view.findViewById(R.id.holdings_dropdown)
         private val details: ExpandableLayout = view.findViewById(R.id.transaction_details)
         private val close: ImageView = view.findViewById(R.id.holdings_close)
+        private val check: Button = view.findViewById(R.id.transaction_check)
         val price: TextView = view.findViewById(R.id.transaction_price)
         val amount: TextView = view.findViewById(R.id.transaction_amount)
         val publicKey: TextView = view.findViewById(R.id.publicKey)
@@ -109,6 +117,19 @@ class TransactionAdapter(val context: Context, val recyclerView: RecyclerView) :
                         .setNegativeButton(android.R.string.no, null)
                         .show()
             }
+            check.setOnClickListener {
+                viewClick.onNext(view)
+            }
+
+            RxTextView.afterTextChangeEvents(publicKey)
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .subscribe {
+                        if (!amount.isEnabled) {
+                            amount.isEnabled = true
+                            amount.text = "0.0"
+                        }
+
+                    }
         }
     }
 }

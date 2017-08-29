@@ -9,7 +9,7 @@ import net.blakelee.coinprofits.repository.TransactionRepository
 import javax.inject.Inject
 
 class AddHoldingsViewModel @Inject constructor(
-        private val transactionRepo: TransactionRepository,
+        val transactionRepo: TransactionRepository,
         private val holdingsRepo: HoldingsRepository,
         private val coinRepo: CoinRepository,
         val picasso: Picasso
