@@ -35,6 +35,7 @@ import net.blakelee.coinprofits.di.AppModule
 import net.blakelee.coinprofits.models.Coin
 import net.blakelee.coinprofits.models.Holdings
 import net.blakelee.coinprofits.models.Transaction
+import net.blakelee.coinprofits.models.TransactionHoldings
 
 class AddHoldingsActivity : AppCompatActivity(), LifecycleRegistryOwner {
 
@@ -48,7 +49,7 @@ class AddHoldingsActivity : AppCompatActivity(), LifecycleRegistryOwner {
     private lateinit var autoCompleteHint: String
     @Inject lateinit var adapter: AutoCompleteCurrencyAdapter
     @Inject lateinit var viewModel: AddHoldingsViewModel
-    private var holdings: Holdings? = null
+    private var transactionHoldings: TransactionHoldings? = null
     private var chip: Chip? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -62,7 +63,7 @@ class AddHoldingsActivity : AppCompatActivity(), LifecycleRegistryOwner {
         supportActionBar?.setHomeAsUpIndicator(arrow)
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
 
-        id = savedInstanceState?.getString("id", null)
+        id = intent.getStringExtra("id")
         autoCompleteHint = autocompleteTV.hint.toString()
         transactionRecycler.adapter = transactionAdapter
 
@@ -70,11 +71,15 @@ class AddHoldingsActivity : AppCompatActivity(), LifecycleRegistryOwner {
             supportActionBar?.setTitle(R.string.dialog_add)
         else {
             supportActionBar?.setTitle(R.string.dialog_edit)
-            viewModel.getHoldingsById(id!!)
+            viewModel.getTransactionHoldings(id!!)
                     .subscribe {
-                        holdings = it
-                        transactionAdapter.dataSource = holdings!!.transaction.toMutableList()
-                        makeChip(it as Coin, false)
+                        transactionHoldings = it
+                        transactionAdapter.dataSource = transactionHoldings!!.transaction.toMutableList()
+                        val coin = Coin()
+                        coin.id = it.holdings!!.id
+                        coin.symbol = it.holdings!!.symbol
+                        coin.name = it.holdings!!.name
+                        makeChip(coin, false)
                     }
         }
 
@@ -102,19 +107,23 @@ class AddHoldingsActivity : AppCompatActivity(), LifecycleRegistryOwner {
                 .bindUntilEvent(this, Lifecycle.Event.ON_PAUSE)
                 .subscribe { view ->
                     val text = view.publicKey.text.toString()
-                    if (text.isNotEmpty())
-                        viewModel.transactionRepo
-                                .getAddressInfo(text)
-                                .subscribe {
-                                    val item = it[holdings!!.symbol]
+                    if (text.isNotEmpty()) {
+                        viewModel.getAddressInfo(text)
+                                .subscribe({
+                                    val item = it[transactionHoldings!!.holdings!!.symbol]
                                     if (item != null) {
-                                        view.transaction_amount.setText(it.toString())
+                                        view.publicKey.setCompoundDrawablesWithIntrinsicBounds(0, 0, R.drawable.ic_check_circle_green, 0)
+                                        view.transaction_amount.setText(item.toString())
                                         view.transaction_amount.isEnabled = false
                                     } else {
-                                        view.transaction_amount.error = "This public key doesn't seem to contain any balance"
+                                        view.publicKey.setCompoundDrawablesWithIntrinsicBounds(0, 0, R.drawable.ic_cancel_red, 0)
                                         view.transaction_price.setText("0.0")
                                     }
-                                }
+                                }, {
+                                    view.publicKey.setCompoundDrawablesWithIntrinsicBounds(0, 0, R.drawable.ic_cancel_red, 0)
+                                    view.transaction_price.setText("0.0")
+                                })
+                    }
                 }
     }
 
@@ -131,9 +140,10 @@ class AddHoldingsActivity : AppCompatActivity(), LifecycleRegistryOwner {
             }
              R.id.action_add -> {
                  if (transactionAdapter.validate()) {
-                     holdings?.let {
-                         it.transaction = transactionAdapter.dataSource
-                         viewModel.insertHoldings(it)
+                     transactionHoldings?.let {
+                         viewModel.insertHoldings(it.holdings!!)
+                         viewModel.insertTransactions(transactionAdapter.dataSource)
+                         super.onBackPressed()
                      }
                  }
                  true
@@ -152,7 +162,9 @@ class AddHoldingsActivity : AppCompatActivity(), LifecycleRegistryOwner {
     private fun setupTransactionAdd() {
         transactionAdd.setOnClickListener {
             chip?.let {
-                transactionAdapter.addItem(Transaction())
+                val transaction = Transaction()
+                transaction.id = transactionHoldings!!.holdings!!.id
+                transactionAdapter.addItem(transaction)
             }
         }
     }
@@ -161,20 +173,23 @@ class AddHoldingsActivity : AppCompatActivity(), LifecycleRegistryOwner {
         autocompleteTV.setAdapter(adapter)
 
         //Do chip editing here
-        autocompleteTV.setOnItemClickListener { adapterView, view, i, l ->
+        autocompleteTV.setOnItemClickListener { _, view, i, _ ->
             hideKeyboard(view)
             val item: Coin = adapter.getItem(i)
             makeChip(item)
-            viewModel.getHoldingsById(item.id)
+            viewModel.getTransactionHoldings(item.id)
                     .subscribe ({
-                        holdings = it
-                        transactionAdapter.dataSource = holdings!!.transaction.toMutableList()
+                        transactionHoldings = it
+                        transactionHoldings!!.transaction = it.transaction
+                        transactionAdapter.dataSource = transactionHoldings!!.transaction.toMutableList()
                     }, {}, {
-                        holdings = Holdings()
-                        holdings!!.id = item.id//This means holdings wasn't found in the db
-                        holdings!!.symbol = item.symbol
-                        holdings!!.name = item.name
-                        transactionAdapter.dataSource = holdings!!.transaction.toMutableList()
+                        transactionHoldings = TransactionHoldings()
+                        val holdings = Holdings()
+                        holdings.id = item.id//This means holdings wasn't found in the db
+                        holdings.symbol = item.symbol
+                        holdings.name = item.name
+                        transactionHoldings!!.holdings = holdings
+                        transactionAdapter.dataSource = transactionHoldings!!.transaction.toMutableList()
                     })
         }
 
@@ -221,7 +236,7 @@ class AddHoldingsActivity : AppCompatActivity(), LifecycleRegistryOwner {
             autocompleteTV.hint = autoCompleteHint
             autocompleteTV.isEnabled = true
             transactionAdapter.removeAll()
-            holdings = null
+            transactionHoldings = null
             chip = null
         }
 

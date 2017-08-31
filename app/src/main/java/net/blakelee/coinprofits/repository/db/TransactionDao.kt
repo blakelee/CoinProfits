@@ -15,6 +15,6 @@ interface TransactionDao {
     @Query("SELECT * FROM transactions WHERE publicKey = :publicKey")
     fun getTransactionsByAddress(publicKey: String): Flowable<List<Transaction>>
 
-    @Delete
-    fun deleteTransaction(transaction: Transaction)
+    @Query("DELETE FROM transactions WHERE id = :id")
+    fun deleteTransactionsById(id: String)
 }

@@ -26,6 +26,7 @@ import kotlinx.android.synthetic.main.fragment_overview.*
 import net.blakelee.coinprofits.R
 import net.blakelee.coinprofits.base.SwipeViewPager
 import net.blakelee.coinprofits.models.Holdings
+import net.blakelee.coinprofits.models.OverviewHoldings
 import net.blakelee.coinprofits.repository.ChartRepository
 import net.blakelee.coinprofits.repository.HoldingsRepository
 import net.blakelee.coinprofits.repository.PreferencesRepository
@@ -49,7 +50,7 @@ class OverviewFragment : Fragment(), LifecycleRegistryOwner, AdapterView.OnItemS
 
     private lateinit var pager: SwipeViewPager
     private lateinit var spinner: Spinner
-    private lateinit var adapter: ArrayAdapter<Holdings>
+    private lateinit var adapter: ArrayAdapter<OverviewHoldings>
 
     private lateinit var slideInTop: Animation
     private lateinit var slideOutTop: Animation
@@ -61,11 +62,11 @@ class OverviewFragment : Fragment(), LifecycleRegistryOwner, AdapterView.OnItemS
     override fun onResume() {
         super.onResume()
 
-        hRepo.getHoldings(prefs.ordered)
+        hRepo.getOverviewHoldings()
                 .bindUntilEvent(this, Lifecycle.Event.ON_PAUSE)
-                .subscribe {
+                .subscribe { items ->
                     adapter.clear()
-                    adapter.addAll(it)
+                    adapter.addAll(items)
                 }
     }
 
@@ -108,7 +109,7 @@ class OverviewFragment : Fragment(), LifecycleRegistryOwner, AdapterView.OnItemS
 
 
             this.period = period
-            getChartData(((spinner.selectedItem) as Holdings).id!!)
+            getChartData(((spinner.selectedItem) as OverviewHoldings).id)
             cryptoChart.setFormatter(DateFormatter(period))
             cryptoChart.setLabelCount(LabelCount(period))
             setPeriodColors(this.period)
@@ -122,7 +123,7 @@ class OverviewFragment : Fragment(), LifecycleRegistryOwner, AdapterView.OnItemS
     }
 
     override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
-        val item: Holdings = adapter.getItem(position)
+        val item: OverviewHoldings = adapter.getItem(position)
 
         val textPaint = Paint()
         textPaint.typeface = Typeface.DEFAULT
@@ -130,13 +131,11 @@ class OverviewFragment : Fragment(), LifecycleRegistryOwner, AdapterView.OnItemS
         var width = textPaint.measureText(item.toString())
 
         width = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, width, context.resources.displayMetrics)
-
         val paddingWidth = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 64f, context.resources.displayMetrics)
 
         spinner.layoutParams.width = (width + paddingWidth).toInt()
         spinner.requestLayout()
-        //TODO Get holdings and coin to format this
-        //currency?.text = String.format("%s price", item.name)
+        currency?.text = String.format("%s price", item.name)
         getChartData(item.id)
     }
 

@@ -13,15 +13,16 @@ import android.view.*
 import android.widget.Toast
 import com.squareup.picasso.Picasso
 import com.trello.rxlifecycle2.android.lifecycle.kotlin.bindUntilEvent
+import com.yarolegovich.lovelydialog.LovelyChoiceDialog
 import dagger.android.support.AndroidSupportInjection
 import kotlinx.android.synthetic.main.fragment_main.*
 import net.blakelee.coinprofits.R
 import net.blakelee.coinprofits.activities.AddHoldingsActivity
 import net.blakelee.coinprofits.activities.SettingsActivity
-import net.blakelee.coinprofits.adapters.HoldingsAdapter
+import net.blakelee.coinprofits.adapters.MainCombinedAdapter
 import net.blakelee.coinprofits.databinding.FragmentMainBinding
 import net.blakelee.coinprofits.dialogs.DownloadCoinsDialog
-import net.blakelee.coinprofits.models.Holdings
+import net.blakelee.coinprofits.models.MainCombined
 import net.blakelee.coinprofits.viewmodels.MainViewModel
 import javax.inject.Inject
 
@@ -34,7 +35,7 @@ class MainFragment : Fragment(), LifecycleRegistryOwner {
     @Inject lateinit var picasso: Picasso
 
     private val registry = LifecycleRegistry(this)
-    private lateinit var adapter: HoldingsAdapter
+    private lateinit var adapter: MainCombinedAdapter
     private val downloadCoinsDialog by lazy { DownloadCoinsDialog(context) }
 
     /**
@@ -53,7 +54,7 @@ class MainFragment : Fragment(), LifecycleRegistryOwner {
         super.onActivityCreated(savedInstanceState)
 
         setHasOptionsMenu(true)
-        adapter = HoldingsAdapter(holdings_recycler, picasso, this::itemLongClick)
+        adapter = MainCombinedAdapter(holdings_recycler, picasso, context, this::itemLongClick)
         holdings_recycler.adapter = adapter
     }
 
@@ -83,9 +84,9 @@ class MainFragment : Fragment(), LifecycleRegistryOwner {
         }
 
         //Show holdings
-        viewModel.holdings
+        viewModel.mainCombined
                 .bindUntilEvent(this, Lifecycle.Event.ON_PAUSE)
-                .subscribe { adapter.dataSource = it }
+                .subscribe { items -> adapter.dataSource = items }
 
         //Get count
         viewModel.getCount()
@@ -120,12 +121,9 @@ class MainFragment : Fragment(), LifecycleRegistryOwner {
                 true
             }
             R.id.action_add -> {
-                //TODO: Fix this
                 val intent = Intent(context, AddHoldingsActivity::class.java)
                 intent.putExtra("id", "eth")
                 startActivity(intent)
-                //val view: View = layoutInflater.inflate(R.layout.dialog_add_coin, null)
-                //HoldingsDialog(context, view, null, viewModel, picasso, this::advancedDialog).show()
                 true
             }
             else -> super.onOptionsItemSelected(item)
@@ -133,28 +131,21 @@ class MainFragment : Fragment(), LifecycleRegistryOwner {
     }
 
     @SuppressLint("InflateParams")
-    private fun advancedDialog(old: Holdings, new: Holdings) {
-        /*val view: View = layoutInflater.inflate(R.layout.dialog_merge_replace_coin, null)
-        val dialog = AdvancedHoldingsDialog(context, view, old, new, viewModel)
-        dialog.show()*/
-    }
-
-    @SuppressLint("InflateParams")
-    fun itemLongClick(holdings: Holdings) {
-        /*LovelyChoiceDialog(context)
-                .setTitle("Selection action for ${holdings.name}")
+    fun itemLongClick(mainCombined: MainCombined) {
+        LovelyChoiceDialog(context)
+                .setTitle("Selection action for ${mainCombined.holdings.name}")
                 .setTopColorRes(R.color.colorPrimary)
                 .setIcon(R.drawable.ic_info)
                 .setItems(arrayOf("Edit", "Delete"), { position, _ ->
                     when(position) {
-                        0 -> {
-                            val view: View = layoutInflater.inflate(R.layout.dialog_add_coin, null)
-                            HoldingsDialog(context, view, holdings, viewModel, picasso, this::advancedDialog).show()
+                        0 -> { val intent = Intent(context, AddHoldingsActivity::class.java)
+                            intent.putExtra("id", mainCombined.holdings.id)
+                            startActivity(intent)
                         }
-                        1 -> viewModel.deleteHoldings(holdings)
+                        1 -> viewModel.deleteHoldings(mainCombined.holdings)
                     }
                 })
-                .show()*/
+                .show()
     }
 
     override fun getLifecycle(): LifecycleRegistry = registry

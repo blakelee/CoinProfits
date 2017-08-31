@@ -1,12 +1,13 @@
 package net.blakelee.coinprofits.models
 
 import android.arch.persistence.room.Entity
+import android.arch.persistence.room.Index
 import android.arch.persistence.room.PrimaryKey
 
 @Entity(tableName = "coin")
 open class Coin {
     @PrimaryKey
-    var id: String = ""                    //ethereum
+    open var id: String = ""                    //ethereum
     var name: String = ""                  //Ethereum
     var symbol: String = ""                //ETH
     var currency: String = "USD"          //Currency set from settings

@@ -23,10 +23,7 @@ class MainViewModel
 ) : ViewModel() {
 
     val isRefreshing: Subject<Boolean> = PublishSubject.create()
-
-    var coins = coinRepo.coins
-    var holdings = holdingsRepo.getHoldings(prefs.ordered)
-
+    var mainCombined = holdingsRepo.getMainCombined()
     var count = ObservableInt()
     var lastUpdated = ObservableField<String>()
 
@@ -54,9 +51,6 @@ class MainViewModel
     fun getLastUpdated() = prefs.lastUpdated.asObservable()
     fun getCount() = holdingsRepo.getHoldingsCount()
     fun deleteHoldings(holdings: Holdings) = holdingsRepo.deleteHoldings(holdings)
-    fun updateHoldings(holdings: Holdings) = holdingsRepo.updateHoldings(holdings)
-    fun insertHoldings(holdings: Holdings) = holdingsRepo.insertHoldings(holdings)
-    fun getHoldingsById(id: String) = holdingsRepo.getHoldingsById(id)
     fun setCount(count: Int) = this.count.set(count)
     fun setLastUpdated(lastUpdated: String) = this.lastUpdated.set(lastUpdated)
     private fun getTime(): String = SimpleDateFormat("h:mma", Locale.getDefault()).format(Date())

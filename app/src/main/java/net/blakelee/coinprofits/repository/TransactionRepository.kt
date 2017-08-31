@@ -2,6 +2,7 @@ package net.blakelee.coinprofits.repository
 
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
+import net.blakelee.coinprofits.models.Transaction
 import net.blakelee.coinprofits.repository.db.TransactionDao
 import net.blakelee.coinprofits.repository.rest.ERC20Api
 import java.lang.Math.pow
@@ -47,4 +48,8 @@ class TransactionRepository @Inject constructor(
                         }
 
             }
+
+    fun insertTransactions(transactions: List<Transaction>) = db.insertTransactions(transactions)
+
+    fun deleteTransactionsById(id: String) = db.deleteTransactionsById(id)
 }

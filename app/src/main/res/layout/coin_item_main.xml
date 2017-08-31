@@ -36,6 +36,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_alignBaseline="@+id/name"
+                android:layout_marginEnd="3dp"
                 android:layout_toStartOf="@+id/last_price"
                 android:gravity="center_vertical"
                 android:maxLines="1"
@@ -55,12 +56,13 @@
                 android:id="@+id/balance_text"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_alignParentBottom="true"
+                android:layout_below="@+id/last_text"
+                android:layout_marginEnd="3dp"
+                android:layout_toStartOf="@+id/balance"
                 android:gravity="center_vertical"
                 android:text="@string/balance_colon"
-                android:textSize="14sp"
-                android:layout_alignParentBottom="true"
-                android:layout_toStartOf="@+id/balance"
-                android:layout_below="@+id/last_text" />
+                android:textSize="14sp" />
 
             <TextView
                 android:id="@+id/balance"
@@ -172,20 +174,29 @@
                     android:text="@string/buyin_price" />
 
                 <TextView
-                    android:id="@+id/buyin"
+                    android:id="@+id/buyin_average"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_alignParentEnd="true"
-                    android:layout_alignTop="@+id/buyin_info"
+                    android:layout_alignEnd="@+id/balance_eth"
+                    android:layout_below="@+id/buyin_total"
                     android:gravity="end"
                     android:text="@string/buyin_placeholder" />
+
+                <TextView
+                    android:id="@+id/buyin_total"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignEnd="@+id/balance_eth"
+                    android:layout_alignTop="@+id/buyin_info"
+                    android:gravity="end"
+                    android:text="@string/buyin_total_placeholder" />
 
                 <TextView
                     android:id="@+id/margin_text"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_alignParentStart="true"
-                    android:layout_below="@+id/buyin"
+                    android:layout_below="@id/buyin_average"
                     android:layout_gravity="top"
                     android:layout_marginTop="8dp"
                     android:text="@string/margins" />

@@ -16,8 +16,8 @@ import net.blakelee.coinprofits.R
 import net.blakelee.coinprofits.base.BaseViewHolder
 import net.blakelee.coinprofits.databinding.ItemAddTransactionBinding
 import net.blakelee.coinprofits.models.Transaction
+import net.blakelee.coinprofits.tools.decimalFormat
 import net.cachapa.expandablelayout.ExpandableLayout
-import java.util.concurrent.TimeUnit
 
 class TransactionAdapter(val context: Context, val recyclerView: RecyclerView) : RecyclerView.Adapter<TransactionAdapter.TransactionViewHolder>() {
 
@@ -101,6 +101,7 @@ class TransactionAdapter(val context: Context, val recyclerView: RecyclerView) :
         val price: TextView = view.findViewById(R.id.transaction_price)
         val amount: TextView = view.findViewById(R.id.transaction_amount)
         val publicKey: TextView = view.findViewById(R.id.publicKey)
+        val total: TextView = view.findViewById(R.id.holdings_total)
 
         override fun onBind(item: Transaction) {
             binding.transaction = item
@@ -121,6 +122,22 @@ class TransactionAdapter(val context: Context, val recyclerView: RecyclerView) :
                 viewClick.onNext(view)
             }
 
+            RxTextView.afterTextChangeEvents(amount)
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .subscribe {
+                        if (price.text.isNotEmpty() && amount.text.isNotEmpty()) {
+                            total.text = String.format("$%s", decimalFormat(price.text.toString().toDouble() * amount.text.toString().toDouble()))
+                        }
+                    }
+
+            RxTextView.afterTextChangeEvents(price)
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .subscribe {
+                        if (price.text.isNotEmpty() && amount.text.isNotEmpty()) {
+                            total.text = String.format("$%s", decimalFormat(price.text.toString().toDouble() * amount.text.toString().toDouble()))
+                        }
+                    }
+
             RxTextView.afterTextChangeEvents(publicKey)
                     .observeOn(AndroidSchedulers.mainThread())
                     .subscribe {
@@ -128,7 +145,7 @@ class TransactionAdapter(val context: Context, val recyclerView: RecyclerView) :
                             amount.isEnabled = true
                             amount.text = "0.0"
                         }
-
+                        publicKey.setCompoundDrawablesWithIntrinsicBounds(0,0,0,0)
                     }
         }
     }

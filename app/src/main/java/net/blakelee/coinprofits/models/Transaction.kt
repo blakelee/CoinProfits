@@ -1,11 +1,17 @@
 package net.blakelee.coinprofits.models
 
 import android.arch.persistence.room.Entity
+import android.arch.persistence.room.ForeignKey
 import android.arch.persistence.room.PrimaryKey
 
-@Entity(tableName = "transactions")
+@Entity(tableName = "transactions", foreignKeys = [ForeignKey(entity = Holdings::class,
+        parentColumns = ["id"],
+        childColumns = ["id"],
+        onDelete = ForeignKey.CASCADE
+        )])
 class Transaction {
-    @PrimaryKey
+    @PrimaryKey(autoGenerate = true)
+    var rowId: Long? = null
     var id: String = ""
     var amount: Double = 0.0
     var price: Double = 0.0

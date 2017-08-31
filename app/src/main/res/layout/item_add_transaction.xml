@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<layout xmlns:tools="http://schemas.android.com/tools"
+<layout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
@@ -26,13 +26,14 @@
                 android:layout_marginBottom="8dp"
                 android:layout_marginStart="8dp"
                 android:layout_marginTop="8dp"
+                android:contentDescription="@string/expand"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
                 app:srcCompat="@drawable/ic_arrow_drop_down_circle" />
 
             <TextView
-                android:id="@+id/holdings_name"
+                android:id="@+id/holdings_total"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="8dp"
@@ -88,7 +89,7 @@
                     android:layout_height="wrap_content"
                     android:paddingStart="4dp"
                     android:paddingTop="8dp"
-                    android:text="Trade Price" />
+                    android:text="@string/trade_price" />
 
                 <EditText
                     android:id="@+id/transaction_price"
@@ -112,7 +113,7 @@
                     android:layout_height="wrap_content"
                     android:paddingStart="4dp"
                     android:paddingTop="8dp"
-                    android:text="Amount"
+                    android:text="@string/_amount"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@+id/transaction_price" />
@@ -123,7 +124,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginTop="8dp"
                     android:background="@drawable/bg_autocomplete"
-                    android:inputType="numberDecimal"
+                    android:inputType="numberSigned|numberDecimal"
                     android:paddingBottom="4dp"
                     android:paddingEnd="4dp"
                     android:paddingStart="8dp"
@@ -139,7 +140,7 @@
                     android:layout_height="wrap_content"
                     android:paddingLeft="4dp"
                     android:paddingTop="8dp"
-                    android:text="Public Key (If ETH/ERC20 Token)"
+                    android:text="@string/public_key_if_eth_erc20_token"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@+id/transaction_amount" />
@@ -170,7 +171,7 @@
                     android:layout_marginTop="4dp"
                     android:layout_weight="1"
                     android:background="@drawable/round_button"
-                    android:text="check"
+                    android:text="@string/check"
                     app:layout_constraintBottom_toBottomOf="@+id/publicKey"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toEndOf="@+id/publicKey"

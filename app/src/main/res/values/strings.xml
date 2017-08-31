@@ -55,4 +55,10 @@
     <string name="_6m">6M</string>
     <string name="_1y">1Y</string>
     <string name="all">All</string>
+    <string name="buyin_total_placeholder">$1300.00</string>
+    <string name="trade_price">Trade Price</string>
+    <string name="public_key_if_eth_erc20_token">Public Key (If ETH/ERC20 Token)</string>
+    <string name="check">check</string>
+    <string name="expand">Expand</string>
+    <string name="read_only">Read-Only</string>
 </resources>
