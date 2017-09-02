@@ -125,7 +125,7 @@ class AppModule{
 
     @Provides
     @Singleton
-    fun provideHoldingsRepository(hdao: HoldingsDao, cdao: CoinDao, api: CoinApi, tdb: TransactionDao) = HoldingsRepository(hdao, cdao, api, tdb)
+    fun provideHoldingsRepository(hdao: HoldingsDao, cdao: CoinDao, api: CoinApi) = HoldingsRepository(hdao, cdao, api)
 
     @Provides
     @Singleton

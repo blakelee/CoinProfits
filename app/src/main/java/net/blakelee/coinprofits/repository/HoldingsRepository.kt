@@ -2,13 +2,16 @@ package net.blakelee.coinprofits.repository
 
 import com.google.gson.JsonArray
 import io.reactivex.Flowable
+import io.reactivex.Maybe
 import io.reactivex.Observable
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
 import net.blakelee.coinprofits.models.Holdings
+import net.blakelee.coinprofits.models.HoldingsCombined
+import net.blakelee.coinprofits.models.HoldingsOverview
+import net.blakelee.coinprofits.models.HoldingsTransactions
 import net.blakelee.coinprofits.repository.db.CoinDao
 import net.blakelee.coinprofits.repository.db.HoldingsDao
-import net.blakelee.coinprofits.repository.db.TransactionDao
 import net.blakelee.coinprofits.repository.rest.CoinApi
 import net.blakelee.coinprofits.tools.toCoin
 import javax.inject.Inject
@@ -16,30 +19,41 @@ import javax.inject.Inject
 class HoldingsRepository @Inject constructor(
         private val hdb: HoldingsDao,
         private val cdb: CoinDao,
-        private val api: CoinApi,
-        private val tdb: TransactionDao
+        private val api: CoinApi
 ){
 
+    //Used in
     fun insertHoldings(holdings: Holdings) = hdb.insertHoldings(holdings)
 
-    fun updateHoldings(holdings: Holdings) = hdb.updateHoldings(holdings)
-
-    fun getOverviewHoldings() = hdb.getOverviewHoldings()
+    //Used to determine whether to display the last updated indicator in the main fragment
+    fun getHoldingsCount(): Flowable<Int> = hdb.getHoldingsCount()
             .observeOn(AndroidSchedulers.mainThread())
             .subscribeOn(Schedulers.io())
 
-    fun getMainCombined() = hdb.getMainCombined()
+    //The holdings containing transactions used in the add holdings activity
+    fun getHoldingsTransactions(id: String): Maybe<HoldingsTransactions> = hdb.getHoldingsTransactions(id)
             .observeOn(AndroidSchedulers.mainThread())
             .subscribeOn(Schedulers.io())
 
-    fun getTransactionHoldings(id: String) = hdb.getTransactionHoldings(id)
+    //The big combined holdings class used in the Main fragment
+    fun getHoldingsCombined(): Flowable<List<HoldingsCombined>> = hdb.getHoldingsCombined()
             .observeOn(AndroidSchedulers.mainThread())
             .subscribeOn(Schedulers.io())
 
-    fun deleteHoldings(holdings: Holdings) {
-        hdb.deleteHoldings(holdings)
-        tdb.deleteTransactionsById(holdings.id)
-    }
+    //This is just the id, name, symbol, and order used in the Overview fragment
+    fun getHoldingsOverview(): Flowable<List<HoldingsOverview>> = hdb.getHoldingsOverview()
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribeOn(Schedulers.io())
+
+    fun getHoldings(): Flowable<List<Holdings>> = hdb.getHoldings()
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribeOn(Schedulers.io())
+
+    //Used for when changing the item order of the holdings
+    fun updateHoldings(vararg holdings: Holdings) = hdb.updateHoldings(*holdings)
+
+    //Automatically deletes transactions since they are relations
+    fun deleteHoldings(holdings: Holdings) = hdb.deleteHoldings(holdings)
 
     fun refreshHoldings(convert: String) =
         hdb.getHoldings()
@@ -59,5 +73,4 @@ class HoldingsRepository @Inject constructor(
                 .toList()
                 .doOnSuccess { cdb.updateCoins(*it.toTypedArray()) }
 
-    fun getHoldingsCount() = hdb.getHoldingsCount()
 }

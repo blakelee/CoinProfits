@@ -7,24 +7,27 @@ import android.widget.ImageView
 import android.widget.RelativeLayout
 import android.widget.TextView
 import com.squareup.picasso.Picasso
+import io.reactivex.subjects.PublishSubject
 import kotlinx.android.synthetic.main.coin_item_main.view.*
 import net.blakelee.coinprofits.R
 import net.blakelee.coinprofits.base.BaseAdapter
 import net.blakelee.coinprofits.base.BaseViewHolder
 import net.blakelee.coinprofits.di.AppModule
-import net.blakelee.coinprofits.models.MainCombined
+import net.blakelee.coinprofits.models.HoldingsCombined
 import net.cachapa.expandablelayout.ExpandableLayout
 
-class MainCombinedAdapter(val recyclerView: RecyclerView, val picasso: Picasso, val context: Context, val longClick: (MainCombined) -> Unit) : BaseAdapter<MainCombined, MainCombinedAdapter.MainCombinedViewHolder>() {
+class HoldingsCombinedAdapter(val recyclerView: RecyclerView, val picasso: Picasso, val context: Context) : BaseAdapter<HoldingsCombined, HoldingsCombinedAdapter.HoldingsCombinedViewHolder>() {
 
     private val UNSELECTED = -1
     private var selectedItem: Int = UNSELECTED
 
+    val longClick: PublishSubject<HoldingsCombined> = PublishSubject.create()
+
     override fun getItemViewId(): Int = R.layout.coin_item_main
 
-    override fun instantiateViewHolder(view: View?): MainCombinedViewHolder = MainCombinedViewHolder(view)
+    override fun instantiateViewHolder(view: View?): HoldingsCombinedViewHolder = HoldingsCombinedViewHolder(view)
 
-    inner class MainCombinedViewHolder(view: View?) : BaseViewHolder<MainCombined>(view) {
+    inner class HoldingsCombinedViewHolder(view: View?) : BaseViewHolder<HoldingsCombined>(view) {
         private val expandButton: RelativeLayout = itemView.item_top
         private val expandableLayout: ExpandableLayout = itemView.coin_item_expand
         private val coin_icon: ImageView = itemView.coin_icon
@@ -41,14 +44,14 @@ class MainCombinedAdapter(val recyclerView: RecyclerView, val picasso: Picasso, 
         private val margin_value: TextView = itemView.margin_value
         private val margin_percent: TextView = itemView.margin_percent
 
-        override fun onBind(item: MainCombined) {
+        override fun onBind(item: HoldingsCombined) {
             expandButton.isSelected = false
             expandableLayout.collapse(false)
 
             //Item
-            name.text = item.holdings.name
+            name.text = item.name
             last_price.text = item.getLast()
-            picasso.load(AppModule.IMAGE_URL + item.holdings.id+ ".png").into(coin_icon)
+            picasso.load(AppModule.IMAGE_URL + item.id+ ".png").into(coin_icon)
 
             if (item.watchOnly()) {
                 //Item
@@ -73,7 +76,7 @@ class MainCombinedAdapter(val recyclerView: RecyclerView, val picasso: Picasso, 
                 margin_percent.text = item.getMarginPercent()
 
                 expandButton.setOnClickListener {
-                    val holder = recyclerView.findViewHolderForAdapterPosition(selectedItem) as MainCombinedViewHolder?
+                    val holder = recyclerView.findViewHolderForAdapterPosition(selectedItem) as HoldingsCombinedViewHolder?
                     holder?.let {
                         holder.expandButton.isSelected = false
                         holder.expandableLayout.collapse()
@@ -90,7 +93,7 @@ class MainCombinedAdapter(val recyclerView: RecyclerView, val picasso: Picasso, 
             }
 
             expandButton.setOnLongClickListener {
-                longClick(item)
+                longClick.onNext(item)
                 true
             }
 

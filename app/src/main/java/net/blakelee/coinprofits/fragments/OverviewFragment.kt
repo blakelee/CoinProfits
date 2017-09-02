@@ -25,8 +25,7 @@ import io.reactivex.rxkotlin.addTo
 import kotlinx.android.synthetic.main.fragment_overview.*
 import net.blakelee.coinprofits.R
 import net.blakelee.coinprofits.base.SwipeViewPager
-import net.blakelee.coinprofits.models.Holdings
-import net.blakelee.coinprofits.models.OverviewHoldings
+import net.blakelee.coinprofits.models.HoldingsOverview
 import net.blakelee.coinprofits.repository.ChartRepository
 import net.blakelee.coinprofits.repository.HoldingsRepository
 import net.blakelee.coinprofits.repository.PreferencesRepository
@@ -50,7 +49,7 @@ class OverviewFragment : Fragment(), LifecycleRegistryOwner, AdapterView.OnItemS
 
     private lateinit var pager: SwipeViewPager
     private lateinit var spinner: Spinner
-    private lateinit var adapter: ArrayAdapter<OverviewHoldings>
+    private lateinit var adapter: ArrayAdapter<HoldingsOverview>
 
     private lateinit var slideInTop: Animation
     private lateinit var slideOutTop: Animation
@@ -62,7 +61,7 @@ class OverviewFragment : Fragment(), LifecycleRegistryOwner, AdapterView.OnItemS
     override fun onResume() {
         super.onResume()
 
-        hRepo.getOverviewHoldings()
+        hRepo.getHoldingsOverview()
                 .bindUntilEvent(this, Lifecycle.Event.ON_PAUSE)
                 .subscribe { items ->
                     adapter.clear()
@@ -109,7 +108,7 @@ class OverviewFragment : Fragment(), LifecycleRegistryOwner, AdapterView.OnItemS
 
 
             this.period = period
-            getChartData(((spinner.selectedItem) as OverviewHoldings).id)
+            getChartData(((spinner.selectedItem) as HoldingsOverview).id)
             cryptoChart.setFormatter(DateFormatter(period))
             cryptoChart.setLabelCount(LabelCount(period))
             setPeriodColors(this.period)
@@ -123,7 +122,7 @@ class OverviewFragment : Fragment(), LifecycleRegistryOwner, AdapterView.OnItemS
     }
 
     override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
-        val item: OverviewHoldings = adapter.getItem(position)
+        val item: HoldingsOverview = adapter.getItem(position)
 
         val textPaint = Paint()
         textPaint.typeface = Typeface.DEFAULT

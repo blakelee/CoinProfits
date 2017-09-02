@@ -1,11 +1,11 @@
 package net.blakelee.coinprofits.models
 
 import android.arch.persistence.room.*
-import net.blakelee.coinprofits.tools.TransactionConverter
 
 @Entity(tableName = "holdings", indices = [(Index("id", unique = true))])
-class Holdings : Coin(){
+open class Holdings {
     @PrimaryKey(autoGenerate = true)
     var itemOrder: Long? = null
 
+    lateinit var id: String
 }

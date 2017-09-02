@@ -16,14 +16,17 @@ class AddHoldingsViewModel @Inject constructor(
         val picasso: Picasso
 ) : ViewModel() {
 
+    //The coins for the auto complete text view
     fun getCoins() = coinRepo.coins
 
-    fun getTransactionHoldings(id: String) = holdingsRepo.getTransactionHoldings(id)
+    //Get the transactions for the holdings that the user has selected
+    fun getHoldingsTransactions(id: String) = holdingsRepo.getHoldingsTransactions(id)
 
     fun insertHoldings(holdings: Holdings) = holdingsRepo.insertHoldings(holdings)
 
     fun insertTransactions(transactions: List<Transaction>) = transactionRepo.insertTransactions(transactions)
 
+    //When a user changes holdings, drop the table and insert all the new values
     fun deleteTransactionsById(id: String) = transactionRepo.deleteTransactionsById(id)
 
     fun getAddressInfo(address: String) = transactionRepo.getAddressInfo(address)

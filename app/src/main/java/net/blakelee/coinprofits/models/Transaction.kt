@@ -12,7 +12,8 @@ import android.arch.persistence.room.PrimaryKey
 class Transaction {
     @PrimaryKey(autoGenerate = true)
     var rowId: Long? = null
-    var id: String = ""
+
+    lateinit var id: String
     var amount: Double = 0.0
     var price: Double = 0.0
     var publicKey: String? = null

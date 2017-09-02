@@ -23,7 +23,7 @@ class MainViewModel
 ) : ViewModel() {
 
     val isRefreshing: Subject<Boolean> = PublishSubject.create()
-    var mainCombined = holdingsRepo.getMainCombined()
+    var holdingsCombined = holdingsRepo.getHoldingsCombined()
     var count = ObservableInt()
     var lastUpdated = ObservableField<String>()
 

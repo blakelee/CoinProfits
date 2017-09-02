@@ -19,10 +19,10 @@ import kotlinx.android.synthetic.main.fragment_main.*
 import net.blakelee.coinprofits.R
 import net.blakelee.coinprofits.activities.AddHoldingsActivity
 import net.blakelee.coinprofits.activities.SettingsActivity
-import net.blakelee.coinprofits.adapters.MainCombinedAdapter
+import net.blakelee.coinprofits.adapters.HoldingsCombinedAdapter
 import net.blakelee.coinprofits.databinding.FragmentMainBinding
 import net.blakelee.coinprofits.dialogs.DownloadCoinsDialog
-import net.blakelee.coinprofits.models.MainCombined
+import net.blakelee.coinprofits.models.Holdings
 import net.blakelee.coinprofits.viewmodels.MainViewModel
 import javax.inject.Inject
 
@@ -35,7 +35,7 @@ class MainFragment : Fragment(), LifecycleRegistryOwner {
     @Inject lateinit var picasso: Picasso
 
     private val registry = LifecycleRegistry(this)
-    private lateinit var adapter: MainCombinedAdapter
+    private lateinit var adapter: HoldingsCombinedAdapter
     private val downloadCoinsDialog by lazy { DownloadCoinsDialog(context) }
 
     /**
@@ -54,7 +54,7 @@ class MainFragment : Fragment(), LifecycleRegistryOwner {
         super.onActivityCreated(savedInstanceState)
 
         setHasOptionsMenu(true)
-        adapter = MainCombinedAdapter(holdings_recycler, picasso, context, this::itemLongClick)
+        adapter = HoldingsCombinedAdapter(holdings_recycler, picasso, context)
         holdings_recycler.adapter = adapter
     }
 
@@ -84,7 +84,7 @@ class MainFragment : Fragment(), LifecycleRegistryOwner {
         }
 
         //Show holdings
-        viewModel.mainCombined
+        viewModel.holdingsCombined
                 .bindUntilEvent(this, Lifecycle.Event.ON_PAUSE)
                 .subscribe { items -> adapter.dataSource = items }
 
@@ -99,6 +99,30 @@ class MainFragment : Fragment(), LifecycleRegistryOwner {
                 .subscribe { viewModel.setLastUpdated(it) }
 
         viewModel.checkPreferences()
+
+        adapter.longClick
+                .bindUntilEvent(this, Lifecycle.Event.ON_PAUSE)
+                .subscribe {
+                    LovelyChoiceDialog(context)
+                            .setTitle("Selection action for ${it.name}")
+                            .setTopColorRes(R.color.colorPrimary)
+                            .setIcon(R.drawable.ic_info)
+                            .setItems(arrayOf("Edit", "Delete"), { position, _ ->
+                                when(position) {
+                                    0 -> { val intent = Intent(context, AddHoldingsActivity::class.java)
+                                        intent.putExtra("id", it.id)
+                                        startActivity(intent)
+                                    }
+                                    1 -> {
+                                        val holdings = Holdings()
+                                        holdings.itemOrder = it.itemOrder
+                                        holdings.id = it.id
+                                        viewModel.deleteHoldings(holdings)
+                                    }
+                                }
+                            })
+                            .show()
+                }
     }
 
     /**
@@ -128,24 +152,6 @@ class MainFragment : Fragment(), LifecycleRegistryOwner {
             }
             else -> super.onOptionsItemSelected(item)
         }
-    }
-
-    @SuppressLint("InflateParams")
-    fun itemLongClick(mainCombined: MainCombined) {
-        LovelyChoiceDialog(context)
-                .setTitle("Selection action for ${mainCombined.holdings.name}")
-                .setTopColorRes(R.color.colorPrimary)
-                .setIcon(R.drawable.ic_info)
-                .setItems(arrayOf("Edit", "Delete"), { position, _ ->
-                    when(position) {
-                        0 -> { val intent = Intent(context, AddHoldingsActivity::class.java)
-                            intent.putExtra("id", mainCombined.holdings.id)
-                            startActivity(intent)
-                        }
-                        1 -> viewModel.deleteHoldings(mainCombined.holdings)
-                    }
-                })
-                .show()
     }
 
     override fun getLifecycle(): LifecycleRegistry = registry
