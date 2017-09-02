@@ -50,7 +50,7 @@ class HoldingsCombined : Coin() {
     fun getBalanceCrypto() = String.format("%s %s", decimalFormat(combinedAmount), symbol)
     fun getBalanceBTC(): String = String.format("฿%s BTC", decimalFormat(combinedAmount * price_btc!!))
     fun getBalanceETH(): String = String.format("Ξ0.0 ETH")
-    fun getBuyinTotal(): String = String.format("$%s", decimalFormat(averageTotal))
+    fun getBuyInTotal(): String = String.format("$%s", decimalFormat(averageTotal))
     fun getBuyInPrice(): String = String.format("$%s", decimalFormat(averageBuyIn))
 
     fun getMarginFiat(): String {

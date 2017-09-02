@@ -54,7 +54,7 @@ class MainFragment : Fragment(), LifecycleRegistryOwner {
         super.onActivityCreated(savedInstanceState)
 
         setHasOptionsMenu(true)
-        adapter = HoldingsCombinedAdapter(holdings_recycler, picasso, context)
+        adapter = HoldingsCombinedAdapter(holdings_recycler, picasso)
         holdings_recycler.adapter = adapter
     }
 

@@ -3,6 +3,13 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:card_view="http://schemas.android.com/tools">
 
+    <data>
+        <variable
+            name="holdingsCombined"
+            type="net.blakelee.coinprofits.models.HoldingsCombined"/>
+        <import type="android.view.View"/>
+    </data>
+
     <android.support.v7.widget.CardView
         style="@style/CardView.Dark"
         android:layout_width="match_parent"
@@ -27,7 +34,7 @@
                 android:layout_marginStart="16dp"
                 android:layout_toEndOf="@+id/coin_icon"
                 android:maxLines="1"
-                android:text="@string/placeholder_name"
+                android:text="@{holdingsCombined.name}"
                 android:ellipsize="end"
                 android:textSize="18sp" />
 
@@ -50,7 +57,7 @@
                 android:layout_alignBaseline="@+id/name"
                 android:layout_alignParentEnd="true"
                 android:gravity="center_vertical"
-                android:text="@string/last_placeholder" />
+                android:text="@{holdingsCombined.getLast()}" />
 
             <TextView
                 android:id="@+id/balance_text"
@@ -62,6 +69,7 @@
                 android:layout_toStartOf="@+id/balance"
                 android:gravity="center_vertical"
                 android:text="@string/balance_colon"
+                android:visibility="@{holdingsCombined.watchOnly() ? View.GONE : View.VISIBLE}"
                 android:textSize="14sp" />
 
             <TextView
@@ -72,6 +80,7 @@
                 android:textSize="14sp"
                 android:layout_alignParentEnd="true"
                 android:layout_alignParentBottom="true"
+                android:text="@{holdingsCombined.watchOnly() ? @string/read_only : holdingsCombined.getBalanceFiat()}"
                 android:layout_below="@+id/last_text" />
 
             <ImageView
@@ -123,7 +132,7 @@
                     android:layout_alignParentEnd="true"
                     android:layout_alignParentTop="true"
                     android:gravity="end"
-                    android:text="@string/balance_id_placeholder"
+                    android:text="@{holdingsCombined.getBalanceFiat()}"
                     card_view:ignore="RelativeOverlap" />
 
                 <TextView
@@ -133,7 +142,7 @@
                     android:layout_alignEnd="@+id/balance_btc"
                     android:layout_below="@+id/balance_info"
                     android:gravity="end"
-                    android:text="@string/balance_usd_placeholder" />
+                    android:text="@{holdingsCombined.getBalanceCrypto()}"/>
 
                 <TextView
                     android:id="@+id/balance_btc"
@@ -142,7 +151,7 @@
                     android:layout_alignParentEnd="true"
                     android:layout_below="@+id/balance_currency"
                     android:gravity="end"
-                    android:text="@string/balance_btc_placeholder" />
+                    android:text="@{holdingsCombined.getBalanceBTC()}"/>
 
                 <TextView
                     android:id="@+id/balance_eth"
@@ -151,7 +160,7 @@
                     android:layout_alignParentEnd="true"
                     android:layout_below="@+id/balance_btc"
                     android:gravity="end"
-                    android:text="@string/balance_eth_placeholder" />
+                    android:text="@{holdingsCombined.getBalanceETH()}" />
 
                 <ImageView
                     android:id="@+id/buyin_info"
@@ -180,7 +189,7 @@
                     android:layout_alignEnd="@+id/balance_eth"
                     android:layout_below="@+id/buyin_total"
                     android:gravity="end"
-                    android:text="@string/buyin_placeholder" />
+                    android:text="@{holdingsCombined.getBuyInTotal()}" />
 
                 <TextView
                     android:id="@+id/buyin_total"
@@ -189,7 +198,7 @@
                     android:layout_alignEnd="@+id/balance_eth"
                     android:layout_alignTop="@+id/buyin_info"
                     android:gravity="end"
-                    android:text="@string/buyin_total_placeholder" />
+                    android:text="@{holdingsCombined.getBuyInPrice()}" />
 
                 <TextView
                     android:id="@+id/margin_text"
@@ -219,7 +228,7 @@
                     android:layout_alignParentEnd="true"
                     android:layout_alignTop="@+id/margin_text"
                     android:gravity="end"
-                    android:text="@string/margin_usd_placeholder" />
+                    android:text="@{holdingsCombined.getMarginFiat()}" />
 
                 <TextView
                     android:id="@+id/margin_percent"
@@ -228,7 +237,7 @@
                     android:layout_alignParentEnd="true"
                     android:layout_below="@+id/margin_value"
                     android:gravity="end"
-                    android:text="@string/margin_percent_placeholder" />
+                    android:text="@{holdingsCombined.getMarginPercent()}" />
             </RelativeLayout>
 
         </net.cachapa.expandablelayout.ExpandableLayout>
