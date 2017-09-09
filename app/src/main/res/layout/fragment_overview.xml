@@ -7,13 +7,300 @@
     tools:layout_editor_absoluteY="25dp"
     tools:layout_editor_absoluteX="0dp">
 
+    <android.support.constraint.ConstraintLayout
+        android:id="@+id/portfolio_container"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/primaryText"
+        tools:layout_editor_absoluteX="0dp"
+        tools:layout_editor_absoluteY="0dp">
+
+        <TextView
+            android:id="@+id/portfolio_value_text"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentStart="true"
+            android:layout_marginTop="8dp"
+            android:text="Portfolio Value"
+            app:layout_constraintEnd_toStartOf="@+id/guideline"
+            app:layout_constraintHorizontal_chainStyle="spread"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <TextView
+            android:id="@+id/portfolio_change_24h_text"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentEnd="true"
+            android:layout_alignParentTop="true"
+            android:layout_marginTop="8dp"
+            android:text="24h Change"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_chainStyle="spread"
+            app:layout_constraintStart_toStartOf="@+id/guideline"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <TextView
+            android:id="@+id/portfolio_change_24h"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentEnd="true"
+            android:layout_alignParentTop="false"
+            android:layout_below="@+id/portfolio_change_24h_text"
+            android:text="+6.41%"
+            android:textColor="@color/textHighlighted"
+            android:textSize="18sp"
+            android:textStyle="bold"
+            app:layout_constraintEnd_toStartOf="@+id/portfolio_change_24h_img"
+            app:layout_constraintHorizontal_chainStyle="packed"
+            app:layout_constraintStart_toStartOf="@+id/guideline"
+            app:layout_constraintTop_toBottomOf="@+id/portfolio_change_24h_text" />
+
+        <ImageView
+            android:id="@+id/portfolio_change_24h_img"
+            android:layout_width="18dp"
+            android:layout_height="18dp"
+            android:layout_marginStart="4dp"
+            android:scaleType="fitCenter"
+            android:scaleX="2"
+            android:scaleY="2"
+            android:src="@drawable/ic_increase"
+            app:layout_constraintBottom_toBottomOf="@+id/portfolio_change_24h"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.733"
+            app:layout_constraintHorizontal_chainStyle="packed"
+            app:layout_constraintStart_toEndOf="@+id/portfolio_change_24h"
+            app:layout_constraintTop_toTopOf="@+id/portfolio_change_24h"
+            tools:ignore="ContentDescription" />
+
+        <TextView
+            android:id="@+id/portfolio_value"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="false"
+            android:layout_alignParentStart="false"
+            android:layout_below="@+id/portfolio_value_text"
+            android:paddingBottom="8dp"
+            android:text="$3,343.30"
+            android:textColor="@color/textHighlighted"
+            android:textSize="18sp"
+            android:textStyle="bold"
+            app:layout_constraintEnd_toStartOf="@+id/guideline"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/portfolio_value_text" />
+
+        <android.support.constraint.Guideline
+            android:id="@+id/guideline"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            app:layout_constraintGuide_begin="192dp" />
+
+        <View
+            android:id="@+id/line_bottom"
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:layout_centerVertical="true"
+            android:background="@color/colorLine"
+            android:visibility="visible"
+            app:layout_constraintBottom_toBottomOf="parent" />
+
+        <net.cachapa.expandablelayout.ExpandableLayout
+            android:id="@+id/portfolio_expandable"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:el_expanded="false"
+            app:el_parallax="0"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/portfolio_value"
+            tools:layout_editor_absoluteY="59dp">
+
+            <android.support.constraint.ConstraintLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="8dp">
+
+                <android.support.constraint.Guideline
+                    android:id="@+id/portfolio_guideline_expandable"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    app:layout_constraintGuide_begin="192dp" />
+
+                <TextView
+                    android:id="@+id/portfolio_margins_text"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Portfolio Margins"
+                    app:layout_constraintEnd_toStartOf="@+id/portfolio_guideline_expandable"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+                <TextView
+                    android:id="@+id/portfolio_margins"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentBottom="false"
+                    android:layout_alignParentStart="false"
+                    android:layout_marginStart="12dp"
+                    android:text="112.56%"
+                    android:textColor="@color/textHighlighted"
+                    android:textSize="18sp"
+                    android:textStyle="bold"
+                    app:layout_constraintEnd_toStartOf="@+id/portfolio_margins_img"
+                    app:layout_constraintHorizontal_chainStyle="packed"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/portfolio_margins_text" />
+
+                <ImageView
+                    android:id="@+id/portfolio_margins_img"
+                    android:layout_width="18dp"
+                    android:layout_height="18dp"
+                    android:layout_marginStart="4dp"
+                    android:scaleType="fitCenter"
+                    android:scaleX="2"
+                    android:scaleY="2"
+                    android:src="@drawable/ic_increase"
+                    app:layout_constraintBottom_toBottomOf="@+id/portfolio_margins"
+                    app:layout_constraintEnd_toStartOf="@+id/portfolio_guideline_expandable"
+                    app:layout_constraintHorizontal_chainStyle="packed"
+                    app:layout_constraintStart_toEndOf="@+id/portfolio_margins"
+                    app:layout_constraintTop_toTopOf="@+id/portfolio_margins"
+                    tools:ignore="ContentDescription" />
+
+                <TextView
+                    android:id="@+id/portfolio_margins_fiat_text"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="8dp"
+                    android:text="Margins Fiat"
+                    app:layout_constraintEnd_toStartOf="@+id/portfolio_guideline_expandable"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/portfolio_margins" />
+
+                <ImageView
+                    android:id="@+id/portfolio_margins_fiat_img"
+                    android:layout_width="18dp"
+                    android:layout_height="18dp"
+                    android:layout_marginStart="4dp"
+                    android:scaleType="fitCenter"
+                    android:scaleX="2"
+                    android:scaleY="2"
+                    android:src="@drawable/ic_increase"
+                    app:layout_constraintBottom_toBottomOf="@+id/portfolio_margins_fiat"
+                    app:layout_constraintEnd_toStartOf="@+id/portfolio_guideline_expandable"
+                    app:layout_constraintHorizontal_chainStyle="packed"
+                    app:layout_constraintStart_toEndOf="@+id/portfolio_margins_fiat"
+                    app:layout_constraintTop_toTopOf="@+id/portfolio_margins_fiat"
+                    tools:ignore="ContentDescription" />
+
+                <TextView
+                    android:id="@+id/portfolio_margins_fiat"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentBottom="false"
+                    android:layout_alignParentStart="false"
+                    android:text="$1,333.30"
+                    android:textColor="@color/textHighlighted"
+                    android:textSize="18sp"
+                    android:textStyle="bold"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toStartOf="@+id/portfolio_margins_fiat_img"
+                    app:layout_constraintHorizontal_chainStyle="packed"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/portfolio_margins_fiat_text" />
+
+                <ImageView
+                    android:id="@+id/portfolio_change_7d_img"
+                    android:layout_width="18dp"
+                    android:layout_height="18dp"
+                    android:layout_marginStart="4dp"
+                    android:scaleType="fitCenter"
+                    android:scaleX="2"
+                    android:scaleY="2"
+                    android:src="@drawable/ic_increase"
+                    app:layout_constraintBottom_toBottomOf="@+id/portfolio_change_7d"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintHorizontal_chainStyle="packed"
+                    app:layout_constraintStart_toEndOf="@+id/portfolio_change_7d"
+                    app:layout_constraintTop_toTopOf="@+id/portfolio_change_7d"
+                    tools:ignore="ContentDescription" />
+
+                <TextView
+                    android:id="@+id/portfolio_change_7d"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentBottom="false"
+                    android:layout_alignParentStart="false"
+                    android:text="+3.24%"
+                    android:textColor="@color/textHighlighted"
+                    android:textSize="18sp"
+                    android:textStyle="bold"
+                    app:layout_constraintEnd_toStartOf="@+id/portfolio_change_7d_img"
+                    app:layout_constraintHorizontal_chainStyle="packed"
+                    app:layout_constraintStart_toStartOf="@+id/portfolio_guideline_expandable"
+                    app:layout_constraintTop_toBottomOf="@+id/portfolio_change_7d_text" />
+
+                <TextView
+                    android:id="@+id/portfolio_change_7d_text"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="7d Change"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="@+id/portfolio_guideline_expandable"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+                <TextView
+                    android:id="@+id/portfolio_buyin_text"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginEnd="8dp"
+                    android:layout_marginStart="8dp"
+                    android:layout_marginTop="8dp"
+                    android:text="Total Buy-In"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="@+id/portfolio_guideline_expandable"
+                    app:layout_constraintTop_toBottomOf="@+id/portfolio_change_7d" />
+
+                <TextView
+                    android:id="@+id/portfolio_buyin"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentBottom="false"
+                    android:layout_alignParentStart="false"
+                    android:text="$2,010.00"
+                    android:textColor="@color/textHighlighted"
+                    android:textSize="18sp"
+                    android:textStyle="bold"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="@+id/portfolio_guideline_expandable"
+                    app:layout_constraintTop_toBottomOf="@+id/portfolio_buyin_text" />
+
+            </android.support.constraint.ConstraintLayout>
+        </net.cachapa.expandablelayout.ExpandableLayout>
+
+        <ImageView
+            android:id="@+id/portfolio_toggle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:padding="8dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:srcCompat="@drawable/ic_double_down_arrow" />
+
+
+    </android.support.constraint.ConstraintLayout>
+
     <RelativeLayout
         android:id="@+id/time_container"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_alignParentTop="true"
-        android:layout_centerVertical="false"
-        android:layout_marginTop="8dp">
+        android:layout_alignParentTop="false"
+        android:layout_below="@+id/portfolio_container"
+        android:layout_centerVertical="false">
 
         <LinearLayout
             android:id="@+id/time_holder"
@@ -112,20 +399,20 @@
             android:layout_width="match_parent"
             android:layout_height="1dp"
             android:layout_centerVertical="true"
-            android:layout_marginEnd="2dp"
-            android:layout_marginStart="4dp"
+            android:layout_margin="8dp"
             android:layout_toStartOf="@id/time_holder"
-            android:background="@color/colorLine" />
+            android:background="@color/colorLine"
+            android:visibility="visible" />
 
         <View
             android:id="@+id/line_right"
             android:layout_width="match_parent"
             android:layout_height="1dp"
             android:layout_centerVertical="true"
-            android:layout_marginEnd="4dp"
-            android:layout_marginStart="2dp"
+            android:layout_margin="8dp"
             android:layout_toEndOf="@+id/time_holder"
-            android:background="@color/colorLine" />
+            android:background="@color/colorLine"
+            android:visibility="visible" />
 
     </RelativeLayout>
 
@@ -175,9 +462,12 @@
                 android:layout_alignParentTop="true"
                 android:layout_centerHorizontal="true"
                 android:layout_margin="4dp"
+                android:layout_marginBottom="8dp"
+                android:layout_marginTop="8dp"
                 android:background="@color/colorLine"
                 android:paddingLeft="8dp"
                 android:paddingRight="8dp"
+                android:visibility="visible"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
@@ -209,10 +499,14 @@
 
             <ImageView
                 android:id="@+id/img_change"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                android:layout_width="18dp"
+                android:layout_height="18dp"
+                android:layout_marginStart="4dp"
                 android:minHeight="10dp"
                 android:minWidth="10dp"
+                android:scaleType="fitCenter"
+                android:scaleX="2"
+                android:scaleY="2"
                 app:layout_constraintBottom_toBottomOf="@+id/change"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toEndOf="@+id/change"
@@ -268,7 +562,7 @@
             android:layout_width="match_parent"
             android:layout_height="1dp"
             android:layout_centerInParent="true"
-            android:layout_margin="4dp"
+            android:layout_margin="8dp"
             android:layout_toStartOf="@+id/spinner_holder"
             android:background="@color/colorLine" />
 
@@ -277,7 +571,7 @@
             android:layout_width="match_parent"
             android:layout_height="1dp"
             android:layout_centerInParent="true"
-            android:layout_margin="4dp"
+            android:layout_margin="8dp"
             android:layout_toEndOf="@+id/spinner_holder"
             android:background="@color/colorLine" />
 

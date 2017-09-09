@@ -13,6 +13,7 @@ import android.support.constraint.ConstraintSet
 import android.support.v4.app.NavUtils
 import android.support.v4.content.ContextCompat
 import android.support.v7.app.AppCompatActivity
+import android.support.v7.widget.DividerItemDecoration
 import android.support.v7.widget.RecyclerView
 import android.util.TypedValue
 import android.view.*
@@ -25,6 +26,7 @@ import net.blakelee.coinprofits.viewmodels.AddHoldingsViewModel
 import javax.inject.Inject
 import android.view.inputmethod.InputMethodManager
 import android.widget.Button
+import android.widget.LinearLayout
 import com.robertlevonyan.views.chip.Chip
 import com.squareup.picasso.Picasso
 import com.squareup.picasso.Target
@@ -79,6 +81,8 @@ class AddHoldingsActivity : AppCompatActivity(), LifecycleRegistryOwner {
                         makeChip(coin, false)
                     }
         }
+
+        transactionRecycler.addItemDecoration(DividerItemDecoration(this, LinearLayout.VERTICAL))
 
         setupInstantTextView()
         setupTransactionAdd()

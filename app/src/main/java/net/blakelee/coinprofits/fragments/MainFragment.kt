@@ -68,6 +68,7 @@ class MainFragment : Fragment(), LifecycleRegistryOwner {
         refresh_layout.setOnRefreshListener {
             viewModel.refreshHoldings()
                     .bindUntilEvent(this, Lifecycle.Event.ON_PAUSE)
+                    .doOnError { Toast.makeText(context, it.message, Toast.LENGTH_SHORT).show() }
                     .subscribe { _ -> refresh_layout.finishRefresh() }
         }
 
@@ -138,8 +139,8 @@ class MainFragment : Fragment(), LifecycleRegistryOwner {
      * Open new activity or dialog
      */
     @SuppressLint("InflateParams")
-    override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        return when (item.itemId) {
+    override fun onOptionsItemSelected(item: MenuItem) =
+        when (item.itemId) {
             R.id.action_settings -> {
                 startActivity(Intent(context, SettingsActivity::class.java))
                 true
@@ -152,7 +153,6 @@ class MainFragment : Fragment(), LifecycleRegistryOwner {
             }
             else -> super.onOptionsItemSelected(item)
         }
-    }
 
     override fun getLifecycle(): LifecycleRegistry = registry
 
