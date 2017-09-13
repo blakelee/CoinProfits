@@ -17,6 +17,7 @@ import com.yarolegovich.lovelydialog.LovelyChoiceDialog
 import dagger.android.support.AndroidSupportInjection
 import kotlinx.android.synthetic.main.fragment_main.*
 import net.blakelee.coinprofits.R
+import net.blakelee.coinprofits.activities.AboutActivity
 import net.blakelee.coinprofits.activities.AddHoldingsActivity
 import net.blakelee.coinprofits.activities.SettingsActivity
 import net.blakelee.coinprofits.adapters.HoldingsCombinedAdapter
@@ -149,6 +150,10 @@ class MainFragment : Fragment(), LifecycleRegistryOwner {
                 val intent = Intent(context, AddHoldingsActivity::class.java)
                 intent.putExtra("id", "eth")
                 startActivity(intent)
+                true
+            }
+            R.id.action_about -> {
+                startActivity(Intent(context, AboutActivity::class.java))
                 true
             }
             else -> super.onOptionsItemSelected(item)

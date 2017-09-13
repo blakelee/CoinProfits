@@ -28,12 +28,18 @@
             android:name=".activities.SettingsActivity"
             android:label="Settings"
             android:theme="@style/AppTheme" />
+
         <activity
             android:name=".activities.AddHoldingsActivity"
             android:label="@string/title_activity_add_holdings"
             android:windowSoftInputMode="stateHidden"
             android:parentActivityName=".activities.MainActivity"
             android:theme="@style/AppTheme"/>
+
+        <activity android:name=".activities.AboutActivity"
+            android:label="About"
+            android:theme="@style/AppTheme" />
+
     </application>
 
 </manifest>

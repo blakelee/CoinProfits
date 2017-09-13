@@ -82,5 +82,6 @@ dependencies {
     releaseImplementation 'com.squareup.leakcanary:leakcanary-android-no-op:1.5.1'
     testImplementation 'com.squareup.leakcanary:leakcanary-android-no-op:1.5.1'
     implementation 'com.github.salomonbrys.kotson:kotson:2.5.0'
+    implementation 'com.klinkerapps:link_builder:1.6.1'
     implementation project(':cryptochart')
 }

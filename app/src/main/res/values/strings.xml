@@ -61,4 +61,18 @@
     <string name="check">check</string>
     <string name="expand">Expand</string>
     <string name="read_only">Read-Only</string>
+
+    <string name="about">
+        Thank you for using Coin Profits!\n\n
+
+        The source code for this can be found on my github\n\n
+
+        A special thanks to CoinMarketCap and Ethplorer for allowing me to use their API\n\n
+
+        Icons are provided by Icons8\n\n
+
+        If you found my app to be of value, feel free to donate Ethereum to this address:\n\n
+
+        0x6263b06a107879dd4375165ab232b761e003b72c
+    </string>
 </resources>
