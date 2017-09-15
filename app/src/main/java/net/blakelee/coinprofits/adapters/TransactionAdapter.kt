@@ -124,19 +124,11 @@ class TransactionAdapter(val context: Context, val recyclerView: RecyclerView) :
 
             RxTextView.afterTextChangeEvents(amount)
                     .observeOn(AndroidSchedulers.mainThread())
-                    .subscribe {
-                        if (price.text.isNotEmpty() && amount.text.isNotEmpty()) {
-                            total.text = String.format("$%s", decimalFormat(price.text.toString().toDouble() * amount.text.toString().toDouble()))
-                        }
-                    }
+                    .subscribe { setTotal() }
 
             RxTextView.afterTextChangeEvents(price)
                     .observeOn(AndroidSchedulers.mainThread())
-                    .subscribe {
-                        if (price.text.isNotEmpty() && amount.text.isNotEmpty()) {
-                            total.text = String.format("$%s", decimalFormat(price.text.toString().toDouble() * amount.text.toString().toDouble()))
-                        }
-                    }
+                    .subscribe { setTotal() }
 
             RxTextView.afterTextChangeEvents(publicKey)
                     .observeOn(AndroidSchedulers.mainThread())
@@ -147,6 +139,14 @@ class TransactionAdapter(val context: Context, val recyclerView: RecyclerView) :
                         }
                         publicKey.setCompoundDrawablesWithIntrinsicBounds(0,0,0,0)
                     }
+        }
+
+        private fun setTotal() {
+            if (price.text.isNotEmpty() && amount.text.isNotEmpty()) {
+                val price = ("0" + this.price.text.toString()).toDouble()
+                val amount = ("0" + this.amount.text.toString()).toDouble()
+                total.text = String.format("$%s", decimalFormat(price * amount))
+            }
         }
     }
 }

@@ -5,6 +5,7 @@
     <color name="colorAccent">#00d153</color>
     <color name="primaryText">#212121</color>
     <color name="cardColor">#424242</color>
+    <color name="cardSelected">#393939</color>
     <color name="background">#303030</color>
     <color name="colorLine">#C1C1C1</color>
     <color name="chartLow">#96fd0014</color>

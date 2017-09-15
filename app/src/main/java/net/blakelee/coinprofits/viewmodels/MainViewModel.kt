@@ -8,6 +8,7 @@ import io.reactivex.subjects.PublishSubject
 import io.reactivex.subjects.Subject
 import net.blakelee.coinprofits.models.Coin
 import net.blakelee.coinprofits.models.Holdings
+import net.blakelee.coinprofits.models.HoldingsCombined
 import net.blakelee.coinprofits.repository.CoinRepository
 import net.blakelee.coinprofits.repository.HoldingsRepository
 import net.blakelee.coinprofits.repository.PreferencesRepository
@@ -32,16 +33,30 @@ class MainViewModel
         if (prefs.download) {
             prefs.download = false
             isRefreshing.onNext(true)
-            coinRepo.deleteAllCoins()
-            coinRepo.getCoins(prefs.convert)
-                    .subscribe {
-                        prefs.lastUpdated.set(getTime())
-                        isRefreshing.onNext(false)
-                    }
+            coinRepo.deleteAllCoins().subscribe {
+                coinRepo.getCoins(prefs.convert)
+                        .subscribe {
+                            prefs.lastUpdated.set(getTime())
+                            isRefreshing.onNext(false)
+                        }
+            }
         }
 
         if (prefs.autoRefresh)
             refreshHoldings().subscribe()
+    }
+
+    fun updateHoldings(holdingsCombined: List<HoldingsCombined>) {
+        val holdings: MutableList<Holdings> = mutableListOf()
+
+        holdingsCombined.forEachIndexed { index, single ->
+            val item = Holdings()
+            item.id = single.id
+            item.order = index.toLong() + 1
+            holdings.add(item)
+        }
+
+        holdingsRepo.updateHoldings(holdings)
     }
 
     fun refreshHoldings(): Single<MutableList<Coin>> {

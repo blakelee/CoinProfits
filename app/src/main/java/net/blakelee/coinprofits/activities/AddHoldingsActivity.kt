@@ -131,28 +131,32 @@ class AddHoldingsActivity : AppCompatActivity(), LifecycleRegistryOwner {
         return super.onCreateOptionsMenu(menu)
     }
 
-    override fun onOptionsItemSelected(item: MenuItem?): Boolean =
-         when(item?.itemId) {
+    override fun onOptionsItemSelected(item: MenuItem?): Boolean {
+        when (item?.itemId) {
             android.R.id.home -> {
                 NavUtils.navigateUpFromSameTask(this)
-                true
             }
-             R.id.action_add -> {
-                 if (transactionAdapter.validate()) {
-                     holdingsTransactions?.let {
-                         val holdings = Holdings()
-                         holdings.id = it.id
-                         holdings.itemOrder = it.itemOrder
+            R.id.action_add -> {
+                if (transactionAdapter.validate()) {
+                    holdingsTransactions?.let {
+                        val holdings = Holdings()
+                        holdings.id = it.id
+                        holdings.order = it.order
 
-                         viewModel.insertHoldings(holdings)
-                         viewModel.insertTransactions(transactionAdapter.dataSource)
-                     }
-                 }
-                 super.onBackPressed()
-                 true
-             }
+                        viewModel.insertHoldings(holdings).subscribe {
+                            viewModel.deleteTransactionsById(holdings.id).subscribe {
+                                viewModel.insertTransactions(transactionAdapter.dataSource).subscribe {
+                                    super.onBackPressed()
+                                }
+                            }
+                        }
+                    }
+                }
+            }
             else -> super.onOptionsItemSelected(item)
         }
+        return true
+    }
 
     override fun getLifecycle(): LifecycleRegistry = registry
 

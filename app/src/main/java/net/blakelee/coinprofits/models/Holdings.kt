@@ -4,8 +4,10 @@ import android.arch.persistence.room.*
 
 @Entity(tableName = "holdings", indices = [Index("id", unique = true)])
 open class Holdings {
-    @PrimaryKey(autoGenerate = true)
-    var itemOrder: Long? = null
 
+    @ColumnInfo(name = "itemOrder")
+    var order = Long.MAX_VALUE
+
+    @PrimaryKey
     lateinit var id: String
 }

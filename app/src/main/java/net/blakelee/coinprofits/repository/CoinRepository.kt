@@ -26,7 +26,14 @@ class CoinRepository @Inject constructor(
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribeOn(Schedulers.io())
                 .map(this::makeCoins)
-                .doOnNext { db.insertCoins(*it.toTypedArray()) }
+                .doOnNext {
+                    Observable.fromCallable {
+                        db.insertCoins(*it.toTypedArray())
+                    }
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .subscribeOn(Schedulers.io())
+                    .subscribe()
+                }
 
     fun getCoinById(id: String, convert: String = "usd") =
         api.getCoinById(id, convert)
@@ -36,7 +43,12 @@ class CoinRepository @Inject constructor(
                 .filter { it.id != "" }
                 .onErrorResumeNext(Observable.empty())
 
-    fun deleteAllCoins() = db.deleteAllCoins()
+    fun deleteAllCoins() =
+            Observable.fromCallable {
+                db.deleteAllCoins()
+            }
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribeOn(Schedulers.io())
 
     private fun makeCoins(results: JsonArray): MutableList<Coin> {
         val coins: MutableList<Coin> = mutableListOf()

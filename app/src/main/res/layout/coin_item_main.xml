@@ -7,6 +7,10 @@
         <variable
             name="holdingsCombined"
             type="net.blakelee.coinprofits.models.HoldingsCombined"/>
+
+        <variable
+            name="editMode"
+            type="Boolean"/>
         <import type="android.view.View"/>
     </data>
 
@@ -48,6 +52,7 @@
                 android:gravity="center_vertical"
                 android:maxLines="1"
                 android:text="@string/last"
+                android:visibility="@{editMode ? View.INVISIBLE : View.VISIBLE}"
                 card_view:ignore="RelativeOverlap" />
 
             <TextView
@@ -57,6 +62,7 @@
                 android:layout_alignBaseline="@+id/name"
                 android:layout_alignParentEnd="true"
                 android:gravity="center_vertical"
+                android:visibility="@{editMode ? View.INVISIBLE : View.VISIBLE}"
                 android:text="@{holdingsCombined.getLast()}" />
 
             <TextView
@@ -69,7 +75,7 @@
                 android:layout_toStartOf="@+id/balance"
                 android:gravity="center_vertical"
                 android:text="@string/balance_colon"
-                android:visibility="@{holdingsCombined.watchOnly() ? View.GONE : View.VISIBLE}"
+                android:visibility="@{(holdingsCombined.watchOnly() || editMode) ? View.GONE : View.VISIBLE}"
                 android:textSize="14sp" />
 
             <TextView
@@ -80,6 +86,7 @@
                 android:textSize="14sp"
                 android:layout_alignParentEnd="true"
                 android:layout_alignParentBottom="true"
+                android:visibility="@{editMode ? View.INVISIBLE : View.VISIBLE}"
                 android:text="@{holdingsCombined.watchOnly() ? @string/read_only : holdingsCombined.getBalanceFiat()}"
                 android:layout_below="@+id/last_text" />
 
@@ -89,6 +96,20 @@
                 android:layout_height="56dp"
                 android:contentDescription="@string/coin_icon"
                 card_view:srcCompat="@mipmap/ic_launcher" />
+
+            <ImageView
+                android:id="@+id/item_reorder"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignEnd="@+id/last_price"
+                android:layout_alignParentBottom="true"
+                android:layout_alignParentTop="true"
+                android:padding="8dp"
+                android:scaleType="center"
+                android:scaleX="1.25"
+                android:scaleY="1.25"
+                android:visibility="@{editMode ? View.VISIBLE : View.INVISIBLE}"
+                app:srcCompat="@drawable/ic_reorder" />
 
         </RelativeLayout>
 

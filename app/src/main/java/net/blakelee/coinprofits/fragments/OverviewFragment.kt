@@ -187,7 +187,7 @@ class OverviewFragment : Fragment(), LifecycleRegistryOwner, AdapterView.OnItemS
                     when (error) {
                         is HttpException -> {"Too many api requests. Only 10 per minute allowed"}
                         is UnknownHostException -> "Internet unavailable. Try again later"
-                        else -> ""
+                        else -> error.message
                     }
                             , Toast.LENGTH_SHORT).show()
                 }).addTo(compositeDisposable)

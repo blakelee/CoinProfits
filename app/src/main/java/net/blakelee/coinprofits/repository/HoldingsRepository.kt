@@ -23,7 +23,12 @@ class HoldingsRepository @Inject constructor(
 ){
 
     //Used in
-    fun insertHoldings(holdings: Holdings) = hdb.insertHoldings(holdings)
+    fun insertHoldings(holdings: Holdings) =
+            Observable.fromCallable {
+                hdb.insertHoldings(holdings)
+            }
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribeOn(Schedulers.io())
 
     //Used to determine whether to display the last updated indicator in the main fragment
     fun getHoldingsCount(): Flowable<Int> = hdb.getHoldingsCount()
@@ -50,10 +55,22 @@ class HoldingsRepository @Inject constructor(
             .subscribeOn(Schedulers.io())
 
     //Used for when changing the item order of the holdings
-    fun updateHoldings(vararg holdings: Holdings) = hdb.updateHoldings(*holdings)
+    fun updateHoldings(vararg holdings: Holdings) =
+            Observable.fromCallable {
+                hdb.updateHoldings(*holdings)
+            }
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribeOn(Schedulers.io())
+
+    fun updateHoldings(holdings: List<Holdings>) = updateHoldings(*holdings.toTypedArray())
 
     //Automatically deletes transactions since they are relations
-    fun deleteHoldings(holdings: Holdings) = hdb.deleteHoldings(holdings)
+    fun deleteHoldings(holdings: Holdings) =
+            Observable.fromCallable {
+                hdb.deleteHoldings(holdings)
+            }
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribeOn(Schedulers.io())
 
     fun refreshHoldings(convert: String) =
         hdb.getHoldings()
@@ -71,6 +88,9 @@ class HoldingsRepository @Inject constructor(
                 }
                 .filter { it.id != "" }
                 .toList()
-                .doOnSuccess { cdb.updateCoins(*it.toTypedArray()) }
-
+                .doOnSuccess {
+                    Observable.fromCallable {
+                        cdb.updateCoins(*it.toTypedArray())
+                    }
+                }
 }

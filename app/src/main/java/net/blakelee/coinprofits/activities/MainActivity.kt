@@ -31,7 +31,7 @@ class MainActivity : AppCompatActivity(), LifecycleRegistryOwner, HasSupportFrag
         setSupportActionBar(toolbar)
 
         val pager: SwipeViewPager = pager
-        val pagerAdapter: MainPagerAdapter = MainPagerAdapter(supportFragmentManager)
+        val pagerAdapter = MainPagerAdapter(supportFragmentManager)
         pager.adapter = pagerAdapter
         pager.currentItem = 1
     }

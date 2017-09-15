@@ -14,9 +14,6 @@ class PreferencesRepository @Inject constructor(val prefs: SharedPreferences) {
         get() = prefs.getBoolean("download", true)
         set(value) = prefs.edit().putBoolean("download", value).apply()
 
-    var ordered: Boolean = false
-        get() = prefs.getBoolean("ordered", false)
-
     var autoRefresh: Boolean = false
         get() = prefs.getBoolean("refresh", false)
 

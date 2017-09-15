@@ -46,7 +46,6 @@ class AppModule{
     @Provides
     fun providePersistentDatabase(app: Application): AppDatabase =
             Room.databaseBuilder(app, AppDatabase::class.java, NAME)
-                    .allowMainThreadQueries()
                     .build()
 
     @Provides

@@ -13,12 +13,6 @@
             android:summary="Polls data for holdings when on the main screen"
             android:defaultValue="true"/>
 
-        <SwitchPreference
-            android:key="ordered"
-            android:title="Order holdings by name"
-            android:summary="Order holdings by name rather than time inserted"
-            android:defaultValue="false" />
-
         <Preference
             android:key="download"
             android:title="Redownload all currencies"

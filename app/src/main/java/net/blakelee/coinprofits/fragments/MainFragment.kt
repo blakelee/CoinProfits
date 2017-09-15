@@ -9,8 +9,11 @@ import android.content.Intent
 import android.databinding.DataBindingUtil
 import android.os.Bundle
 import android.support.v4.app.Fragment
+import android.support.v7.widget.RecyclerView
+import android.support.v7.widget.helper.ItemTouchHelper
 import android.view.*
 import android.widget.Toast
+import com.scwang.smartrefresh.layout.SmartRefreshLayout
 import com.squareup.picasso.Picasso
 import com.trello.rxlifecycle2.android.lifecycle.kotlin.bindUntilEvent
 import com.yarolegovich.lovelydialog.LovelyChoiceDialog
@@ -21,6 +24,8 @@ import net.blakelee.coinprofits.activities.AboutActivity
 import net.blakelee.coinprofits.activities.AddHoldingsActivity
 import net.blakelee.coinprofits.activities.SettingsActivity
 import net.blakelee.coinprofits.adapters.HoldingsCombinedAdapter
+import net.blakelee.coinprofits.base.ItemTouchHelperCallback
+import net.blakelee.coinprofits.base.OnStartDragListener
 import net.blakelee.coinprofits.databinding.FragmentMainBinding
 import net.blakelee.coinprofits.dialogs.DownloadCoinsDialog
 import net.blakelee.coinprofits.models.Holdings
@@ -38,6 +43,8 @@ class MainFragment : Fragment(), LifecycleRegistryOwner {
     private val registry = LifecycleRegistry(this)
     private lateinit var adapter: HoldingsCombinedAdapter
     private val downloadCoinsDialog by lazy { DownloadCoinsDialog(context) }
+    private val recycler: RecyclerView by lazy { view!!.findViewById<RecyclerView>(R.id.holdings_recycler) }
+    private val refresh: SmartRefreshLayout by lazy { view!!.findViewById<SmartRefreshLayout>(R.id.refresh_layout) }
 
     /**
      * Setup data binding
@@ -55,15 +62,24 @@ class MainFragment : Fragment(), LifecycleRegistryOwner {
         super.onActivityCreated(savedInstanceState)
 
         setHasOptionsMenu(true)
-        adapter = HoldingsCombinedAdapter(holdings_recycler, picasso)
-        holdings_recycler.adapter = adapter
+        adapter = HoldingsCombinedAdapter(recycler, picasso)
+        recycler.adapter = adapter
+
+        val callback = ItemTouchHelperCallback(adapter)
+        val itemTouchHelper = ItemTouchHelper(callback)
+        itemTouchHelper.attachToRecyclerView(recycler)
+
+        adapter.onStartDragListener = object : OnStartDragListener {
+            override fun startDrag(viewHolder: RecyclerView.ViewHolder) {
+                itemTouchHelper.startDrag(viewHolder)
+            }
+        }
     }
 
     /**
      * Check whether we need to redownload coins or update holdings
      */
     override fun onResume() {
-
         super.onResume()
 
         refresh_layout.setOnRefreshListener {
@@ -117,9 +133,9 @@ class MainFragment : Fragment(), LifecycleRegistryOwner {
                                     }
                                     1 -> {
                                         val holdings = Holdings()
-                                        holdings.itemOrder = it.itemOrder
+                                        holdings.order = it.itemOrder
                                         holdings.id = it.id
-                                        viewModel.deleteHoldings(holdings)
+                                        viewModel.deleteHoldings(holdings).subscribe()
                                     }
                                 }
                             })
@@ -147,14 +163,25 @@ class MainFragment : Fragment(), LifecycleRegistryOwner {
                 true
             }
             R.id.action_add -> {
-                val intent = Intent(context, AddHoldingsActivity::class.java)
-                intent.putExtra("id", "eth")
-                startActivity(intent)
+                startActivity(Intent(context, AddHoldingsActivity::class.java))
                 true
             }
             R.id.action_about -> {
                 startActivity(Intent(context, AboutActivity::class.java))
                 true
+            }
+            R.id.action_edit -> {
+                if (item.isChecked) {
+                    item.isChecked = false
+                    adapter.editMode = false
+                    refresh.isEnableRefresh = true
+                    viewModel.updateHoldings(adapter.dataSource)
+                } else {
+                    item.isChecked = true
+                    adapter.editMode = true
+                    refresh.isEnableRefresh = false
+                }
+                    true
             }
             else -> super.onOptionsItemSelected(item)
         }

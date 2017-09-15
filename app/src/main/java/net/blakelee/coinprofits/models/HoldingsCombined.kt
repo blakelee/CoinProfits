@@ -5,7 +5,7 @@ import net.blakelee.coinprofits.tools.decimalFormat
 
 class HoldingsCombined : Coin() {
 
-    var itemOrder: Long? = null
+    var itemOrder = Long.MAX_VALUE
 
     @Relation(parentColumn = "id", entityColumn = "id", entity = Transaction::class)
     var transaction: List<Transaction> = emptyList()

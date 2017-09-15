@@ -1,5 +1,6 @@
 package net.blakelee.coinprofits.repository
 
+import io.reactivex.Observable
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
 import net.blakelee.coinprofits.models.Transaction
@@ -49,7 +50,18 @@ class TransactionRepository @Inject constructor(
 
             }
 
-    fun insertTransactions(transactions: List<Transaction>) = db.insertTransactions(transactions)
+    fun insertTransactions(transactions: List<Transaction>) =
+            Observable.fromCallable {
+                db.insertTransactions(transactions)
+            }
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribeOn(Schedulers.io())
 
-    fun deleteTransactionsById(id: String) = db.deleteTransactionsById(id)
+
+    fun deleteTransactionsById(id: String) =
+            Observable.fromCallable {
+                db.deleteTransactionsById(id)
+            }
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribeOn(Schedulers.io())
 }
