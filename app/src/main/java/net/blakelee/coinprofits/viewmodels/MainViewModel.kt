@@ -3,6 +3,7 @@ package net.blakelee.coinprofits.viewmodels
 import android.arch.lifecycle.*
 import android.databinding.ObservableField
 import android.databinding.ObservableInt
+import io.reactivex.Observable
 import io.reactivex.Single
 import io.reactivex.subjects.PublishSubject
 import io.reactivex.subjects.Subject
@@ -46,7 +47,7 @@ class MainViewModel
             refreshHoldings().subscribe()
     }
 
-    fun updateHoldings(holdingsCombined: List<HoldingsCombined>) {
+    fun updateHoldings(holdingsCombined: List<HoldingsCombined>): Observable<Unit> {
         val holdings: MutableList<Holdings> = mutableListOf()
 
         holdingsCombined.forEachIndexed { index, single ->
@@ -56,7 +57,7 @@ class MainViewModel
             holdings.add(item)
         }
 
-        holdingsRepo.updateHoldings(holdings)
+        return holdingsRepo.updateHoldings(holdings)
     }
 
     fun refreshHoldings(): Single<MutableList<Coin>> {

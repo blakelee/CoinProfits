@@ -175,7 +175,7 @@ class MainFragment : Fragment(), LifecycleRegistryOwner {
                     item.isChecked = false
                     adapter.editMode = false
                     refresh.isEnableRefresh = true
-                    viewModel.updateHoldings(adapter.dataSource)
+                    viewModel.updateHoldings(adapter.dataSource).subscribe()
                 } else {
                     item.isChecked = true
                     adapter.editMode = true

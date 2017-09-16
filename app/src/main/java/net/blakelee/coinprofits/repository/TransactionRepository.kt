@@ -32,7 +32,7 @@ class TransactionRepository @Inject constructor(
                 }
 
                 transactions
-            }
+            }/*
             .doOnNext { map ->
                 db.getTransactionsByAddress(address)
                         .observeOn(AndroidSchedulers.mainThread())
@@ -45,10 +45,14 @@ class TransactionRepository @Inject constructor(
                                 if (map.containsKey(it.id))
                                     it.amount = map.getOrDefault(it.id, 0.0)
                             }
-                            db.insertTransactions(it) //Put the updated Transactions inside the db again
+                            Observable.fromCallable {
+                                db.insertTransactions(it)
+                            }
+                            .observeOn(AndroidSchedulers.mainThread())
+                            .subscribeOn(Schedulers.io())
+                            .subscribe()//Put the updated Transactions inside the db again
                         }
-
-            }
+            }*/
 
     fun insertTransactions(transactions: List<Transaction>) =
             Observable.fromCallable {

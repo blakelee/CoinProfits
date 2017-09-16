@@ -186,12 +186,10 @@ class AddHoldingsActivity : AppCompatActivity(), LifecycleRegistryOwner {
             makeChip(item)
             viewModel.getHoldingsTransactions(item.id)
                     .subscribe ({
-                        holdingsTransactions = it
-                        holdingsTransactions!!.transaction = it.transaction
+                        holdingsTransactions = makeHoldingsTransactions(it.id, it.name, it.symbol, it.order, it.transaction)
                         transactionAdapter.dataSource = holdingsTransactions!!.transaction.toMutableList()
                     }, {}, {
-                        holdingsTransactions = HoldingsTransactions()
-                        holdingsTransactions!!.id = item.id
+                        holdingsTransactions = makeHoldingsTransactions(item.id, item.name, item.symbol)
                         transactionAdapter.dataSource = holdingsTransactions!!.transaction.toMutableList()
                     })
         }
@@ -262,5 +260,15 @@ class AddHoldingsActivity : AppCompatActivity(), LifecycleRegistryOwner {
 
         autocompleteTV.isEnabled = false
         autocompleteTV.text.clear()
+    }
+
+    private fun makeHoldingsTransactions(id: String, name: String, symbol: String, order: Long = Long.MAX_VALUE, transaction: List<Transaction> = emptyList()): HoldingsTransactions {
+        val holdingsTransactions = HoldingsTransactions()
+        holdingsTransactions.id = id
+        holdingsTransactions.name = name
+        holdingsTransactions.name = symbol
+        holdingsTransactions.transaction = transaction
+        holdingsTransactions.order = order
+        return holdingsTransactions
     }
 }

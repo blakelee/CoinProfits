@@ -92,5 +92,8 @@ class HoldingsRepository @Inject constructor(
                     Observable.fromCallable {
                         cdb.updateCoins(*it.toTypedArray())
                     }
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .subscribeOn(Schedulers.io())
+                    .subscribe()
                 }
 }
