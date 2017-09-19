@@ -16,7 +16,11 @@ interface HoldingsDao {
     @Query("SELECT * FROM holdings INNER JOIN coin on coin.id = holdings.id WHERE holdings.id = :id LIMIT 1")
     fun getHoldingsTransactions(id: String): Maybe<HoldingsTransactions>
 
-    @Query("SELECT * FROM holdings INNER JOIN coin on coin.id = holdings.id ORDER BY holdings.itemOrder")
+    @Query("SELECT *, (price / (SELECT price FROM coin WHERE id = 'ethereum')) AS price_eth " +
+            "FROM holdings " +
+            "INNER JOIN coin " +
+            "   ON coin.id = holdings.id " +
+            "ORDER BY holdings.itemOrder")
     fun getHoldingsCombined(): Flowable<List<HoldingsCombined>>
 
     @Query("SELECT coin.id, coin.name, coin.symbol, holdings.itemOrder FROM holdings INNER JOIN coin on coin.id = holdings.id ORDER BY holdings.itemOrder")

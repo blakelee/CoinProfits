@@ -1,6 +1,7 @@
 package net.blakelee.coinprofits.fragments
 
 import android.annotation.SuppressLint
+import android.app.Dialog
 import android.arch.lifecycle.Lifecycle
 import android.arch.lifecycle.LifecycleRegistry
 import android.arch.lifecycle.LifecycleRegistryOwner
@@ -26,9 +27,11 @@ import net.blakelee.coinprofits.activities.SettingsActivity
 import net.blakelee.coinprofits.adapters.HoldingsCombinedAdapter
 import net.blakelee.coinprofits.base.ItemTouchHelperCallback
 import net.blakelee.coinprofits.base.OnStartDragListener
+import net.blakelee.coinprofits.base.SwipeViewPager
 import net.blakelee.coinprofits.databinding.FragmentMainBinding
 import net.blakelee.coinprofits.dialogs.DownloadCoinsDialog
 import net.blakelee.coinprofits.models.Holdings
+import net.blakelee.coinprofits.models.HoldingsCombined
 import net.blakelee.coinprofits.viewmodels.MainViewModel
 import javax.inject.Inject
 
@@ -45,6 +48,8 @@ class MainFragment : Fragment(), LifecycleRegistryOwner {
     private val downloadCoinsDialog by lazy { DownloadCoinsDialog(context) }
     private val recycler: RecyclerView by lazy { view!!.findViewById<RecyclerView>(R.id.holdings_recycler) }
     private val refresh: SmartRefreshLayout by lazy { view!!.findViewById<SmartRefreshLayout>(R.id.refresh_layout) }
+    private val pager: SwipeViewPager by lazy { activity.findViewById<SwipeViewPager>(R.id.pager) }
+    private lateinit var menu: Menu
 
     /**
      * Setup data binding
@@ -81,6 +86,17 @@ class MainFragment : Fragment(), LifecycleRegistryOwner {
      */
     override fun onResume() {
         super.onResume()
+
+        //Back button handling when in edit mode
+        view?.isFocusableInTouchMode = true
+        view?.setOnKeyListener { _, keyCode, keyEvent ->
+            if (keyEvent.action == KeyEvent.ACTION_UP && keyCode == KeyEvent.KEYCODE_BACK && adapter.editMode) {
+                    onOptionsItemSelected(menu.findItem(R.id.action_edit))
+                    true
+            }
+            else
+                false
+        }
 
         refresh_layout.setOnRefreshListener {
             viewModel.refreshHoldings()
@@ -120,35 +136,55 @@ class MainFragment : Fragment(), LifecycleRegistryOwner {
 
         adapter.longClick
                 .bindUntilEvent(this, Lifecycle.Event.ON_PAUSE)
-                .subscribe {
-                    LovelyChoiceDialog(context)
-                            .setTitle("Selection action for ${it.name}")
-                            .setTopColorRes(R.color.colorPrimary)
-                            .setIcon(R.drawable.ic_info)
-                            .setItems(arrayOf("Edit", "Delete"), { position, _ ->
-                                when(position) {
-                                    0 -> { val intent = Intent(context, AddHoldingsActivity::class.java)
-                                        intent.putExtra("id", it.id)
-                                        startActivity(intent)
-                                    }
-                                    1 -> {
-                                        val holdings = Holdings()
-                                        holdings.order = it.itemOrder
-                                        holdings.id = it.id
-                                        viewModel.deleteHoldings(holdings).subscribe()
-                                    }
-                                }
-                            })
-                            .show()
-                }
+                .subscribe { makeEditDialog(it) }
+    }
+
+    //Changes the edit mode checkbox in the menu
+    private fun setEditMode(item: MenuItem) {
+        if (item.isChecked) {
+            pager.setSwipeable(true)
+            item.isChecked = false
+            adapter.editMode = false
+            refresh.isEnableRefresh = true
+            viewModel.updateHoldings(adapter.dataSource).subscribe()
+        } else {
+            pager.setSwipeable(false)
+            item.isChecked = true
+            adapter.editMode = true
+            refresh.isEnableRefresh = false
+        }
+    }
+
+    //Long press dialog
+    private fun makeEditDialog(holdingsCombined: HoldingsCombined): Dialog {
+        return LovelyChoiceDialog(context)
+                .setTitle("Selection action for ${holdingsCombined.name}")
+                .setTopColorRes(R.color.colorPrimary)
+                .setIcon(R.drawable.ic_info)
+                .setItems(arrayOf("Edit", "Delete"), { position, _ ->
+                    when(position) {
+                        0 -> { val intent = Intent(context, AddHoldingsActivity::class.java)
+                            intent.putExtra("id", holdingsCombined.id)
+                            startActivity(intent)
+                        }
+                        1 -> {
+                            val holdings = Holdings()
+                            holdings.order = holdingsCombined.itemOrder
+                            holdings.id = holdingsCombined.id
+                            viewModel.deleteHoldings(holdings).subscribe()
+                        }
+                    }
+                })
+                .show()
     }
 
     /**
      * Set menu to create one where you can add holdings
      */
-    override fun onCreateOptionsMenu(menu: Menu?, inflater: MenuInflater?) {
-        menu?.clear()
-        inflater?.inflate(R.menu.menu_main, menu)
+    override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
+        menu.clear()
+        inflater.inflate(R.menu.menu_main, menu)
+        this.menu = menu
         super.onCreateOptionsMenu(menu, inflater)
     }
 
@@ -171,16 +207,7 @@ class MainFragment : Fragment(), LifecycleRegistryOwner {
                 true
             }
             R.id.action_edit -> {
-                if (item.isChecked) {
-                    item.isChecked = false
-                    adapter.editMode = false
-                    refresh.isEnableRefresh = true
-                    viewModel.updateHoldings(adapter.dataSource).subscribe()
-                } else {
-                    item.isChecked = true
-                    adapter.editMode = true
-                    refresh.isEnableRefresh = false
-                }
+                    setEditMode(item)
                     true
             }
             else -> super.onOptionsItemSelected(item)
