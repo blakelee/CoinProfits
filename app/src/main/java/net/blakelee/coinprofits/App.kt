@@ -20,7 +20,8 @@ class App : MultiDexApplication(), HasActivityInjector {
     override fun onCreate() {
         super.onCreate()
 
-        Stetho.initializeWithDefaults(this)
+        if (BuildConfig.DEBUG)
+            Stetho.initializeWithDefaults(this)
 
         if (LeakCanary.isInAnalyzerProcess(this))
             return

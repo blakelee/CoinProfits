@@ -19,13 +19,12 @@ import android.widget.*
 import com.github.mikephil.charting.data.Entry
 import com.trello.rxlifecycle2.android.lifecycle.kotlin.bindUntilEvent
 import dagger.android.support.AndroidSupportInjection
-import io.reactivex.Observable
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.rxkotlin.addTo
 import kotlinx.android.synthetic.main.fragment_overview.*
 import net.blakelee.coinprofits.R
+import net.blakelee.coinprofits.adapters.PeriodAdapter
 import net.blakelee.coinprofits.base.SwipeViewPager
-import net.blakelee.coinprofits.models.ChartData
 import net.blakelee.coinprofits.models.HoldingsOverview
 import net.blakelee.coinprofits.repository.ChartRepository
 import net.blakelee.coinprofits.repository.HoldingsRepository
@@ -35,7 +34,6 @@ import net.blakelee.cryptochart.CryptoChart
 import net.blakelee.cryptochart.decimalFormat
 import net.cachapa.expandablelayout.ExpandableLayout
 import retrofit2.HttpException
-import retrofit2.Retrofit
 import java.net.UnknownHostException
 import java.text.NumberFormat
 import java.text.SimpleDateFormat
@@ -83,6 +81,23 @@ class OverviewFragment : Fragment(), LifecycleRegistryOwner, AdapterView.OnItemS
     //Start Observables
     override fun onResume() {
         super.onResume()
+
+        (PeriodRecycler.adapter as PeriodAdapter).click
+                .bindUntilEvent(this, Lifecycle.Event.ON_PAUSE)
+                .subscribe {
+                    updatePeriod(when (it) {
+                        0 -> Period.DAY
+                        1 -> Period.WEEK
+                        2 -> Period.MONTH
+                        3 -> Period.QUARTER
+                        4 -> Period.SEMESTER
+                        5 -> Period.YEAR
+                        6 -> Period.ALL
+                        else -> period
+                    })
+                }
+
+        (PeriodRecycler.adapter as PeriodAdapter).onResume()
 
         hRepo.getHoldingsOverview()
                 .bindUntilEvent(this, Lifecycle.Event.ON_PAUSE)
@@ -195,23 +210,11 @@ class OverviewFragment : Fragment(), LifecycleRegistryOwner, AdapterView.OnItemS
 
     private fun updatePeriod(period: Period) {
         if (this.period != period) {
-            val prev: TextView = time_holder.getChildAt(this.period.value) as TextView
-            prev.setBackgroundColor(ContextCompat.getColor(context, R.color.background))
-            prev.setTextColor(ContextCompat.getColor(context, R.color.textPrimary))
-
-
             this.period = period
             getChartData(((spinner.selectedItem) as HoldingsOverview).id)
             cryptoChart.setFormatter(DateFormatter(period))
             cryptoChart.setLabelCount(LabelCount(period))
-            setPeriodColors(this.period)
         }
-    }
-
-    private fun setPeriodColors(period: Period) {
-        val selected: TextView = time_holder.getChildAt(period.value) as TextView
-        selected.setBackgroundColor(ContextCompat.getColor(context, R.color.selectedBackground))
-        selected.setTextColor(ContextCompat.getColor(context, R.color.textHighlighted))
     }
 
     override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
@@ -257,6 +260,7 @@ class OverviewFragment : Fragment(), LifecycleRegistryOwner, AdapterView.OnItemS
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
         setHasOptionsMenu(true)
+        PeriodRecycler.adapter = PeriodAdapter()
         pager = activity.findViewById(R.id.pager)
         spinner = activity.findViewById(R.id.chart_items)
         adapter = ArrayAdapter(context, R.layout.spinner_row)
@@ -281,16 +285,6 @@ class OverviewFragment : Fragment(), LifecycleRegistryOwner, AdapterView.OnItemS
         val start = ContextCompat.getColor(context, R.color.pricesStart)
         val end = ContextCompat.getColor(context, R.color.pricesEnd)
         cryptoChart.setFadeColors(start, end)
-
-        setPeriodColors(this.period)
-
-        day.setOnClickListener { updatePeriod(Period.DAY) }
-        week.setOnClickListener { updatePeriod(Period.WEEK) }
-        month.setOnClickListener { updatePeriod(Period.MONTH) }
-        quarter.setOnClickListener { updatePeriod(Period.QUARTER) }
-        semester.setOnClickListener { updatePeriod(Period.SEMESTER) }
-        year.setOnClickListener { updatePeriod(Period.YEAR) }
-        all.setOnClickListener { updatePeriod(Period.ALL) }
 
         portfolioToggle.setOnClickListener {
             if (!expanded) {
