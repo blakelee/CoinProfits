@@ -28,7 +28,7 @@
             tools:context="net.blakelee.coinprofits.activities.MainActivity">
 
             <RelativeLayout
-                android:id="@+id/relativeLayout"
+                android:id="@+id/last_updated_layout"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_centerHorizontal="true"
@@ -54,7 +54,7 @@
                 android:id="@+id/holdings_recycler"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:layout_below="@+id/relativeLayout"
+                android:layout_below="@+id/last_updated_layout"
                 app:layoutManager="android.support.v7.widget.LinearLayoutManager" />
 
         </RelativeLayout>
