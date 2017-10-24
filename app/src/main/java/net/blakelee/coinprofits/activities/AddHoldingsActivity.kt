@@ -2,7 +2,6 @@ package net.blakelee.coinprofits.activities
 
 import android.arch.lifecycle.Lifecycle
 import android.arch.lifecycle.LifecycleRegistry
-import android.arch.lifecycle.LifecycleRegistryOwner
 import android.content.Context
 import android.graphics.Bitmap
 import android.graphics.drawable.BitmapDrawable
@@ -36,7 +35,7 @@ import net.blakelee.coinprofits.base.InstantAutoComplete
 import net.blakelee.coinprofits.di.AppModule
 import net.blakelee.coinprofits.models.*
 
-class AddHoldingsActivity : AppCompatActivity(), LifecycleRegistryOwner {
+class AddHoldingsActivity : AppCompatActivity() {
 
     private val registry = LifecycleRegistry(this)
     private var id: String? = null

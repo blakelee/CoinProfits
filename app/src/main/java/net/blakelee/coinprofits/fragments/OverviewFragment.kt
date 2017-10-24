@@ -2,7 +2,6 @@ package net.blakelee.coinprofits.fragments
 
 import android.arch.lifecycle.Lifecycle
 import android.arch.lifecycle.LifecycleRegistry
-import android.arch.lifecycle.LifecycleRegistryOwner
 import android.content.Context
 import android.graphics.Color
 import android.graphics.Paint
@@ -41,7 +40,7 @@ import java.util.*
 import javax.inject.Inject
 import kotlin.math.abs
 
-class OverviewFragment : Fragment(), LifecycleRegistryOwner, AdapterView.OnItemSelectedListener, CryptoChart.TouchListener {
+class OverviewFragment : Fragment(), AdapterView.OnItemSelectedListener, CryptoChart.TouchListener {
 
     @Inject lateinit var cRepo: ChartRepository
     @Inject lateinit var hRepo: HoldingsRepository

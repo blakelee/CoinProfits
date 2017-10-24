@@ -1,10 +1,8 @@
 package net.blakelee.coinprofits.activities
 
 import android.arch.lifecycle.LifecycleRegistry
-import android.arch.lifecycle.LifecycleRegistryOwner
 import android.os.Bundle
 import android.support.v4.app.Fragment
-import android.support.v4.view.ViewPager
 import android.support.v7.app.AppCompatActivity
 import dagger.android.AndroidInjection
 import dagger.android.AndroidInjector
@@ -16,7 +14,7 @@ import dagger.android.support.HasSupportFragmentInjector
 import net.blakelee.coinprofits.base.SwipeViewPager
 import javax.inject.Inject
 
-class MainActivity : AppCompatActivity(), LifecycleRegistryOwner, HasSupportFragmentInjector {
+class MainActivity : AppCompatActivity(), HasSupportFragmentInjector {
 
     private val registry = LifecycleRegistry(this)
     override fun getLifecycle(): LifecycleRegistry = registry

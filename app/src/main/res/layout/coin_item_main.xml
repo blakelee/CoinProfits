@@ -52,7 +52,7 @@
                 android:gravity="center_vertical"
                 android:maxLines="1"
                 android:text="@string/last"
-                android:visibility="@{editMode ? View.INVISIBLE : View.VISIBLE}"
+                android:visibility="@{safeUnbox(editMode) ? View.INVISIBLE : View.VISIBLE}"
                 card_view:ignore="RelativeOverlap" />
 
             <TextView
@@ -62,7 +62,7 @@
                 android:layout_alignBaseline="@+id/name"
                 android:layout_alignParentEnd="true"
                 android:gravity="center_vertical"
-                android:visibility="@{editMode ? View.INVISIBLE : View.VISIBLE}"
+                android:visibility="@{safeUnbox(editMode) ? View.INVISIBLE : View.VISIBLE}"
                 android:text="@{holdingsCombined.getLast()}" />
 
             <TextView
@@ -75,7 +75,7 @@
                 android:layout_toStartOf="@+id/balance"
                 android:gravity="center_vertical"
                 android:text="@string/balance_colon"
-                android:visibility="@{(holdingsCombined.watchOnly() || editMode) ? View.GONE : View.VISIBLE}"
+                android:visibility="@{(safeUnbox(holdingsCombined.watchOnly()) || safeUnbox(editMode)) ? View.GONE : View.VISIBLE}"
                 android:textSize="14sp" />
 
             <TextView
@@ -87,7 +87,7 @@
                 android:layout_alignParentEnd="true"
                 android:layout_alignParentBottom="true"
                 android:visibility="@{editMode ? View.INVISIBLE : View.VISIBLE}"
-                android:text="@{holdingsCombined.watchOnly() ? @string/read_only : holdingsCombined.getBalanceFiat()}"
+                android:text="@{safeUnbox(holdingsCombined.watchOnly()) ? @string/read_only : holdingsCombined.getBalanceFiat()}"
                 android:layout_below="@+id/last_text" />
 
             <ImageView
@@ -108,7 +108,7 @@
                 android:scaleType="center"
                 android:scaleX="1.25"
                 android:scaleY="1.25"
-                android:visibility="@{editMode ? View.VISIBLE : View.INVISIBLE}"
+                android:visibility="@{safeUnbox(editMode) ? View.VISIBLE : View.INVISIBLE}"
                 app:srcCompat="@drawable/ic_reorder" />
 
         </RelativeLayout>

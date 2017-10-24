@@ -4,7 +4,6 @@ import android.annotation.SuppressLint
 import android.app.Dialog
 import android.arch.lifecycle.Lifecycle
 import android.arch.lifecycle.LifecycleRegistry
-import android.arch.lifecycle.LifecycleRegistryOwner
 import android.content.Context
 import android.content.Intent
 import android.databinding.DataBindingUtil
@@ -38,7 +37,7 @@ import javax.inject.Inject
 /**
  * Contains the main screen with the list of holdings
  */
-class MainFragment : Fragment(), LifecycleRegistryOwner {
+class MainFragment : Fragment() {
 
     @Inject lateinit var viewModel: MainViewModel
     @Inject lateinit var picasso: Picasso
